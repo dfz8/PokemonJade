@@ -1,0 +1,29 @@
+42 20
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+. . . . . . t t t t t t t t t t t t t . . . t g g . g t . . t t t t t t t t t t t t
+. . . . . . t t t t t t t t t t t t t . . . t . . t t g g g g . . . . . t t t t t t
+. . . . . . t t t t t t t t t t t t t . . . t . . . . . g g g . . . . . t t t t t t
+. . . . . . t t t t t t t t t t t t g g g g t . . . . . g g g . ! ! . . t t t t t t
+. . . . . . t t t t t t t t t t t t t t t t t t t t t t t t t t . . t t t t t t t t
+. . . . . . ! . , , , , , g g g g g g t t g g g g g . . . . g g g g g g t t t t t t
+. . . . . . ! . , , , , , g g g g g g t t g g g g g . . . . . g g g g . t t t t t t
+. . . . . . t t t t t t t g g g g g g t t . . . . t t t t t . . g g . . t t t t t t
+. . . . . . t t t t t t t g g g g g g t t . . . . t t t t t t . . . . . t t t t t t
+. . . . . . t t t t t t t g g g g g g t t . . g g . t t t t t . . . . . t t t t t t
+. . . . . . t t t t t t t g g g g g g t t . g . g g . . g g . . . . . . t t t t t t
+. . . . . . t t t t t t t g g g g g g . . g g . g g g g g g . . . . . . t t t t t t
+. . . . . . t t t t t t t g g g g g g . . g g . . . g g g g . . . . . . t t t t t t
+t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t
+t t t t t t . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . t t t t t
+t t t t t t . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . t t t t t
+t t t t t t . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . t t t t t
+t t t t t t . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . t t t t t
+6 7 hometown 29 11
+6 8 hometown 29 12
+32 5 route2 20 29
+33 5 route2 21 29
+0
+2
+Rattata.Normal.Tackle.Tackle.Tackle.Tackle.2.4
+Pidgey.Normal.Gust.Gust.Gust.Gust.2.4

@@ -1,0 +1,11 @@
+10
+Charizard.Fire.Flamethrower.Ember.Tackle.Bite
+Raikou.Electric.Tackle.Shock.Thunder.Thunderbolt
+Alakazam.Physic.Tackle.Confusion.Psybeam.Headbutt
+Arcanine.Fire.Ember.Bite.Flamethrower.Dig
+Blastoise.Water.Bubble.Tackle.Surf.Bite
+Nidoking.Poison.Dig.Peck.Megahorn.Earthquake
+Pikachu.Electric.Discharge.Shock.Thunder.Slam
+Snorlax.Normal.Rollout.Crunch.Lick.Tackle
+Tauros.Normal.Pursuit.Thrash.Strength.Headbutt
+Venusaur.Grass.Poisonpowder.Tackle.Earthquake.Solarbeam
