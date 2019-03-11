@@ -97,7 +97,6 @@ public class GameScreen extends JPanel {
     }
 
     t = new Timer(150, new RefreshListener());
-
     t.start();
   }
 
@@ -159,8 +158,8 @@ public class GameScreen extends JPanel {
   private void handleMovementOfPlayer() {
     //gate stepping code:
     if (map[curR][curC].isGate()) {
-      int newR = map[curR][curC].getMapLink_r();
-      int newC = map[curR][curC].getMapLink_c();
+      int newR = map[curR][curC].getMapLinkRow();
+      int newC = map[curR][curC].getMapLinkCol();
       try {
         loadMap(map[curR][curC].getMapLink());
       } catch (IOException a) {
