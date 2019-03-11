@@ -112,129 +112,11 @@ public class GameScreen extends JPanel {
 
       if (inSummary) {
         drawSummaryScreen();
-      } else if (canMove)//!inBattle)
-      {
+      } else if (canMove) {
+        //!inBattle)
         bgColor = Color.WHITE;
-        //gate stepping code:
-        if (map[curR][curC].isGate()) {
-          int newR = map[curR][curC].getMapLink_r();
-          int newC = map[curR][curC].getMapLink_c();
-          try {
-            loadMap(map[curR][curC].getMapLink());
-          } catch (IOException a) {
-            System.out.println("Error: loadMap() has failed in GameScreen @ RefreshListener: " + map[curR][curC]
-                .getMapLink());
-          }
-          curR = newR;
-          curC = newC;
-        }
-        //^^^^^
-        if (canMove) {
-          boolean hasMoved = true; //for wild pokemon in grass/ocean
-          if (downPressed) {
-            if (map[curR + 1][curC].canMoveHere()) {
-              curR++;
-            }
-
-            moveSpriteIndex++;
-            if (moveSpriteIndex == ImageLibrary.moveDown_walk.length)
-              moveSpriteIndex = 0;
-            curSprite = ImageLibrary.moveDown_walk[moveSpriteIndex];
-            curDirection = 0;
-          } else if (leftPressed) {
-            if (map[curR][curC - 1].canMoveHere()) {
-              curC--;
-
-            }
-
-            moveSpriteIndex++;
-            if (moveSpriteIndex == ImageLibrary.moveLeft_walk.length)
-              moveSpriteIndex = 0;
-            curSprite = ImageLibrary.moveLeft_walk[moveSpriteIndex];
-            curDirection = 1;
-          } else if (upPressed) {
-            if (map[curR - 1][curC].canMoveHere()) {
-              curR--;
-              //move bg objects
-            }
-
-            moveSpriteIndex++;
-            if (moveSpriteIndex == ImageLibrary.moveUp_walk.length)
-              moveSpriteIndex = 0;
-            curSprite = ImageLibrary.moveUp_walk[moveSpriteIndex];
-            curDirection = 2;
-          } else if (rightPressed) {
-            if (map[curR][curC + 1].canMoveHere()) {
-              curC++;
-            }
-
-            moveSpriteIndex++;
-            if (moveSpriteIndex == ImageLibrary.moveRight_walk.length)
-              moveSpriteIndex = 0;
-            curSprite = ImageLibrary.moveRight_walk[moveSpriteIndex];
-            curDirection = 3;
-          } else {
-            //no key is pressed so you're resting
-            hasMoved = false;
-            moveSpriteIndex = -1;
-            if (curDirection == 0)
-              curSprite = ImageLibrary.faceDown;
-            else if (curDirection == 1)
-              curSprite = ImageLibrary.faceLeft;
-            else if (curDirection == 2)
-              curSprite = ImageLibrary.faceUp;
-            else // if(curDirection = 3)
-              curSprite = ImageLibrary.faceRight;
-          }
-          //code for wild pokemon encoutner:
-          if (hasMoved) {
-            if (map[curR][curC].getType() == Terrain.GRASS) {
-              int randomNum = (int) (Math.random() * 256);
-              if (randomNum <= 32)//<--should be 32 for normal run, 128 for test
-                controlPanel.toBattle(true);
-            }
-          }
-        }
-
-        //healing:
-        if (map[curR][curC].getType() == Terrain.HEALING_TILE) {
-          for (int i = 0; i < 6; i++) {
-            if (PlayPanel.myPokemon[i] != null)
-              PlayPanel.myPokemon[i].heal(PlayPanel.myPokemon[i].getMaxHP() - PlayPanel.myPokemon[i]
-                  .getCurrentHP());
-          }
-        }
-
-        //draw bg and stuff
-        //terrain
-        for (int r = curR - 5; r < map.length && r < curR + 5; r++) {
-          for (int c = curC - 8; c < map[r].length && c < curC + 8; c++) {
-            if (map[r][c].getType() != Terrain.GROUND)
-              myBuffer.drawImage(ImageLibrary.ground.getImage(),
-                                 (c - curC + 6) * 23 - SPRITE_WIDTH / 2,
-                                 (r - curR + 4) * 26 - SPRITE_HEIGHT / 2,
-                                 null);
-            map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
-
-          }
-        }
-
-        for (int r = 0; r < map.length; r++) {
-          for (int c = 0; c < map[r].length; c++) {
-            if (buildings[r][c])
-              map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
-            // if(items[r][c])
-            // map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
-          }
-        }
-
-        //buildings and stuff
-        //people
-        //YOU! lol
-        myBuffer.drawImage(curSprite.getImage(),
-                           WIDTH / 2 - SPRITE_WIDTH / 2,
-                           HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5,
-                           null); // -5 for visual purposes
+        handleMovementOfPlayer();
+        drawMap();
       } else if (inBattle) {
         drawBattleScene();
       } else {
@@ -244,6 +126,125 @@ public class GameScreen extends JPanel {
       repaint();
     }
 
+  }
+
+  private void drawMap() {
+    for (int r = curR - 5; r < map.length && r < curR + 5; r++) {
+      if (r < 0) {
+        continue;
+      }
+      for (int c = curC - 8; c < map[r].length && c < curC + 8; c++) {
+        if (c < 0) {
+          continue;
+        }
+
+        if (map[r][c].getType() != Terrain.GROUND) {
+          // draw ground as a background for all sprites
+          myBuffer.drawImage(ImageLibrary.ground.getImage(),
+                             (c - curC + 6) * SPRITE_WIDTH - SPRITE_WIDTH / 2,
+                             (r - curR + 4) * SPRITE_HEIGHT - SPRITE_HEIGHT / 2,
+                             null);
+        }
+        map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
+
+      }
+    }
+
+    myBuffer.drawImage(curSprite.getImage(),
+                       WIDTH / 2 - SPRITE_WIDTH / 2,
+                       HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5,
+                       null); // -5 for visual purposes
+  }
+
+  private void handleMovementOfPlayer() {
+    //gate stepping code:
+    if (map[curR][curC].isGate()) {
+      int newR = map[curR][curC].getMapLink_r();
+      int newC = map[curR][curC].getMapLink_c();
+      try {
+        loadMap(map[curR][curC].getMapLink());
+      } catch (IOException a) {
+        System.out.println("Error: loadMap() has failed in GameScreen @ RefreshListener: " + map[curR][curC]
+            .getMapLink());
+      }
+      curR = newR;
+      curC = newC;
+    }
+    //^^^^^
+    if (canMove) {
+      boolean hasMoved = true; //for wild pokemon in grass/ocean
+      if (downPressed) {
+        if (map[curR + 1][curC].canMoveHere()) {
+          curR++;
+        }
+
+        moveSpriteIndex++;
+        if (moveSpriteIndex == ImageLibrary.moveDown_walk.length)
+          moveSpriteIndex = 0;
+        curSprite = ImageLibrary.moveDown_walk[moveSpriteIndex];
+        curDirection = 0;
+      } else if (leftPressed) {
+        if (map[curR][curC - 1].canMoveHere()) {
+          curC--;
+
+        }
+
+        moveSpriteIndex++;
+        if (moveSpriteIndex == ImageLibrary.moveLeft_walk.length)
+          moveSpriteIndex = 0;
+        curSprite = ImageLibrary.moveLeft_walk[moveSpriteIndex];
+        curDirection = 1;
+      } else if (upPressed) {
+        if (map[curR - 1][curC].canMoveHere()) {
+          curR--;
+          //move bg objects
+        }
+
+        moveSpriteIndex++;
+        if (moveSpriteIndex == ImageLibrary.moveUp_walk.length)
+          moveSpriteIndex = 0;
+        curSprite = ImageLibrary.moveUp_walk[moveSpriteIndex];
+        curDirection = 2;
+      } else if (rightPressed) {
+        if (map[curR][curC + 1].canMoveHere()) {
+          curC++;
+        }
+
+        moveSpriteIndex++;
+        if (moveSpriteIndex == ImageLibrary.moveRight_walk.length)
+          moveSpriteIndex = 0;
+        curSprite = ImageLibrary.moveRight_walk[moveSpriteIndex];
+        curDirection = 3;
+      } else {
+        //no key is pressed so you're resting
+        hasMoved = false;
+        moveSpriteIndex = -1;
+        if (curDirection == 0)
+          curSprite = ImageLibrary.faceDown;
+        else if (curDirection == 1)
+          curSprite = ImageLibrary.faceLeft;
+        else if (curDirection == 2)
+          curSprite = ImageLibrary.faceUp;
+        else // if(curDirection = 3)
+          curSprite = ImageLibrary.faceRight;
+      }
+      //code for wild pokemon encoutner:
+      if (hasMoved) {
+        if (map[curR][curC].getType() == Terrain.GRASS) {
+          int randomNum = (int) (Math.random() * 256);
+          if (randomNum <= 32)//<--should be 32 for normal run, 128 for test
+            controlPanel.toBattle(true);
+        }
+      }
+    }
+    //healing:
+    if (map[curR][curC].getType() == Terrain.HEALING_TILE) {
+      for (int i = 0; i < 6; i++) {
+        if (PlayPanel.myPokemon[i] != null)
+          PlayPanel.myPokemon[i].heal(PlayPanel.myPokemon[i].getMaxHP() - PlayPanel.myPokemon[i]
+              .getCurrentHP());
+      }
+    }
   }
 
   private void drawSummaryScreen() {
