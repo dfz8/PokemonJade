@@ -18,17 +18,17 @@ public class OptionsPanel extends JPanel {
   public static boolean switchingPokemon;
 
   private GameScreen game;
-  private static int normalPanel = 0;
-  private static int battlePanel = 1;
-  private static int switchPokemonPanel = 2;
-  private static int partyPanel = 3;
-  private static int useItemPanel = 4;
-  private static int pokedexPanel = 5;
-  private static int bagPanel = 6;
-  private static int savePanel = 7;
-  private static int personalPanel = 8;
-  private static int attackPanel = 9;
-  private static int blackPanel = 10; //added by david
+  private static final int normalPanel = 0;
+  private static final int battlePanel = 1;
+  private static final int switchPokemonPanel = 2;
+  private static final int partyPanel = 3;
+  private static final int useItemPanel = 4;
+  private static final int pokedexPanel = 5;
+  private static final int bagPanel = 6;
+  private static final int savePanel = 7;
+  private static final int personalPanel = 8;
+  private static final int attackSelectionPanel = 9;
+  private static final int blackPanel = 10; //added by david
   private static int curPanel;
 
   private static boolean showPokemonSelectOptions = false;
@@ -55,8 +55,7 @@ public class OptionsPanel extends JPanel {
 
   PokeBall p = new PokeBall();
 
-  public OptionsPanel(GameScreen panel) //was originally PlayPanel panel
-  {
+  public OptionsPanel(GameScreen panel) {
     game = panel;
 
     myImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -135,12 +134,12 @@ public class OptionsPanel extends JPanel {
 
   public void toNormal() {
     curPanel = normalPanel;
-    game.inBattle = false;
-    game.canMove = true;
+    GameScreen.inBattle = false;
+    GameScreen.canMove = true;
 
     switchingPokemon = false;
     showPokemonSelectOptions = false;
-    game.inSummary = false;
+    GameScreen.inSummary = false;
     switchPokemonInd = -1;
   }
 
@@ -156,9 +155,9 @@ public class OptionsPanel extends JPanel {
 
   public void toSummary(int i) {
     //game.summaryIndex = i;
-    game.inSummary = true;
+    GameScreen.inSummary = true;
     showPokemonSelectOptions = false;
-    game.summaryPoke = PlayPanel.myPokemon[i];
+    GameScreen.summaryPoke = PlayPanel.myPokemon[i];
   }
 
   public void toParty() {
@@ -169,7 +168,7 @@ public class OptionsPanel extends JPanel {
         pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
     }
     curPanel = partyPanel;
-    game.canMove = false;
+    GameScreen.canMove = false;
     partyText = "Select a Pokemon.";
   }
 
@@ -177,7 +176,7 @@ public class OptionsPanel extends JPanel {
   {
     curPanel = savePanel;
     game.inSave = true;
-    game.canMove = false;
+    GameScreen.canMove = false;
     // System.out.println("Name: " + PlayPanel.myName);
     // System.out.println("Money: $" + PlayPanel.myMoney);
     PlayPanel.save();
@@ -193,7 +192,7 @@ public class OptionsPanel extends JPanel {
 
   public void toPersonal() {
     curPanel = personalPanel;
-    game.canMove = false;
+    GameScreen.canMove = false;
 
     numHasSeenPersonal = 0;
     numHasOwnedPersonal = 0;
@@ -208,14 +207,14 @@ public class OptionsPanel extends JPanel {
 
   public void toBag() {
     curPanel = useItemPanel;
-    game.canMove = false;
-    game.inBattle = true;
+    GameScreen.canMove = false;
+    GameScreen.inBattle = true;
   }
 
   public void toPokedex() {
     curPanel = pokedexPanel;
     pokedexStartInd = 1; //not array
-    game.canMove = false;
+    GameScreen.canMove = false;
 
     numHasSeen = 0;
     numHasOwned = 0;
@@ -229,9 +228,9 @@ public class OptionsPanel extends JPanel {
   }
 
   public void toAttacks() {
-    curPanel = attackPanel;
-    game.canMove = false;
-    game.inBattle = true;
+    curPanel = attackSelectionPanel;
+    GameScreen.canMove = false;
+    GameScreen.inBattle = true;
   }
 
   public void toSwitchPokemon() {
@@ -239,189 +238,74 @@ public class OptionsPanel extends JPanel {
     switchingPokemon = true;
     toParty();
 
-    game.canMove = false;
+    GameScreen.canMove = false;
   }
 
-  public void showHighlight(int x, int y) {
-    if (curPanel == normalPanel)
-      for (int i = 0; i < normalOptions.length; i++) {
-        if (checkMouseOver(x, y, normalOptions, i))
-          normalOptions[i].showHighlight(true);
-        else
-          normalOptions[i].showHighlight(false);
+  public void updateHighlightsForOptions(int x, int y) {
+    if (curPanel == partyPanel && !showPokemonSelectOptions) {
+      // can come here when viewing pokemon, in battle and switching out pokemon
+      for (int i = 0; i < pokemonOptions.length; i++) {
+        pokemonOptions[i].showHighlight(
+            isMouseOver(x, y, pokemonOptions[i]) && shouldShowHighlightForPokemon(i));
       }
-    else if (curPanel == partyPanel) {
-      if (!showPokemonSelectOptions)
-        for (int i = 0; i < pokemonOptions.length; i++) {
-
-          if (checkMouseOver(x, y, pokemonOptions, i)) {
-            if (game.inBattle) {
-              if (i == pokemonOptions.length - 1)
-                pokemonOptions[i].showHighlight(true);
-              else if (PlayPanel.myPokemon[i] != null)
-                if (!PlayPanel.myPokemon[i].isFainted())
-                  pokemonOptions[i].showHighlight(true);
-            } else {
-              if (i == pokemonOptions.length - 1 || PlayPanel.myPokemon[i] != null)
-                pokemonOptions[i].showHighlight(true);
-            }
-          } else
-            pokemonOptions[i].showHighlight(false);
-        }
-      else //showing the options once you clicked on the pokemon tile
-      {
-        for (int i = 0; i < pokemonSelectOptions.length; i++) {
-          if (checkMouseOver(x, y, pokemonSelectOptions, i))
-            pokemonSelectOptions[i].showHighlight(true);
-          else
-            pokemonSelectOptions[i].showHighlight(false);
-        }
-
-      }
-    } else if (curPanel == battlePanel)
-      for (int i = 0; i < battleOptions.length; i++) {
-        if (checkMouseOver(x, y, battleOptions, i))
-          battleOptions[i].showHighlight(true);
-        else
-          battleOptions[i].showHighlight(false);
-      }
-    else if (curPanel == pokedexPanel)
-      for (int i = 0; i < pokedexOptions.length; i++) {
-        if (checkMouseOver(x, y, pokedexOptions, i))
-          pokedexOptions[i].showHighlight(true);
-        else
-          pokedexOptions[i].showHighlight(false);
-      }
-    else if (curPanel == attackPanel)
-      for (int i = 0; i < attackOptions.length; i++) {
-        if (checkMouseOver(x, y, attackOptions, i))
-          attackOptions[i].showHighlight(true);
-        else
-          attackOptions[i].showHighlight(false);
-      }
-    else if (curPanel == useItemPanel)
-      for (int i = 0; i < bagOptions.length; i++) {
-        if (checkMouseOver(x, y, bagOptions, i))
-          bagOptions[i].showHighlight(true);
-        else
-          bagOptions[i].showHighlight(false);
-      }
-    else if (curPanel == savePanel)
-      for (int i = 0; i < saveOptions.length; i++) {
-        if (checkMouseOver(x, y, saveOptions, i))
-          saveOptions[i].showHighlight(true);
-        else
-          saveOptions[i].showHighlight(false);
-      }
-    else if (curPanel == personalPanel)
-      for (int i = 0; i < personalOptions.length; i++) {
-        if (checkMouseOver(x, y, personalOptions, i))
-          personalOptions[i].showHighlight(true);
-        else
-          personalOptions[i].showHighlight(false);
-      }
+    } else {
+      updateHighlights(x, y, getOptionsForCurrentPanel());
+    }
   }
 
-  public boolean checkMouseOver(int x, int y, OptionBoard[] array, int i) {
-    if (array[i].getX() <= x && x <= array[i].getX() + array[i].getXWidth())
-      if (array[i].getY() + HEIGHT <= y && y <= array[i].getY() + array[i].getYWidth() + HEIGHT)
-        return true;
+  private OptionBoard[] getOptionsForCurrentPanel() {
+    switch (curPanel) {
+      case normalPanel:
+        return normalOptions;
+      case partyPanel:
+        return showPokemonSelectOptions ? pokemonSelectOptions : pokemonOptions;
+      case battlePanel:
+        return battleOptions;
+      case pokedexPanel:
+        return pokedexOptions;
+      case attackSelectionPanel:
+        return attackOptions;
+      case useItemPanel:
+        return bagOptions;
+      case savePanel:
+        return saveOptions;
+      case personalPanel:
+        return personalOptions;
+      default:
+        System.out.println("Unrecognized panel id:" + curPanel);
+        System.exit(0);
+    }
+    return null;
+  }
 
-    return false;
+  private boolean shouldShowHighlightForPokemon(int index) {
+    // Always show highlight for the last option (Back button).
+    // If it's a pokemon, then always highlight if not in a battle.
+    // If we're in battle then only highlight if pokemon hasn't fainted.
+    return index == pokemonOptions.length - 1
+           || (PlayPanel.myPokemon[index] != null
+               && (!GameScreen.inBattle || !PlayPanel.myPokemon[index].isFainted()));
+  }
+
+  private void updateHighlights(int x, int y, OptionBoard[] boards) {
+    for (OptionBoard board : boards) {
+      board.showHighlight(isMouseOver(x, y, board));
+    }
+  }
+
+  private boolean isMouseOver(int x, int y, OptionBoard board) {
+    // HEIGHT displacement since two screens are stacked on top of each other
+    return (board.getX() <= x && x <= board.getX() + board.getXWidth())
+           && (board.getY() + HEIGHT <= y && y <= board.getY() + board.getYWidth() + HEIGHT);
   }
 
   public void checkClick(int x, int y) {
-    if (curPanel == normalPanel)
-      for (int i = 0; i < normalOptions.length; i++) {
-        if (normalOptions[i].isHighlighted())
-          if (x >= normalOptions[i].getX() && x <= normalOptions[i].getX() + normalOptions[i].getXWidth())
-            if (y >= normalOptions[i].getY() + HEIGHT && y <= normalOptions[i].getY() + normalOptions[i]
-                .getYWidth() + HEIGHT) {
-              searchButton(normalOptions[i].getText());
-              break;
-            }
+    // click is valid if target is showing highlight aka enabled
+    for (OptionBoard option : getOptionsForCurrentPanel()) {
+      if (option.isHighlighted() && isMouseOver(x, y, option)) {
+        searchButton(option.getText());
       }
-    else if (curPanel == partyPanel) {
-      if (!showPokemonSelectOptions)
-        for (int i = 0; i < pokemonOptions.length; i++) {
-          if (pokemonOptions[i].isHighlighted())
-            if (x >= pokemonOptions[i].getX() && x <= pokemonOptions[i].getX() + pokemonOptions[i].getXWidth())
-              if (y >= pokemonOptions[i].getY() + HEIGHT && y <= pokemonOptions[i].getY() + pokemonOptions[i]
-                  .getYWidth() + HEIGHT) {
-                searchButton(pokemonOptions[i].getText());
-                break;
-              }
-        }
-      else
-        for (int i = 0; i < pokemonSelectOptions.length; i++) {
-          if (pokemonSelectOptions[i].isHighlighted())
-            if (x >= pokemonOptions[i].getX() && x <= pokemonSelectOptions[i].getX() + pokemonSelectOptions[i]
-                .getXWidth())
-              if (y >= pokemonSelectOptions[i].getY() + HEIGHT && y <= pokemonSelectOptions[i].getY() + pokemonSelectOptions[i]
-                  .getYWidth() + HEIGHT) {
-                searchButton(pokemonSelectOptions[i].getText());
-                break;
-              }
-        }
-    } else if (curPanel == pokedexPanel)
-      for (int i = 0; i < pokedexOptions.length; i++) {
-        if (pokedexOptions[i].isHighlighted())
-          if (x >= pokedexOptions[i].getX() && x <= pokedexOptions[i].getX() + pokedexOptions[i].getXWidth())
-            if (y >= pokedexOptions[i].getY() + HEIGHT && y <= pokedexOptions[i].getY() + pokedexOptions[i]
-                .getYWidth() + HEIGHT) {
-              searchButton(pokedexOptions[i].getText());
-              break;
-            }
-      }
-    else if (curPanel == battlePanel)
-      for (int i = 0; i < battleOptions.length; i++) {
-        if (battleOptions[i].isHighlighted())
-          if (x >= battleOptions[i].getX() && x <= battleOptions[i].getX() + battleOptions[i].getXWidth())
-            if (y >= battleOptions[i].getY() + HEIGHT && y <= battleOptions[i].getY() + battleOptions[i]
-                .getYWidth() + HEIGHT) {
-              searchButton(battleOptions[i].getText());
-              break;
-            }
-      }
-    else if (curPanel == attackPanel)
-      for (int i = 0; i < attackOptions.length; i++) {
-        if (attackOptions[i].isHighlighted())
-          if (x >= attackOptions[i].getX() && x <= attackOptions[i].getX() + attackOptions[i].getXWidth())
-            if (y >= attackOptions[i].getY() + HEIGHT && y <= attackOptions[i].getY() + attackOptions[i]
-                .getYWidth() + HEIGHT) {
-              searchButton(attackOptions[i].getText());
-              break;
-            }
-      }
-    else if (curPanel == useItemPanel)
-      for (int i = 0; i < bagOptions.length; i++) {
-        if (bagOptions[i].isHighlighted())
-          if (x >= bagOptions[i].getX() && x <= bagOptions[i].getX() + bagOptions[i].getXWidth())
-            if (y >= bagOptions[i].getY() + HEIGHT && y <= bagOptions[i].getY() + bagOptions[i].getYWidth() + HEIGHT) {
-              searchButton(bagOptions[i].getText());
-              break;
-            }
-      }
-    else if (curPanel == savePanel)
-      for (int i = 0; i < saveOptions.length; i++) {
-        if (saveOptions[i].isHighlighted())
-          if (x >= saveOptions[i].getX() && x <= saveOptions[i].getX() + saveOptions[i].getXWidth())
-            if (y >= saveOptions[i].getY() + HEIGHT && y <= saveOptions[i].getY() + saveOptions[i].getYWidth() + HEIGHT) {
-              searchButton(saveOptions[i].getText());
-              break;
-            }
-      }
-    else if (curPanel == personalPanel)
-      for (int i = 0; i < personalOptions.length; i++) {
-        if (personalOptions[i].isHighlighted())
-          if (x >= personalOptions[i].getX() && x <= personalOptions[i].getX() + personalOptions[i].getXWidth())
-            if (y >= personalOptions[i].getY() + HEIGHT && y <= personalOptions[i].getY() + personalOptions[i]
-                .getYWidth() + HEIGHT) {
-              searchButton(personalOptions[i].getText());
-              break;
-            }
-      }
-
+    }
   }
 
   //where the click code is run
@@ -457,7 +341,7 @@ public class OptionsPanel extends JPanel {
           if (PlayPanel.myPokemon[i] != null)
             if (PlayPanel.myPokemon[i].getName().equals(s)) {
               //switch
-              if (game.inBattle) {
+              if (GameScreen.inBattle) {
                 if (i == 0)
                   //JOptionPane.showMessageDialog(null, "That pokemon is already out!");
                   partyText = "That pokemon is already out!";
@@ -503,15 +387,20 @@ public class OptionsPanel extends JPanel {
               showPokemonSelectOptions = true;
               switchPokemonInd = i;
 
-              pokemonSelectOptions[0].setX(pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - pokemonSelectOptions[0]
-                  .getXWidth());
+              pokemonSelectOptions[0].setX(
+                  pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - pokemonSelectOptions[0]
+                      .getXWidth());
               pokemonSelectOptions[0].setY(pokemonOptions[i].getY());
-              pokemonSelectOptions[2].setX(pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - pokemonSelectOptions[2]
-                  .getXWidth());
-              pokemonSelectOptions[2].setY(pokemonSelectOptions[0].getY() + pokemonSelectOptions[0].getYWidth() + 5);
-              pokemonSelectOptions[3].setX(pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - pokemonSelectOptions[3]
-                  .getXWidth());
-              pokemonSelectOptions[3].setY(pokemonSelectOptions[2].getY() + pokemonSelectOptions[2].getYWidth() + 5);
+              pokemonSelectOptions[2].setX(
+                  pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - pokemonSelectOptions[2]
+                      .getXWidth());
+              pokemonSelectOptions[2].setY(
+                  pokemonSelectOptions[0].getY() + pokemonSelectOptions[0].getYWidth() + 5);
+              pokemonSelectOptions[3].setX(
+                  pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - pokemonSelectOptions[3]
+                      .getXWidth());
+              pokemonSelectOptions[3].setY(
+                  pokemonSelectOptions[2].getY() + pokemonSelectOptions[2].getYWidth() + 5);
 
               break;
             }
@@ -544,7 +433,7 @@ public class OptionsPanel extends JPanel {
         game.resetOrderOfPokemonInParty();
         toNormal();
       }
-    } else if (curPanel == attackPanel) {
+    } else if (curPanel == attackSelectionPanel) {
       if (s.equals(game.myPoke.getAttackOne())) {
         game.isAttacking = true;
         game.myAttackName = game.myPoke.getAttackOne();
@@ -575,18 +464,19 @@ public class OptionsPanel extends JPanel {
             PlayPanel.hasPokemon[Pokemon.getIndex(game.enemy.getName())] = true;
             PlayPanel.hasSeenPokemon[Pokemon.getIndex(game.enemy.getName())] = true;
 
-            PlayPanel.myPokemon[index] = new Pokemon(game.enemy.getName(),
-                                                     game.enemy.getType(),
-                                                     game.enemy.getAttackOne(),
-                                                     game.enemy.getAttackTwo(),
-                                                     game.enemy.getAttackThree(),
-                                                     game.enemy.getAttackFour(),
-                                                     game.enemy.getLevel(),
-                                                     game.enemy.getMyEXP(),
-                                                     game.enemy.getAttackLevel(),
-                                                     game.enemy.getDefenseLevel(),
-                                                     game.enemy.getCurrentHP(),
-                                                     game.enemy.getMaxHP());
+            PlayPanel.myPokemon[index] = new Pokemon(
+                game.enemy.getName(),
+                game.enemy.getType(),
+                game.enemy.getAttackOne(),
+                game.enemy.getAttackTwo(),
+                game.enemy.getAttackThree(),
+                game.enemy.getAttackFour(),
+                game.enemy.getLevel(),
+                game.enemy.getMyEXP(),
+                game.enemy.getAttackLevel(),
+                game.enemy.getDefenseLevel(),
+                game.enemy.getCurrentHP(),
+                game.enemy.getMaxHP());
             toNormal();
           } else {
             JOptionPane.showMessageDialog(null, "Awww, the Pokemon broke out of the pokeball!");
@@ -597,7 +487,7 @@ public class OptionsPanel extends JPanel {
         } else
           JOptionPane.showMessageDialog(null,
                                         "You've already caught this Pokemon!\nSave your " +
-                                            "pokeballs!");
+                                        "pokeballs!");
       }
 
     } else if (curPanel == savePanel) {
@@ -653,17 +543,21 @@ public class OptionsPanel extends JPanel {
                               6);
             //hp bar
             Color c;
-            if ((1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP() > .5)
+            if ((1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP()
+                > .5)
               c = Color.GREEN;
-            else if ((1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP() > .25)
+            else if (
+                (1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP()
+                > .25)
               c = Color.YELLOW;
             else
               c = Color.RED;
             myBuffer.setColor(c);
             myBuffer.fillRect(pokemonOptions[i].getX() + x_inc,
                               pokemonOptions[i].getY() + y_inc + 2,
-                              (int) ((50) * (1.0 * PlayPanel.myPokemon[i].getCurrentHP() / PlayPanel.myPokemon[i]
-                                  .getMaxHP())),
+                              (int) ((50) * (1.0 * PlayPanel.myPokemon[i].getCurrentHP()
+                                             / PlayPanel.myPokemon[i]
+                                                 .getMaxHP())),
                               5);
             //hp text
             myBuffer.setFont(game.smallFont);
@@ -718,8 +612,9 @@ public class OptionsPanel extends JPanel {
               numText += "0";
             //text
             if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1])
-              pokedexOptions[i].setText(numText + (pokedexStartInd + i) + ". \t" + Pokemon.getPokemon(
-                  pokedexStartInd + i - 1));
+              pokedexOptions[i].setText(
+                  numText + (pokedexStartInd + i) + ". \t" + Pokemon.getPokemon(
+                      pokedexStartInd + i - 1));
             else
               pokedexOptions[i].setText(numText + (pokedexStartInd + i) + ". \t?????");
 
@@ -786,7 +681,7 @@ public class OptionsPanel extends JPanel {
       } else if (curPanel == battlePanel) {
         for (int i = 0; i < battleOptions.length; i++)
           battleOptions[i].draw(myBuffer);
-      } else if (curPanel == attackPanel) {
+      } else if (curPanel == attackSelectionPanel) {
         for (int i = 0; i < attackOptions.length; i++) {
           String type = AttackLibrary.getType(attackOptions[i].getText());
           Color c = Color.WHITE;

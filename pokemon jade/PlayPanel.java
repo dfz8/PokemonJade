@@ -288,7 +288,7 @@ public class PlayPanel extends JPanel {
 
   public class Mouse extends MouseMotionAdapter {
     public void mouseMoved(MouseEvent e) {
-      options.showHighlight(e.getX(), e.getY());
+      options.updateHighlightsForOptions(e.getX(), e.getY());
     }
   }
 
