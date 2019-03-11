@@ -30,7 +30,6 @@ public class GameScreen extends JPanel {
   Timer t;
   static String mapName = ""; //for saving purposes
   private static Terrain[][] map;
-  private static boolean[][] gates;
   private static boolean[][] buildings;
   private static boolean[][] items;
   //conditions:
@@ -91,7 +90,7 @@ public class GameScreen extends JPanel {
     myBuffer.fillRect(0, 0, WIDTH, HEIGHT);
 
     try {
-      uploadMap(mapName);
+      loadMap(mapName);
     } catch (IOException e) {
       System.out.println("map could not be loaded: " + mapName);
       System.exit(0);
@@ -121,21 +120,21 @@ public class GameScreen extends JPanel {
           int newR = map[curR][curC].getMapLink_r();
           int newC = map[curR][curC].getMapLink_c();
           try {
-            uploadMap(map[curR][curC].getMapLink());
+            loadMap(map[curR][curC].getMapLink());
           } catch (IOException a) {
-            System.out.println("Error: uploadMap() has failed in GameScreen @ RefreshListener: " + map[curR][curC].getMapLink());
+            System.out.println("Error: loadMap() has failed in GameScreen @ RefreshListener: " + map[curR][curC]
+                .getMapLink());
           }
           curR = newR;
           curC = newC;
         }
         //^^^^^
         if (canMove) {
-          boolean hasMoved = false; //for wild pokemon in grass/ocean
+          boolean hasMoved = true; //for wild pokemon in grass/ocean
           if (downPressed) {
             if (map[curR + 1][curC].canMoveHere()) {
               curR++;
             }
-            hasMoved = true;
 
             moveSpriteIndex++;
             if (moveSpriteIndex == ImageLibrary.moveDown_walk.length)
@@ -147,7 +146,6 @@ public class GameScreen extends JPanel {
               curC--;
 
             }
-            hasMoved = true;
 
             moveSpriteIndex++;
             if (moveSpriteIndex == ImageLibrary.moveLeft_walk.length)
@@ -159,7 +157,6 @@ public class GameScreen extends JPanel {
               curR--;
               //move bg objects
             }
-            hasMoved = true;
 
             moveSpriteIndex++;
             if (moveSpriteIndex == ImageLibrary.moveUp_walk.length)
@@ -170,15 +167,15 @@ public class GameScreen extends JPanel {
             if (map[curR][curC + 1].canMoveHere()) {
               curC++;
             }
-            hasMoved = true;
 
             moveSpriteIndex++;
             if (moveSpriteIndex == ImageLibrary.moveRight_walk.length)
               moveSpriteIndex = 0;
             curSprite = ImageLibrary.moveRight_walk[moveSpriteIndex];
             curDirection = 3;
-          } else //no key is pressed so you're resting
-          {
+          } else {
+            //no key is pressed so you're resting
+            hasMoved = false;
             moveSpriteIndex = -1;
             if (curDirection == 0)
               curSprite = ImageLibrary.faceDown;
@@ -210,17 +207,15 @@ public class GameScreen extends JPanel {
 
         //draw bg and stuff
         //terrain
-        for (int r = 0; r < map.length; r++) {
-          for (int c = 0; c < map[r].length; c++) {
-            if (r >= curR - 5 && curR <= curR + 5)
-              if (c >= curC - 8 && curC <= curC + 8) {
-                if (map[r][c].getType() != Terrain.GROUND)
-                  myBuffer.drawImage(ImageLibrary.ground.getImage(),
-                                     (c - curC + 6) * 23 - SPRITE_WIDTH / 2,
-                                     (r - curR + 4) * 26 - SPRITE_HEIGHT / 2,
-                                     null);
-                map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
-              }
+        for (int r = curR - 5; r < map.length && r < curR + 5; r++) {
+          for (int c = curC - 8; c < map[r].length && c < curC + 8; c++) {
+            if (map[r][c].getType() != Terrain.GROUND)
+              myBuffer.drawImage(ImageLibrary.ground.getImage(),
+                                 (c - curC + 6) * 23 - SPRITE_WIDTH / 2,
+                                 (r - curR + 4) * 26 - SPRITE_HEIGHT / 2,
+                                 null);
+            map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
+
           }
         }
 
@@ -242,12 +237,13 @@ public class GameScreen extends JPanel {
                            null); // -5 for visual purposes
       } else if (inBattle) {
         drawBattleScene();
-      } else// if(inSave)
-      {
+      } else {
         bgColor = Color.WHITE;
       }
+
       repaint();
     }
+
   }
 
   private void drawSummaryScreen() {
@@ -637,36 +633,33 @@ public class GameScreen extends JPanel {
     return Color.GREEN;
   }
 
-  public static void uploadMap(String name) throws IOException {
-    mapName = name;
-
+  public static void loadMap(String name) throws IOException {
     BufferedReader in = new BufferedReader(new FileReader(new File("./resources/maps/" + name)));
-    String[] sDimension = in.readLine().split(" ");
-    int width = Integer.parseInt(sDimension[0]);
-    int height = Integer.parseInt(sDimension[1]);
+    String[] mapDimens = in.readLine().split(" ");
+    int width = Integer.parseInt(mapDimens[0]);
+    int height = Integer.parseInt(mapDimens[1]);
 
-    String[][] sMap = new String[height][width];
-    Terrain[][] tmap = new Terrain[height][width];
+    String[][] mapSymbolForm = new String[height][width];
+    Terrain[][] terrainMap = new Terrain[height][width];
     int gateCount = 0;
     int buildingCount = 0;
     for (int r = 0; r < height; r++) {
-      sMap[r] = in.readLine().split(" ");
+      mapSymbolForm[r] = in.readLine().split(" ");
       for (int c = 0; c < width; c++) {
-        tmap[r][c] = new Terrain(sMap[r][c]);
-        if (tmap[r][c].isGate())
+        terrainMap[r][c] = new Terrain(mapSymbolForm[r][c]);
+
+        if (terrainMap[r][c].isGate()) {
           gateCount++;
-        if (tmap[r][c].isBuilding())
+        } else if (terrainMap[r][c].isBuilding()) {
           buildingCount++;
+        }
       }
     }
-    map = tmap;
 
-    gates = new boolean[height][width];
     buildings = new boolean[height][width];
     items = new boolean[height][width];
-    for (int r = 0; r < gates.length; r++)
-      for (int c = 0; c < gates[r].length; c++) {
-        gates[r][c] = false;
+    for (int r = 0; r < height; r++)
+      for (int c = 0; c < width; c++) {
         buildings[r][c] = false;
         items[r][c] = false;
       }
@@ -674,33 +667,25 @@ public class GameScreen extends JPanel {
     //setting up links between maps
     for (int i = 0; i < gateCount; i++) {
       String[] info = in.readLine().split(" ");
-      //place where gate is
       int c = Integer.parseInt(info[0]);
       int r = Integer.parseInt(info[1]);
-      gates[r][c] = true;
-      //setting up destination spot on new map
-      tmap[r][c].setMapLink(info[2]);
-      int destination_c = Integer.parseInt(info[3]);
-      int destination_r = Integer.parseInt(info[4]);
-      tmap[r][c].setMapLinkCoordinates(destination_r, destination_c);
+      terrainMap[r][c].setMapLink(info[2]);
+      terrainMap[r][c].setMapLinkCoordinates(Integer.parseInt(info[4]), Integer.parseInt(info[3]));
     }
 
+    String[] locationInfo;
+
     //setting up buildings
-    // buildingCount = Integer.parseInt(in.readLine());
     for (int i = 0; i < buildingCount; i++) {
-      String[] location = in.readLine().split(" ");
-      int r = Integer.parseInt(location[1]);
-      int c = Integer.parseInt(location[0]);
-      buildings[r][c] = true;
+      locationInfo = in.readLine().split(" ");
+      buildings[Integer.parseInt(locationInfo[1])][Integer.parseInt(locationInfo[0])] = true;
     }
 
     //setting up items (i.e pokeballs)
     int itemCount = Integer.parseInt(in.readLine());
     for (int i = 0; i < itemCount; i++) {
-      String[] location = in.readLine().split(" ");
-      int r = Integer.parseInt(location[1]);
-      int c = Integer.parseInt(location[0]);
-      items[r][c] = true;
+      locationInfo = in.readLine().split(" ");
+      items[Integer.parseInt(locationInfo[1])][Integer.parseInt(locationInfo[0])] = true;
     }
 
     //setting up wild pokemons
@@ -710,5 +695,8 @@ public class GameScreen extends JPanel {
     }
 
     in.close();
+
+    mapName = name;
+    map = terrainMap;
   }
 }

@@ -53,18 +53,19 @@ public class PlayPanel extends JPanel {
       GameScreen.curR = 7;
       GameScreen.curC = 11;
       myPokemon = new Pokemon[100];
-      myPokemon[0] = new Pokemon("Bulbasaur",
-                                 "Grass",
-                                 "Tackle",
-                                 "Vine Whip",
-                                 "Absorb",
-                                 "Headbutt",
-                                 5,
-                                 (int) (Math.pow(Pokemon.rate, 5)),
-                                 14,
-                                 16,
-                                 26,
-                                 26);
+      myPokemon[0] = new Pokemon(
+          "Bulbasaur",
+          "Grass",
+          "Tackle",
+          "Vine Whip",
+          "Absorb",
+          "Headbutt",
+          5,
+          (int) (Math.pow(Pokemon.rate, 5)),
+          14,
+          16,
+          26,
+          26);
       hasPokemon[0] = true;
       hasSeenPokemon[0] = true;
       save();
@@ -192,9 +193,7 @@ public class PlayPanel extends JPanel {
 
   public static void save() {
     try {
-
       PrintStream out = new PrintStream(new FileOutputStream("./savefiles/" + myName + ".pksf"));
-      //pokemon save file
       out.println(myMoney + "");
 
       //your pokemon
@@ -208,7 +207,7 @@ public class PlayPanel extends JPanel {
       out.println(game.mapName);
       out.println("" + game.curR);
       out.println("" + game.curC);
-      //
+
       for (int i = 0; i < hasPokemon.length; i++) {
         if (hasPokemon[i])
           out.print("true");
@@ -219,7 +218,6 @@ public class PlayPanel extends JPanel {
           out.print(" true");
         else
           out.print(" false");
-
         out.println();
       }
 
@@ -239,7 +237,7 @@ public class PlayPanel extends JPanel {
 
   }
 
-  public class Key extends KeyAdapter  {
+  public class Key extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_UP) {
         game.upPressed = true;
