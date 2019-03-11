@@ -622,7 +622,7 @@
                toSwitchPokemon();
             if(s.equals("Run"))
             {
-               game.resetParty();
+               game.resetOrderOfPokemonInParty();
                toNormal();
             }
          }
@@ -769,7 +769,7 @@
                   //Level text:
                      myBuffer.drawString("LV: " + PlayPanel.myPokemon[i].getLevel(), pokemonOptions[i].getX() + x_inc, pokemonOptions[i].getY() + pokemonOptions[i].getYWidth() - 3 );
                   //Image
-                     ImageIcon pokeImage = new ImageIcon("Images/Pokemon/" + PlayPanel.myPokemon[i].getName() + ".png");
+                     ImageIcon pokeImage = new ImageIcon("images/Pokemon/" + PlayPanel.myPokemon[i].getName() + ".png");
                      myBuffer.drawImage(pokeImage.getImage(), pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - 40, pokemonOptions[i].getY(), 40, 40, null);
                   }
                }
@@ -813,11 +813,11 @@
                      if(PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1])
                         if(pokedexOptions[i].isHighlighted())
                         {
-                           ImageIcon curImage = new ImageIcon("Images/Pokemon/" + Pokemon.getPokemon(pokedexStartInd + i - 1) + ".png");
+                           ImageIcon curImage = new ImageIcon("images/Pokemon/" + Pokemon.getPokemon(pokedexStartInd + i - 1) + ".png");
                            myBuffer.drawImage(curImage.getImage(), WIDTH - 130, HEIGHT - 190, null);
                         }
                   //pokeballs next to pokemon you have caught
-                     ImageIcon pokeball = new ImageIcon("Images/pokeball.png"); //move to imageLibrary?
+                     ImageIcon pokeball = new ImageIcon("images/pokeball.png"); //move to imageLibrary?
                      if(PlayPanel.hasPokemon[pokedexStartInd + i - 1])
                         myBuffer.drawImage(pokeball.getImage(), pokedexOptions[i].getX() + pokedexOptions[i].getXWidth() - 20, pokedexOptions[i].getY(), 20, 20, null);
                   
@@ -834,7 +834,7 @@
                   saveOptions[i].draw(myBuffer);
                //myBuffer.setColor(Color.WHITE);
                //myBuffer.fillRect(20,20,WIDTH-50,HEIGHT-50);
-               ImageIcon me = new ImageIcon("Images/boy_walk_down_rest.png");
+               ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
                myBuffer.drawImage(me.getImage(),30,30,WIDTH - 240,HEIGHT - 180, null);
                myBuffer.setColor(Color.BLACK);
                myBuffer.setFont(game.extraLargeFont);
@@ -852,7 +852,7 @@
                   personalOptions[i].draw(myBuffer);
                //myBuffer.setColor(Color.WHITE);
                //myBuffer.fillRect(20,20,WIDTH-50,HEIGHT-50);
-               ImageIcon me = new ImageIcon("Images/boy_walk_down_rest.png");
+               ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
                myBuffer.drawImage(me.getImage(),30,30,WIDTH - 240,HEIGHT - 180, null);
                myBuffer.setColor(Color.BLACK);
                myBuffer.setFont(game.extraLargeFont);
