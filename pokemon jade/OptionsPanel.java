@@ -143,8 +143,7 @@ public class OptionsPanel extends JPanel {
     switchPokemonInd = -1;
   }
 
-  public void toBattle() // arguements should contain whether its a trainer or a wild pokemon
-  {
+  public void toBattle() {
     curPanel = battlePanel;
     switchingPokemon = false;
   }
@@ -172,13 +171,10 @@ public class OptionsPanel extends JPanel {
     partyText = "Select a Pokemon.";
   }
 
-  public void toSave() //<<<<<<<<<<<<<<<<<
-  {
+  public void toSave() {
     curPanel = savePanel;
     game.inSave = true;
     GameScreen.canMove = false;
-    // System.out.println("Name: " + PlayPanel.myName);
-    // System.out.println("Money: $" + PlayPanel.myMoney);
     PlayPanel.save();
     numHasSeenSave = 0;
     numHasOwnedSave = 0;
@@ -194,6 +190,7 @@ public class OptionsPanel extends JPanel {
     curPanel = personalPanel;
     GameScreen.canMove = false;
 
+    // todo: update counts on catch, not every time
     numHasSeenPersonal = 0;
     numHasOwnedPersonal = 0;
     for (int i = 0; i < PlayPanel.hasSeenPokemon.length; i++) {
@@ -507,217 +504,230 @@ public class OptionsPanel extends JPanel {
     public void actionPerformed(ActionEvent e) {
       myBuffer.setColor(background);
       myBuffer.fillRect(0, 0, WIDTH, HEIGHT);
-      myBuffer.setFont(game.normalFont);
-      if (curPanel == normalPanel) {
-        for (int i = 0; i < normalOptions.length; i++)
-          normalOptions[i].draw(myBuffer);
-      } else if (curPanel == partyPanel) {
-        // text + info box:
-        myBuffer.setColor(Color.WHITE);
-        myBuffer.fillRect(10, HEIGHT - 40, WIDTH - 60 - 10 - 10, 35);
-        myBuffer.setColor(Color.BLACK);
-        myBuffer.drawString(partyText, 10 + 5, HEIGHT - 40 + 10);
-        //tiles w/ pokemon:
-        for (int i = 0; i < pokemonOptions.length; i++) {
-          pokemonOptions[i].draw(myBuffer);
-          //pokemon health bar
-          if (PlayPanel.myPokemon[i] != null) {
+      // todo: move set font code to the specific panels
+      myBuffer.setFont(GameScreen.normalFont);
 
-            int x_inc = 27;
-            int y_inc = 15;
-
-            if (PlayPanel.myPokemon[i].isFainted()) {
-              pokemonOptions[i].setColor(Color.ORANGE);
-              myBuffer.drawString("FNT",
-                                  pokemonOptions[i].getX() + 2,
-                                  pokemonOptions[i].getY() + pokemonOptions[i].getYWidth() - 3);
-            } else
-              pokemonOptions[i].setColor(Color.WHITE);
-
-
-            //bar outline
-            myBuffer.setColor(Color.BLACK);
-            myBuffer.drawRect(pokemonOptions[i].getX() + x_inc - 1,
-                              pokemonOptions[i].getY() + y_inc + 1,
-                              51,
-                              6);
-            //hp bar
-            Color c;
-            if ((1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP()
-                > .5)
-              c = Color.GREEN;
-            else if (
-                (1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP()
-                > .25)
-              c = Color.YELLOW;
-            else
-              c = Color.RED;
-            myBuffer.setColor(c);
-            myBuffer.fillRect(pokemonOptions[i].getX() + x_inc,
-                              pokemonOptions[i].getY() + y_inc + 2,
-                              (int) ((50) * (1.0 * PlayPanel.myPokemon[i].getCurrentHP()
-                                             / PlayPanel.myPokemon[i]
-                                                 .getMaxHP())),
-                              5);
-            //hp text
-            myBuffer.setFont(game.smallFont);
-            myBuffer.setColor(Color.BLACK);
-            myBuffer.drawString("HP:",
-                                pokemonOptions[i].getX() + x_inc - 12,
-                                pokemonOptions[i].getY() + y_inc + 7);
-            myBuffer.setFont(game.normalFont);
-            myBuffer.drawString(PlayPanel.myPokemon[i].getCurrentHP() + "/" + PlayPanel.myPokemon[i]
-                                    .getMaxHP(),
-                                pokemonOptions[i].getX() + x_inc,
-                                pokemonOptions[i].getY() + y_inc + 17);
-            //Level text:
-            myBuffer.drawString("LV: " + PlayPanel.myPokemon[i].getLevel(),
-                                pokemonOptions[i].getX() + x_inc,
-                                pokemonOptions[i].getY() + pokemonOptions[i].getYWidth() - 3);
-            //Image
-            ImageIcon pokeImage =
-                new ImageIcon("images/Pokemon/" + PlayPanel.myPokemon[i].getName() + ".png");
-            myBuffer.drawImage(pokeImage.getImage(),
-                               pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - 40,
-                               pokemonOptions[i].getY(),
-                               40,
-                               40,
-                               null);
-          }
-        }
-        if (showPokemonSelectOptions) {
-          //draws the options once selected the pokemon
-          for (int i = 0; i < pokemonSelectOptions.length; i++) {
-            pokemonSelectOptions[i].draw(myBuffer);
-          }
-        }
-      } else if (curPanel == pokedexPanel) {
-        // has seen/ has owned info box :
-        myBuffer.setColor(Color.WHITE);
-        myBuffer.fillRect(WIDTH - 130, HEIGHT - 100, 110, 30);
-        myBuffer.setFont(game.normalFont);
-        myBuffer.setColor(Color.BLACK);
-        myBuffer.drawString("Seen: " + numHasSeen, WIDTH - 125, HEIGHT - 80);
-        myBuffer.drawString("Caught: " + numHasOwned, WIDTH - 70, HEIGHT - 80);
-
-        for (int i = 0; i < pokedexOptions.length; i++) //-3 to leave out up, down, and back
-        {
-          pokedexOptions[i].draw(myBuffer);
-          if (i < pokedexOptions.length - 3) {
-            //number
-            String numText = "";
-            if (pokedexStartInd + i + 1 < 100) //+1 for array ind
-              numText += "0";
-            if (pokedexStartInd + i + 1 < 10)
-              numText += "0";
-            //text
-            if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1])
-              pokedexOptions[i].setText(
-                  numText + (pokedexStartInd + i) + ". \t" + Pokemon.getPokemon(
-                      pokedexStartInd + i - 1));
-            else
-              pokedexOptions[i].setText(numText + (pokedexStartInd + i) + ". \t?????");
-
-            //image of pokemon you're hovering over
-            if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1])
-              if (pokedexOptions[i].isHighlighted()) {
-                ImageIcon curImage = new ImageIcon("images/Pokemon/" + Pokemon.getPokemon(
-                    pokedexStartInd + i - 1) + ".png");
-                myBuffer.drawImage(curImage.getImage(), WIDTH - 130, HEIGHT - 190, null);
-              }
-            //pokeballs next to pokemon you have caught
-            ImageIcon pokeball = new ImageIcon("images/pokeball.png"); //move to imageLibrary?
-            if (PlayPanel.hasPokemon[pokedexStartInd + i - 1])
-              myBuffer.drawImage(pokeball.getImage(),
-                                 pokedexOptions[i].getX() + pokedexOptions[i].getXWidth() - 20,
-                                 pokedexOptions[i].getY(),
-                                 20,
-                                 20,
-                                 null);
-
-          }
-
-
-        }
-
-      } else if (curPanel == savePanel) {
-
-        for (int i = 0; i < saveOptions.length; i++)
-          saveOptions[i].draw(myBuffer);
-        //myBuffer.setColor(Color.WHITE);
-        //myBuffer.fillRect(20,20,WIDTH-50,HEIGHT-50);
-        ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
-        myBuffer.drawImage(me.getImage(), 30, 30, WIDTH - 240, HEIGHT - 180, null);
-        myBuffer.setColor(Color.BLACK);
-        myBuffer.setFont(game.extraLargeFont);
-        myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
-        myBuffer.setFont(game.largerLargeFont);
-        myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
-        myBuffer.drawString("Number of Pokemon Seen: " + numHasSeenSave, WIDTH - 250, HEIGHT - 95);
-        myBuffer.drawString("Number of Pokemon Caught: " + numHasOwnedSave,
-                            WIDTH - 250,
-                            HEIGHT - 70);
-        myBuffer.drawString("Location: " + game.mapName, WIDTH - 250, HEIGHT - 45);
-      } else if (curPanel == personalPanel) {
-
-        for (int i = 0; i < personalOptions.length; i++)
-          personalOptions[i].draw(myBuffer);
-        //myBuffer.setColor(Color.WHITE);
-        //myBuffer.fillRect(20,20,WIDTH-50,HEIGHT-50);
-        ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
-        myBuffer.drawImage(me.getImage(), 30, 30, WIDTH - 240, HEIGHT - 180, null);
-        myBuffer.setColor(Color.BLACK);
-        myBuffer.setFont(game.extraLargeFont);
-        myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
-        myBuffer.setFont(game.largerLargeFont);
-        myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
-        myBuffer.drawString("Number of Pokemon Seen: " + numHasSeenPersonal,
-                            WIDTH - 250,
-                            HEIGHT - 95);
-        myBuffer.drawString("Number of Pokemon Caught: " + numHasOwnedPersonal,
-                            WIDTH - 250,
-                            HEIGHT - 70);
-        //myBuffer.drawString("Location: "+game.mapName, WIDTH -250, HEIGHT - 45);
-      } else if (curPanel == battlePanel) {
-        for (int i = 0; i < battleOptions.length; i++)
-          battleOptions[i].draw(myBuffer);
-      } else if (curPanel == attackSelectionPanel) {
-        for (int i = 0; i < attackOptions.length; i++) {
-          String type = AttackLibrary.getType(attackOptions[i].getText());
-          Color c = Color.WHITE;
-          if (type.equals("Fire"))
-            c = Color.RED;
-          else if (type.equals("Grass"))
-            c = Color.GREEN;
-          else if (type.equals("Water"))
-            c = Color.BLUE.brighter();
-          else if (type.equals("Normal"))
-            c = Color.GRAY.brighter();
-
-
-          attackOptions[i].setColor(c);
-
-          if (i == 0)
-            attackOptions[i].setText("" + game.myPoke.getAttackOne());
-          if (i == 1)
-            attackOptions[i].setText("" + game.myPoke.getAttackTwo());
-          if (i == 2)
-            attackOptions[i].setText("" + game.myPoke.getAttackThree());
-          if (i == 3)
-            attackOptions[i].setText("" + game.myPoke.getAttackFour());
-
-          attackOptions[i].draw(myBuffer);
-        }
-      } else if (curPanel == useItemPanel) {
-        for (int i = 0; i < bagOptions.length; i++)
-          bagOptions[i].draw(myBuffer);
-      } else if (curPanel == blackPanel) {
+      if (curPanel == blackPanel) {
         myBuffer.setColor(Color.BLACK);
         myBuffer.fillRect(0, 0, WIDTH, HEIGHT);
+        repaint();
+        return;
+      } else if (curPanel == partyPanel) {
+        drawOptions();
+        drawPokemonPartyScreen();
+        if (showPokemonSelectOptions) {
+          drawOptions();
+        }
+        repaint();
+        return;
       }
-      //etc.
+
+      drawOptions();
+
+      // draw special overlays
+      if (curPanel == pokedexPanel) {
+        drawPokedexScreen();
+      } else if (curPanel == savePanel) {
+        drawSaveScreen();
+      } else if (curPanel == personalPanel) {
+        drawPersonalScreen();
+      } else if (curPanel == attackSelectionPanel) {
+        // todo: move updateAttackOptions to wherever init code should go
+        updateAttackOptions();
+        drawOptions();
+      }
+
       repaint();
     }
 
+  }
+
+  private void drawPokemonPartyScreen() {
+    // text + info box:
+    myBuffer.setColor(Color.WHITE);
+    myBuffer.fillRect(10, HEIGHT - 40, WIDTH - 60 - 10 - 10, 35);
+    myBuffer.setColor(Color.BLACK);
+    myBuffer.drawString(partyText, 10 + 5, HEIGHT - 40 + 10);
+    //tiles w/ pokemon:
+    for (int i = 0; i < pokemonOptions.length; i++) {
+      pokemonOptions[i].draw(myBuffer);
+      //pokemon health bar
+      if (PlayPanel.myPokemon[i] != null) {
+
+        int x_inc = 27;
+        int y_inc = 15;
+
+        if (PlayPanel.myPokemon[i].isFainted()) {
+          pokemonOptions[i].setColor(Color.ORANGE);
+          myBuffer.drawString("FNT",
+                              pokemonOptions[i].getX() + 2,
+                              pokemonOptions[i].getY() + pokemonOptions[i].getYWidth() - 3);
+        } else
+          pokemonOptions[i].setColor(Color.WHITE);
+
+
+        //bar outline
+        myBuffer.setColor(Color.BLACK);
+        myBuffer.drawRect(pokemonOptions[i].getX() + x_inc - 1,
+                          pokemonOptions[i].getY() + y_inc + 1,
+                          51,
+                          6);
+        //hp bar
+        Color c;
+        if ((1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP()
+            > .5)
+          c = Color.GREEN;
+        else if (
+            (1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP()
+            > .25)
+          c = Color.YELLOW;
+        else
+          c = Color.RED;
+        myBuffer.setColor(c);
+        myBuffer.fillRect(
+            pokemonOptions[i].getX() + x_inc,
+            pokemonOptions[i].getY() + y_inc + 2,
+            (int) ((50) * (1.0 * PlayPanel.myPokemon[i].getCurrentHP()
+                           / PlayPanel.myPokemon[i]
+                               .getMaxHP())),
+            5);
+        //hp text
+        myBuffer.setFont(GameScreen.smallFont);
+        myBuffer.setColor(Color.BLACK);
+        myBuffer.drawString(
+            "HP:",
+            pokemonOptions[i].getX() + x_inc - 12,
+            pokemonOptions[i].getY() + y_inc + 7);
+        myBuffer.setFont(GameScreen.normalFont);
+        myBuffer.drawString(
+            PlayPanel.myPokemon[i].getCurrentHP() + "/" + PlayPanel.myPokemon[i]
+                .getMaxHP(),
+            pokemonOptions[i].getX() + x_inc,
+            pokemonOptions[i].getY() + y_inc + 17);
+        //Level text:
+        myBuffer.drawString(
+            "LV: " + PlayPanel.myPokemon[i].getLevel(),
+            pokemonOptions[i].getX() + x_inc,
+            pokemonOptions[i].getY() + pokemonOptions[i].getYWidth() - 3);
+        //Image
+        ImageIcon pokeImage =
+            new ImageIcon("images/Pokemon/" + PlayPanel.myPokemon[i].getName() + ".png");
+        myBuffer.drawImage(
+            pokeImage.getImage(),
+            pokemonOptions[i].getX() + pokemonOptions[i].getXWidth() - 40,
+            pokemonOptions[i].getY(),
+            40,
+            40,
+            null);
+      }
+    }
+  }
+
+  private void drawPokedexScreen() {
+    // has seen/ has owned info box :
+    myBuffer.setColor(Color.WHITE);
+    myBuffer.fillRect(WIDTH - 130, HEIGHT - 100, 110, 30);
+    myBuffer.setFont(GameScreen.normalFont);
+    myBuffer.setColor(Color.BLACK);
+    myBuffer.drawString("Seen: " + numHasSeen, WIDTH - 125, HEIGHT - 80);
+    myBuffer.drawString("Caught: " + numHasOwned, WIDTH - 70, HEIGHT - 80);
+
+    for (int i = 0; i < pokedexOptions.length; i++) { //-3 to leave out up, down, and back
+      if (i < pokedexOptions.length - 3) {
+        //number
+        String numText = "";
+        if (pokedexStartInd + i + 1 < 100) //+1 for array ind
+          numText += "0";
+        if (pokedexStartInd + i + 1 < 10)
+          numText += "0";
+        //text
+        if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1])
+          pokedexOptions[i].setText(
+              numText + (pokedexStartInd + i) + ". \t" + Pokemon.getPokemon(
+                  pokedexStartInd + i - 1));
+        else
+          pokedexOptions[i].setText(numText + (pokedexStartInd + i) + ". \t?????");
+
+        //image of pokemon you're hovering over
+        if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1])
+          if (pokedexOptions[i].isHighlighted()) {
+            ImageIcon curImage = new ImageIcon("images/Pokemon/" + Pokemon.getPokemon(
+                pokedexStartInd + i - 1) + ".png");
+            myBuffer.drawImage(curImage.getImage(), WIDTH - 130, HEIGHT - 190, null);
+          }
+        //pokeballs next to pokemon you have caught
+        ImageIcon pokeball = new ImageIcon("images/pokeball.png"); //move to imageLibrary?
+        if (PlayPanel.hasPokemon[pokedexStartInd + i - 1])
+          myBuffer.drawImage(
+              pokeball.getImage(),
+              pokedexOptions[i].getX() + pokedexOptions[i].getXWidth() - 20,
+              pokedexOptions[i].getY(),
+              20,
+              20,
+              null);
+      }
+    }
+  }
+
+  private void drawSaveScreen() {
+    ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
+    myBuffer.drawImage(me.getImage(), 30, 30, WIDTH - 240, HEIGHT - 180, null);
+    myBuffer.setColor(Color.BLACK);
+    myBuffer.setFont(GameScreen.extraLargeFont);
+    myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
+    myBuffer.setFont(GameScreen.largerLargeFont);
+    myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
+    myBuffer.drawString("Number of Pokemon Seen: " + numHasSeenSave, WIDTH - 250, HEIGHT - 95);
+    myBuffer.drawString(
+        "Number of Pokemon Caught: " + numHasOwnedSave, WIDTH - 250, HEIGHT - 70);
+    myBuffer.drawString("Location: " + game.mapName, WIDTH - 250, HEIGHT - 45);
+  }
+
+  private void drawPersonalScreen() {
+    ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
+    myBuffer.drawImage(me.getImage(), 30, 30, WIDTH - 240, HEIGHT - 180, null);
+    myBuffer.setColor(Color.BLACK);
+    myBuffer.setFont(GameScreen.extraLargeFont);
+    myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
+    myBuffer.setFont(GameScreen.largerLargeFont);
+    myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
+    myBuffer.drawString("Number of Pokemon Seen: " + numHasSeenPersonal,
+                        WIDTH - 250,
+                        HEIGHT - 95);
+    myBuffer.drawString("Number of Pokemon Caught: " + numHasOwnedPersonal,
+                        WIDTH - 250,
+                        HEIGHT - 70);
+  }
+
+  private void updateAttackOptions() {
+    for (int i = 0; i < attackOptions.length; i++) {
+      String type = AttackLibrary.getType(attackOptions[i].getText());
+      Color c = Color.WHITE;
+      if (type.equals("Fire")) {
+        c = Color.RED;
+      } else if (type.equals("Grass")) {
+        c = Color.GREEN;
+      } else if (type.equals("Water")) {
+        c = Color.BLUE.brighter();
+      } else if (type.equals("Normal")) {
+        c = Color.GRAY.brighter();
+      }
+      attackOptions[i].setColor(c);
+
+      if (i == 0) {
+        attackOptions[i].setText("" + game.myPoke.getAttackOne());
+      } else if (i == 1) {
+        attackOptions[i].setText("" + game.myPoke.getAttackTwo());
+      } else if (i == 2) {
+        attackOptions[i].setText("" + game.myPoke.getAttackThree());
+      } else
+        attackOptions[i].setText("" + game.myPoke.getAttackFour());
+    }
+  }
+
+  private void drawOptions() {
+    for (OptionBoard option : getOptionsForCurrentPanel()) {
+      option.draw(myBuffer);
+    }
   }
 }
