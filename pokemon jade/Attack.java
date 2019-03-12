@@ -15,7 +15,7 @@ public class Attack {
 
   // public static int getAttackDamage(Pokemon user, Pokemon opponent, int moveDamage){
   // double damage = ((((((user.getLevel() * 2 / 5) + 2) * moveDamage * user.getAttackLevel()) /
-   // 50) / opponent.getDefenseLevel()) + 2);
+  // 50) / opponent.getDefenseLevel()) + 2);
   // if(Math.random() < 0.1) //critical hit
   // damage *= 2;
   // damage *= getRandomNumber() / 2; //random modifier x = [85, 100]
@@ -36,7 +36,7 @@ public class Attack {
   public void giveDamage(Pokemon user, Pokemon victim, int attackDamage) {
 
     // double damage = ((((((user.getLevel() * 2 / 5) + 2) * damageOfAttack * user.getAttackLevel
-     // ()) / 50) / victim.getDefenseLevel()) + 2);
+    // ()) / 50) / victim.getDefenseLevel()) + 2);
     // if(Math.random() < 0.1) //critical hit
     // damage *= 2;
     // damage *= getRandomNumber() / 2; //random modifier x = [85, 100]
@@ -51,7 +51,7 @@ public class Attack {
     //
 
     //(((((((level * 2 / 5) + 2) * basepower * atk / 50) / def) * mod1) + 2) * CH * mod2 * R/100)
-     // *STAB*type1*type2*mod3);
+    // *STAB*type1*type2*mod3);
 
     int damage = user.getLevel() * 2 / 5 + 2;
     damage = damage * damageOfAttack * user.getAttackLevel() / 50 / victim.getDefenseLevel() + 2;
@@ -86,7 +86,7 @@ public class Attack {
     victim.setCurrentHP(victim.getCurrentHP() - (int) (damage));
     PP--;
 
-    System.out.println("i just hit a : " + damage);
+    AlertHelper.debug("i just hit a : " + damage);
   }
 
 

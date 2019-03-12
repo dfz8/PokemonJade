@@ -93,8 +93,7 @@ public class GameScreen extends JPanel {
     try {
       loadMap(mapName);
     } catch (IOException e) {
-      System.out.println("map could not be loaded: " + mapName);
-      System.exit(0);
+      AlertHelper.fatal("map could not be loaded: " + mapName);
     }
 
     t = new Timer(150, new RefreshListener());
@@ -227,10 +226,9 @@ public class GameScreen extends JPanel {
         curR = newR;
         curC = newC;
       } catch (IOException a) {
-        System.out.println(
+        AlertHelper.fatal(
             "Error: loadMap() has failed in GameScreen @ RefreshListener: "
             + map[curR][curC].getMapLink());
-        System.exit(0);
       }
     }
   }
@@ -509,9 +507,9 @@ public class GameScreen extends JPanel {
       break;
     }
     if (myPokeInd < 0) {
-      AlertHelper.alert("How in the world were you allowed into the wild with no " +
-                        "usable pokemon???\nNow go rant the game makers.");
-      System.exit(0);
+      AlertHelper.fatal(
+          "How in the world were you allowed into the wild with no " +
+          "usable pokemon???\nNow go rant the game makers.");
     }
     Pokemon temp = PlayPanel.myPokemon[myPokeInd];
     PlayPanel.myPokemon[myPokeInd] = PlayPanel.myPokemon[0];
@@ -550,8 +548,7 @@ public class GameScreen extends JPanel {
     try {
       infile = new Scanner(new File("./resources/enemies.txt"));
     } catch (FileNotFoundException e) {
-      AlertHelper.alert("Error: File not found.");
-      System.exit(0);
+      AlertHelper.fatal("Error: File not found.");
     }
 
     int count = Integer.parseInt(infile.nextLine());

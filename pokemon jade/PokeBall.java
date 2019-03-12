@@ -20,7 +20,7 @@ public class PokeBall {
     //return true;
     //return false;
     if (randomNum == 1) {
-      System.out.println("You Caught It!!");
+      AlertHelper.alert("You Caught It!!");
       return true;
     } else
       return false;

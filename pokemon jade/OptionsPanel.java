@@ -180,8 +180,7 @@ public class OptionsPanel extends JPanel {
       case personalPanel:
         return personalOptions;
       default:
-        System.out.println("Unrecognized panel id:" + curPanel);
-        System.exit(0);
+        AlertHelper.fatal("Unrecognized panel id:" + curPanel);
     }
     return null;
   }
@@ -240,7 +239,6 @@ public class OptionsPanel extends JPanel {
           else // in battle and switching out a pokemon
             OptionsNavigationHelper.toBattle();
         } else {
-          System.out.println("ASDF");
           showPokemonSelectOptions = false;
           toParty();
         }
