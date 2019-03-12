@@ -11,8 +11,9 @@ matrix[r][c]
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Scanner;
 
@@ -163,8 +164,9 @@ public class GameScreen extends JPanel {
       try {
         loadMap(map[curR][curC].getMapLink());
       } catch (IOException a) {
-        System.out.println("Error: loadMap() has failed in GameScreen @ RefreshListener: " + map[curR][curC]
-            .getMapLink());
+        System.out.println(
+            "Error: loadMap() has failed in GameScreen @ RefreshListener: " + map[curR][curC]
+                .getMapLink());
       }
       curR = newR;
       curC = newC;
@@ -249,7 +251,7 @@ public class GameScreen extends JPanel {
   private void drawSummaryScreen() {
     bgColor = Color.WHITE;
     ImageIcon poke = new ImageIcon("./resources/images/Pokemon/" + summaryPoke.getName() +
-                                       ".png");
+                                   ".png");
     myBuffer.drawImage(poke.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);
@@ -279,8 +281,9 @@ public class GameScreen extends JPanel {
     myBuffer.setColor(Color.BLUE);
     myBuffer.fillRect(23,
                       80,
-                      (int) (100.0 * (summaryPoke.getMyEXP() - summaryPoke.getMyPastLevelEXP()) / (summaryPoke
-                          .getMyNextLevelEXP() - summaryPoke.getMyPastLevelEXP())),
+                      (int) (100.0 * (summaryPoke.getMyEXP() - summaryPoke.getMyPastLevelEXP()) / (
+                          summaryPoke
+                              .getMyNextLevelEXP() - summaryPoke.getMyPastLevelEXP())),
                       5);
     myBuffer.drawString(summaryPoke.getMyEXP() + " out of " + summaryPoke.getMyNextLevelEXP(),
                         23,
@@ -344,8 +347,9 @@ public class GameScreen extends JPanel {
 
     myBuffer.fillRect(myX + 23,
                       myY + 40,
-                      (int) (100.0 * (myPoke.getMyEXP() - myPoke.getMyPastLevelEXP()) / (myPoke.getMyNextLevelEXP() - myPoke
-                          .getMyPastLevelEXP())),
+                      (int) (100.0 * (myPoke.getMyEXP() - myPoke.getMyPastLevelEXP()) / (
+                          myPoke.getMyNextLevelEXP() - myPoke
+                              .getMyPastLevelEXP())),
                       5);
 
     //textbox:
@@ -509,18 +513,15 @@ public class GameScreen extends JPanel {
     //gets first usable pokemon
     int myPokeInd = -1;
     for (int i = 0; i < 6; i++) {
-      if (PlayPanel.myPokemon[i] == null)
+      if (PlayPanel.myPokemon[i] == null || PlayPanel.myPokemon[i].isFainted()) {
         continue;
-      if (PlayPanel.myPokemon[i].isFainted())
-        continue;
+      }
       myPokeInd = i;
       break;
     }
-    if (myPokeInd < 0) //error message
-    {
-      JOptionPane.showMessageDialog(null,
-                                    "How in the world were you allowed into the wild with no " +
-                                        "usable pokemon???\nNow go rant the game makers.");
+    if (myPokeInd < 0) {
+      AlertHelper.alert("How in the world were you allowed into the wild with no " +
+                        "usable pokemon???\nNow go rant the game makers.");
       System.exit(0);
     }
     Pokemon temp = PlayPanel.myPokemon[myPokeInd];
@@ -530,18 +531,19 @@ public class GameScreen extends JPanel {
     myPoke = PlayPanel.myPokemon[0];
 
 
-    enemy = new Pokemon("Raikou",
-                        "Electric",
-                        "Tackle",
-                        "Shock",
-                        "Thunder",
-                        "Headbutt",
-                        50,
-                        0,
-                        55,
-                        30,
-                        150,
-                        150); //default
+    enemy = new Pokemon(
+        "Raikou",
+        "Electric",
+        "Tackle",
+        "Shock",
+        "Thunder",
+        "Headbutt",
+        50,
+        0,
+        55,
+        30,
+        150,
+        150); //default
     setRandomEnemy();
     enemyIcon = new ImageIcon("./resources/images/Pokemon/" + enemy.getName() + ".png");
 
@@ -554,14 +556,12 @@ public class GameScreen extends JPanel {
     attackYEnemy = 1;
   }
 
-  public String[] loadEnemyArray()  //Naveen
-  {
+  public String[] loadEnemyArray() {
     Scanner infile = null;
-
     try {
       infile = new Scanner(new File("./resources/enemies.txt"));
     } catch (FileNotFoundException e) {
-      JOptionPane.showMessageDialog(null, "Error: File not found.");
+      AlertHelper.alert("Error: File not found.");
       System.exit(0);
     }
 
@@ -573,36 +573,18 @@ public class GameScreen extends JPanel {
     return enemyArray;
   }
 
-  public void setRandomEnemy() //Naveen
-  {
-    String name = "";
-    String type = "";
-    String a1 = "";
-    String a2 = "";
-    String a3 = "";
-    String a4 = "";
-    String[] enemyArray = loadEnemyArray();
+  public void setRandomEnemy() {
 
-    int enemyUsed = (int) (Math.random() * wildPokemonArray.length);//enemyArray.length);
-
-    //String[] enemyInfo = enemyArray[enemyUsed].split("\\.");
+    int enemyUsed = (int) (Math.random() * wildPokemonArray.length);
     String[] enemyInfo = wildPokemonArray[enemyUsed].split("\\.");
+    //    String[] enemyArray = loadEnemyArray();
 
-    name = enemyInfo[0];
-    type = enemyInfo[1];
-    a1 = enemyInfo[2];
-    a2 = enemyInfo[3];
-    a3 = enemyInfo[4];
-    a4 = enemyInfo[5];
-
-    int minLevel = Integer.parseInt(enemyInfo[6]);
-    int maxLevel = Integer.parseInt(enemyInfo[7]);
-
-    enemy.setName(name);
-    enemy.setType(type);
-    int level = (int) (Math.random() * (maxLevel - minLevel + 1) + minLevel);
+    enemy.setName(enemyInfo[0]);
+    enemy.setType(enemyInfo[1]);
+    int level = (int) (
+        Math.random() * (Integer.parseInt(enemyInfo[7]) - Integer.parseInt(enemyInfo[6]) + 1)
+        + Integer.parseInt(enemyInfo[6]));
     enemy.setLevel(level);
-
 
     int atk = 5;
     int def = 5;
@@ -619,10 +601,10 @@ public class GameScreen extends JPanel {
     enemy.setMaxHP(hp);// (int)(Math.random()*enemy.getLevel()*2.5 + enemy.getLevel()));
     enemy.setCurrentHP(hp);//enemy.getMaxHP());
 
-    enemy.setAttackOne(a1);
-    enemy.setAttackTwo(a2);
-    enemy.setAttackThree(a3);
-    enemy.setAttackFour(a4);
+    enemy.setAttackOne(enemyInfo[2]);
+    enemy.setAttackTwo(enemyInfo[3]);
+    enemy.setAttackThree(enemyInfo[4]);
+    enemy.setAttackFour(enemyInfo[5]);
   }
 
   public Color getPokemonHealthBarColor(Pokemon poke) {

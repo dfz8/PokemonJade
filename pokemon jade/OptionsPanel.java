@@ -228,9 +228,9 @@ public class OptionsPanel extends JPanel {
       } else if (s.equals(PlayPanel.myName)) {
         OptionsNavigationHelper.toPersonal();
       } else if (s.equals("Bag"))
-        JOptionPane.showMessageDialog(null, "Coming Soon");
+        AlertHelper.alert("Coming Soon");
       else if (s.equals("Options"))
-        JOptionPane.showMessageDialog(null, "Coming Soon");
+        AlertHelper.alert("Coming Soon");
     } else if (curPanel == partyPanel) {
       if (s.equals("Back")) //back button inside the "looking" at party
       {
@@ -251,7 +251,7 @@ public class OptionsPanel extends JPanel {
               //switch
               if (GameScreen.inBattle) {
                 if (i == 0)
-                  //JOptionPane.showMessageDialog(null, "That pokemon is already out!");
+                  //AlertHelper.alert("That pokemon is already out!");
                   partyText = "That pokemon is already out!";
                 else {
                   switchPokemonInd = i;
@@ -343,17 +343,17 @@ public class OptionsPanel extends JPanel {
       }
     } else if (curPanel == attackSelectionPanel) {
       if (s.equals(game.myPoke.getAttackOne())) {
-        game.isAttacking = true;
-        game.myAttackName = game.myPoke.getAttackOne();
+        GameScreen.isAttacking = true;
+        GameScreen.myAttackName = game.myPoke.getAttackOne();
       } else if (s.equals(game.myPoke.getAttackTwo())) {
-        game.isAttacking = true;
-        game.myAttackName = game.myPoke.getAttackTwo();
+        GameScreen.isAttacking = true;
+        GameScreen.myAttackName = game.myPoke.getAttackTwo();
       } else if (s.equals(game.myPoke.getAttackThree())) {
-        game.isAttacking = true;
-        game.myAttackName = game.myPoke.getAttackThree();
+        GameScreen.isAttacking = true;
+        GameScreen.myAttackName = game.myPoke.getAttackThree();
       } else if (s.equals(game.myPoke.getAttackFour())) {
-        game.isAttacking = true;
-        game.myAttackName = game.myPoke.getAttackFour();
+        GameScreen.isAttacking = true;
+        GameScreen.myAttackName = game.myPoke.getAttackFour();
       } else if (s.equals("Back"))
         OptionsNavigationHelper.toBattle();
     } else if (curPanel == useItemPanel) {
@@ -387,9 +387,9 @@ public class OptionsPanel extends JPanel {
                 game.enemy.getMaxHP());
             OptionsNavigationHelper.toNormal();
           } else {
-            JOptionPane.showMessageDialog(null, "Awww, the Pokemon broke out of the pokeball!");
+            AlertHelper.alert("Awww, the Pokemon broke out of the pokeball!");
             OptionsNavigationHelper.toBlack();
-            game.isAttacking = false;
+            GameScreen.isAttacking = false;
             game.enemyIsAttacking = true;
           }
         } else

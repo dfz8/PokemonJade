@@ -40,7 +40,7 @@ public class PlayPanel extends JPanel {
   }
 
   private static void initGame() {
-    JOptionPane.showMessageDialog(null, "Welcome to Pokemon: Jade!");
+    AlertHelper.alert("Welcome to Pokemon: Jade!");
     String choice = JOptionPane.showInputDialog("1. New game?\n2. Saved game?");
     if (choice.equals("2")) {
       myName = JOptionPane.showInputDialog("What's your player name? (case sensitive)");
@@ -73,29 +73,29 @@ public class PlayPanel extends JPanel {
   }
 
   private static void runNux() {
-    JOptionPane.showMessageDialog(null, "Welcome to the world of Pokemon! But first...");
-    JOptionPane.showMessageDialog(null, "I'm Professor Oak, a Pokemon expert.");
-    JOptionPane.showMessageDialog(null,
-                                  "I'm glad you want to be a pokemon trainer!  It takes courage" +
-                                      " and hard work to be a great one.");
-    JOptionPane.showMessageDialog(null,
-                                  "In this world, you can explore, battle pokemon, and, if you " +
-                                      "can, capture the pokemon.");
-    JOptionPane.showMessageDialog(null,
-                                  "Since you're the last one to come for your first pokemon, I " +
-                                      "sorta ran out. ^^;");
-    JOptionPane.showMessageDialog(null,
-                                  "The only pokemon I can give you is Bubbles, a level 50 " +
-                                      "bulbasaur.");
-    JOptionPane.showMessageDialog(null,
-                                  "Unfortunately, you won't be able to experience the " +
-                                      "bittersweet memories of training a pokemon from scratch " +
-                                      "and watching as the pokemon and you improve everyday.");
-    JOptionPane.showMessageDialog(null, "But actually, it's not that fun. -.-");
-    JOptionPane.showMessageDialog(null,
-                                  "So now you can expericence the sheer awesomeness of totally " +
-                                      "wrecking at pokemon battles!");
-    JOptionPane.showMessageDialog(null, "Oh by the way...");
+    AlertHelper.alert("Welcome to the world of Pokemon! But first...");
+    AlertHelper.alert("I'm Professor Oak, a Pokemon expert.");
+    AlertHelper.alert(
+        "I'm glad you want to be a pokemon trainer!  It takes courage" +
+        " and hard work to be a great one.");
+    AlertHelper.alert(
+        "In this world, you can explore, battle pokemon, and, if you " +
+        "can, capture the pokemon.");
+    AlertHelper.alert(
+        "Since you're the last one to come for your first pokemon, I " +
+        "sorta ran out. ^^;");
+    AlertHelper.alert(
+        "The only pokemon I can give you is Bubbles, a level 50 " +
+        "bulbasaur.");
+    AlertHelper.alert(
+        "Unfortunately, you won't be able to experience the " +
+        "bittersweet memories of training a pokemon from scratch " +
+        "and watching as the pokemon and you improve everyday.");
+    AlertHelper.alert("But actually, it's not that fun. -.-");
+    AlertHelper.alert(
+        "So now you can expericence the sheer awesomeness of totally " +
+        "wrecking at pokemon battles!");
+    AlertHelper.alert("Oh by the way...");
 
     int yesno;
     do {
@@ -110,9 +110,9 @@ public class PlayPanel extends JPanel {
       } catch (FileNotFoundException e) {
       }
       if (fileExists) {
-        JOptionPane.showMessageDialog(null,
-                                      "I'm sorry. Someone already used that player name. " +
-                                          "\n\tPlease use a different one.");
+        AlertHelper.alert(
+            "I'm sorry. Someone already used that player name. " +
+            "\n\tPlease use a different one.");
         yesno = JOptionPane.YES_OPTION - 1; //prob def not an option
       }
 
@@ -121,25 +121,25 @@ public class PlayPanel extends JPanel {
 
     int noob = JOptionPane.showConfirmDialog(null, "Are you new to this game?");
     if (noob == JOptionPane.YES_OPTION) {
-      JOptionPane.showMessageDialog(null,
-                                    "To move, the basic game commands still apply.\nJust go " +
-                                        "ahead and use your arrow keys.\nUp: Arrow up\nRight: " +
-                                        "Arrow right\nDown: Arrow down\n Left: Arrow left");
-      JOptionPane.showMessageDialog(null,
-                                    "To access information or save the game, just click the " +
-                                        "corresponding button under the game screen.\nREMEMBER " +
-                                        "TO SAVE OFTEN");
-      JOptionPane.showMessageDialog(null,
-                                    "And catching a pokemon's just as easy!\nClick the option " +
-                                        "when you think it's time to capture the pokemon.\nIf " +
-                                        "the pokemon's health is low enough or you get lucky, " +
-                                        "you'll catch a pokemon!");
-      JOptionPane.showMessageDialog(null, "YEAH! GOTTA CATCH 'EM ALL, POKEMON!");
+      AlertHelper.alert(
+          "To move, the basic game commands still apply.\nJust go " +
+          "ahead and use your arrow keys.\nUp: Arrow up\nRight: " +
+          "Arrow right\nDown: Arrow down\n Left: Arrow left");
+      AlertHelper.alert(
+          "To access information or save the game, just click the " +
+          "corresponding button under the game screen.\nREMEMBER " +
+          "TO SAVE OFTEN");
+      AlertHelper.alert(
+          "And catching a pokemon's just as easy!\nClick the option " +
+          "when you think it's time to capture the pokemon.\nIf " +
+          "the pokemon's health is low enough or you get lucky, " +
+          "you'll catch a pokemon!");
+      AlertHelper.alert("YEAH! GOTTA CATCH 'EM ALL, POKEMON!");
     }
-    JOptionPane.showMessageDialog(null,
-                                  "Pay close attention to white tiles with a red cross. " +
-                                      "\nThat's the healing tile. \nWalk over it to heal your " +
-                                      "pokemon.");
+    AlertHelper.alert(
+        "Pay close attention to white tiles with a red cross. " +
+        "\nThat's the healing tile. \nWalk over it to heal your " +
+        "pokemon.");
   }
 
   public static void uploadInformation(String name) {
