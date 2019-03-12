@@ -364,7 +364,7 @@ public class GameScreen extends JPanel {
         attackX -= 5;
         switchingMove++;
         myBuffer.drawString("Come back " + myPoke.getName() + "!", 5, 170);
-        controlPanel.options.toBlack();
+        OptionsNavigationHelper.toBlack();
       } else if (switchingMove == 16)//switch the two pokemon
       {
         //switch pokemon
@@ -384,7 +384,7 @@ public class GameScreen extends JPanel {
       }
     } else if (isAttacking) {
       if (myMove <= 5) {//moves towards
-        controlPanel.options.toBlack();
+        OptionsNavigationHelper.toBlack();
         attackX = attackX + 3;
         //attackY=attackY-3;
         myMove++;
@@ -425,7 +425,7 @@ public class GameScreen extends JPanel {
         isAttacking = false;
 
         resetOrderOfPokemonInParty();
-        controlPanel.options.toNormal();
+        OptionsNavigationHelper.toNormal();
       }
     } else if (enemyIsAttacking) {
       if (enemyMove == 1) {
@@ -463,7 +463,7 @@ public class GameScreen extends JPanel {
         enemyMove = 1;
         enemyIsAttacking = false;
 
-        controlPanel.options.toBattle();
+        OptionsNavigationHelper.toBattle();
       }
       if (myPoke.isFainted() == true) {
         //put image somewhere outside of the screen
@@ -483,7 +483,7 @@ public class GameScreen extends JPanel {
         }
         if (pokeLeft == 0) {
           resetOrderOfPokemonInParty();
-          controlPanel.options.toNormal();
+          OptionsNavigationHelper.toNormal();
         } else {
           controlPanel.options.toSwitchPokemon();
         }

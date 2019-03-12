@@ -18,28 +18,24 @@ public class OptionsPanel extends JPanel {
   public static boolean switchingPokemon;
 
   private GameScreen game;
-  private static final int normalPanel = 0;
-  private static final int battlePanel = 1;
-  private static final int switchPokemonPanel = 2;
-  private static final int partyPanel = 3;
-  private static final int useItemPanel = 4;
-  private static final int pokedexPanel = 5;
-  private static final int bagPanel = 6;
-  private static final int savePanel = 7;
-  private static final int personalPanel = 8;
-  private static final int attackSelectionPanel = 9;
-  private static final int blackPanel = 10; //added by david
-  private static int curPanel;
+  static final int normalPanel = 0;
+  static final int battlePanel = 1;
+  static final int switchPokemonPanel = 2;
+  static final int partyPanel = 3;
+  static final int useItemPanel = 4;
+  static final int pokedexPanel = 5;
+  static final int bagPanel = 6;
+  static final int savePanel = 7;
+  static final int personalPanel = 8;
+  static final int attackSelectionPanel = 9;
+  static final int blackPanel = 10; //added by david
+  static int curPanel;
 
-  private static boolean showPokemonSelectOptions = false;
-  public static int switchPokemonInd = -1;
-  public static int pokedexStartInd;
-  static int numHasSeen = 0;
-  static int numHasOwned = 0;
-  static int numHasSeenSave = 0;
-  static int numHasOwnedSave = 0;
-  static int numHasSeenPersonal = 0;
-  static int numHasOwnedPersonal = 0;
+  static boolean showPokemonSelectOptions = false;
+  static int switchPokemonInd = -1;
+  static int pokedexStartInd;
+  static int numPokemonSeen = 0;
+  static int numPokemonOwned = 0;
   static String partyText = "";
 
   OptionBoard[] normalOptions;
@@ -54,6 +50,27 @@ public class OptionsPanel extends JPanel {
   Timer t;
 
   PokeBall p = new PokeBall();
+
+  public void toSwitchPokemon() {
+    OptionsPanel.curPanel = OptionsPanel.switchPokemonPanel;
+    OptionsPanel.switchingPokemon = true;
+    toParty();
+
+    GameScreen.canMove = false;
+  }
+
+  public void toParty() {
+    for (int i = 0; i < 6; i++) {
+      if (PlayPanel.myPokemon[i] == null)
+        pokemonOptions[i].showHighlight(false);
+      else
+        pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
+    }
+    OptionsPanel.curPanel = OptionsPanel.partyPanel;
+    OptionsPanel.partyText = "Select a Pokemon.";
+
+    GameScreen.canMove = false;
+  }
 
   public OptionsPanel(GameScreen panel) {
     game = panel;
@@ -132,112 +149,6 @@ public class OptionsPanel extends JPanel {
     t.start();
   }
 
-  public void toNormal() {
-    curPanel = normalPanel;
-    GameScreen.inBattle = false;
-    GameScreen.canMove = true;
-
-    switchingPokemon = false;
-    showPokemonSelectOptions = false;
-    GameScreen.inSummary = false;
-    switchPokemonInd = -1;
-  }
-
-  public void toBattle() {
-    curPanel = battlePanel;
-    switchingPokemon = false;
-  }
-
-  public void toBlack() {
-    curPanel = blackPanel;
-  }
-
-  public void toSummary(int i) {
-    //game.summaryIndex = i;
-    GameScreen.inSummary = true;
-    showPokemonSelectOptions = false;
-    GameScreen.summaryPoke = PlayPanel.myPokemon[i];
-  }
-
-  public void toParty() {
-    for (int i = 0; i < 6; i++) {
-      if (PlayPanel.myPokemon[i] == null)
-        pokemonOptions[i].showHighlight(false);
-      else
-        pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
-    }
-    curPanel = partyPanel;
-    GameScreen.canMove = false;
-    partyText = "Select a Pokemon.";
-  }
-
-  public void toSave() {
-    curPanel = savePanel;
-    game.inSave = true;
-    GameScreen.canMove = false;
-    PlayPanel.save();
-    numHasSeenSave = 0;
-    numHasOwnedSave = 0;
-    for (int i = 0; i < PlayPanel.hasSeenPokemon.length; i++) {
-      if (PlayPanel.hasSeenPokemon[i])
-        numHasSeenSave++;
-      if (PlayPanel.hasPokemon[i])
-        numHasOwnedSave++;
-    }
-  }
-
-  public void toPersonal() {
-    curPanel = personalPanel;
-    GameScreen.canMove = false;
-
-    // todo: update counts on catch, not every time
-    numHasSeenPersonal = 0;
-    numHasOwnedPersonal = 0;
-    for (int i = 0; i < PlayPanel.hasSeenPokemon.length; i++) {
-      if (PlayPanel.hasSeenPokemon[i])
-        numHasSeenPersonal++;
-      if (PlayPanel.hasPokemon[i])
-        numHasOwnedPersonal++;
-    }
-
-  }
-
-  public void toBag() {
-    curPanel = useItemPanel;
-    GameScreen.canMove = false;
-    GameScreen.inBattle = true;
-  }
-
-  public void toPokedex() {
-    curPanel = pokedexPanel;
-    pokedexStartInd = 1; //not array
-    GameScreen.canMove = false;
-
-    numHasSeen = 0;
-    numHasOwned = 0;
-
-    for (int i = 0; i < PlayPanel.hasSeenPokemon.length; i++) {
-      if (PlayPanel.hasSeenPokemon[i])
-        numHasSeen++;
-      if (PlayPanel.hasPokemon[i])
-        numHasOwned++;
-    }
-  }
-
-  public void toAttacks() {
-    curPanel = attackSelectionPanel;
-    GameScreen.canMove = false;
-    GameScreen.inBattle = true;
-  }
-
-  public void toSwitchPokemon() {
-    curPanel = switchPokemonPanel;
-    switchingPokemon = true;
-    toParty();
-
-    GameScreen.canMove = false;
-  }
-
   public void updateHighlightsForOptions(int x, int y) {
     if (curPanel == partyPanel && !showPokemonSelectOptions) {
       // can come here when viewing pokemon, in battle and switching out pokemon
@@ -311,11 +222,11 @@ public class OptionsPanel extends JPanel {
       if (s.equals("Pokemon")) {
         toParty();
       } else if (s.equals("Pokedex"))
-        toPokedex();
+        OptionsNavigationHelper.toPokedex();
       else if (s.equals("Save")) {
-        toSave();
+        OptionsNavigationHelper.toSave();
       } else if (s.equals(PlayPanel.myName)) {
-        toPersonal();
+        OptionsNavigationHelper.toPersonal();
       } else if (s.equals("Bag"))
         JOptionPane.showMessageDialog(null, "Coming Soon");
       else if (s.equals("Options"))
@@ -325,9 +236,9 @@ public class OptionsPanel extends JPanel {
       {
         if (!showPokemonSelectOptions) {
           if (!switchingPokemon) //just looking
-            toNormal();
+            OptionsNavigationHelper.toNormal();
           else // in battle and switching out a pokemon
-            toBattle();
+            OptionsNavigationHelper.toBattle();
         } else {
           System.out.println("ASDF");
           showPokemonSelectOptions = false;
@@ -370,7 +281,7 @@ public class OptionsPanel extends JPanel {
           switchingPokemon = true;
           showPokemonSelectOptions = false;
         } else if (s.equals("Summary")) {
-          toSummary(switchPokemonInd);
+          OptionsNavigationHelper.toSummary(switchPokemonInd);
         } else if (s.equals("Back")) {
           showPokemonSelectOptions = false;
           toParty();
@@ -413,7 +324,7 @@ public class OptionsPanel extends JPanel {
         if (pokedexStartInd + pokedexOptions.length - 3 > PlayPanel.hasSeenPokemon.length)
           pokedexStartInd = PlayPanel.hasSeenPokemon.length - pokedexOptions.length + 4;
       } else if (s.equals("Back")) {
-        toNormal();
+        OptionsNavigationHelper.toNormal();
       } else //click on a pokemon tile
       {
 
@@ -421,14 +332,14 @@ public class OptionsPanel extends JPanel {
 
     } else if (curPanel == battlePanel) {
       if (s.equals("Fight"))
-        toAttacks();
+        OptionsNavigationHelper.toAttacks();
       if (s.equals("Bag"))
-        toBag();
+        OptionsNavigationHelper.toBag();
       if (s.equals("Pokemon"))
         toSwitchPokemon();
       if (s.equals("Run")) {
         game.resetOrderOfPokemonInParty();
-        toNormal();
+        OptionsNavigationHelper.toNormal();
       }
     } else if (curPanel == attackSelectionPanel) {
       if (s.equals(game.myPoke.getAttackOne())) {
@@ -444,10 +355,10 @@ public class OptionsPanel extends JPanel {
         game.isAttacking = true;
         game.myAttackName = game.myPoke.getAttackFour();
       } else if (s.equals("Back"))
-        toBattle();
+        OptionsNavigationHelper.toBattle();
     } else if (curPanel == useItemPanel) {
       if (s.equals("Back"))
-        toBattle();
+        OptionsNavigationHelper.toBattle();
       else if (s.equals("Pokeball")) {
 
         if (!PlayPanel.hasRepeat()) {
@@ -474,10 +385,10 @@ public class OptionsPanel extends JPanel {
                 game.enemy.getDefenseLevel(),
                 game.enemy.getCurrentHP(),
                 game.enemy.getMaxHP());
-            toNormal();
+            OptionsNavigationHelper.toNormal();
           } else {
             JOptionPane.showMessageDialog(null, "Awww, the Pokemon broke out of the pokeball!");
-            toBlack();
+            OptionsNavigationHelper.toBlack();
             game.isAttacking = false;
             game.enemyIsAttacking = true;
           }
@@ -489,10 +400,10 @@ public class OptionsPanel extends JPanel {
 
     } else if (curPanel == savePanel) {
       if (s.equals(""))
-        toNormal();
+        OptionsNavigationHelper.toNormal();
     } else if (curPanel == personalPanel) {
       if (s.equals(""))
-        toNormal();
+        OptionsNavigationHelper.toNormal();
     }
   }
 
@@ -629,8 +540,8 @@ public class OptionsPanel extends JPanel {
     myBuffer.fillRect(WIDTH - 130, HEIGHT - 100, 110, 30);
     myBuffer.setFont(GameScreen.normalFont);
     myBuffer.setColor(Color.BLACK);
-    myBuffer.drawString("Seen: " + numHasSeen, WIDTH - 125, HEIGHT - 80);
-    myBuffer.drawString("Caught: " + numHasOwned, WIDTH - 70, HEIGHT - 80);
+    myBuffer.drawString("Seen: " + numPokemonSeen, WIDTH - 125, HEIGHT - 80);
+    myBuffer.drawString("Caught: " + numPokemonOwned, WIDTH - 70, HEIGHT - 80);
 
     for (int i = 0; i < pokedexOptions.length; i++) { //-3 to leave out up, down, and back
       if (i < pokedexOptions.length - 3) {
@@ -677,9 +588,9 @@ public class OptionsPanel extends JPanel {
     myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
     myBuffer.setFont(GameScreen.largerLargeFont);
     myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
-    myBuffer.drawString("Number of Pokemon Seen: " + numHasSeenSave, WIDTH - 250, HEIGHT - 95);
+    myBuffer.drawString("Number of Pokemon Seen: " + numPokemonSeen, WIDTH - 250, HEIGHT - 95);
     myBuffer.drawString(
-        "Number of Pokemon Caught: " + numHasOwnedSave, WIDTH - 250, HEIGHT - 70);
+        "Number of Pokemon Caught: " + numPokemonOwned, WIDTH - 250, HEIGHT - 70);
     myBuffer.drawString("Location: " + game.mapName, WIDTH - 250, HEIGHT - 45);
   }
 
@@ -691,10 +602,10 @@ public class OptionsPanel extends JPanel {
     myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
     myBuffer.setFont(GameScreen.largerLargeFont);
     myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
-    myBuffer.drawString("Number of Pokemon Seen: " + numHasSeenPersonal,
+    myBuffer.drawString("Number of Pokemon Seen: " + numPokemonSeen,
                         WIDTH - 250,
                         HEIGHT - 95);
-    myBuffer.drawString("Number of Pokemon Caught: " + numHasOwnedPersonal,
+    myBuffer.drawString("Number of Pokemon Caught: " + numPokemonOwned,
                         WIDTH - 250,
                         HEIGHT - 70);
   }

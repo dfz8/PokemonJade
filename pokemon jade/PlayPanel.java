@@ -300,10 +300,10 @@ public class PlayPanel extends JPanel {
 
   public static void toBattle(boolean tf) {
     if (tf) {
-      options.toBattle();
+      OptionsNavigationHelper.toBattle();
       game.toBattle();
     } else {
-      options.toNormal();
+      OptionsNavigationHelper.toNormal();
     }
   }
 
