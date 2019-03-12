@@ -41,18 +41,12 @@ public class GameScreen extends JPanel {
   static boolean inSummary;
   static Pokemon summaryPoke;
   static boolean inSave;
-  static boolean upPressed;
-  static boolean downPressed;
-  static boolean leftPressed;
-  static boolean rightPressed;
   static boolean isAttacking;
   static boolean enemyIsAttacking;
   //player sprite info
-  private ImageIcon curSprite = ImageLibrary.faceDown;
-  private static int moveSpriteIndex;
-  private static int curDirection;
-  static int curC = 8; // current position
-  static int curR = 5; // within the map
+  private ImageIcon curSprite;
+  static int curC;
+  static int curR;
   //battle info
   private static int attackX = 5;
   private static int attackY = 50;
@@ -78,14 +72,21 @@ public class GameScreen extends JPanel {
   static Font mediumFont = new Font("Agency FB", Font.BOLD, 12);
   static Font smallFont = new Font("Agency FB", Font.BOLD, 10);
 
-  public GameScreen(PlayPanel panel) {
+  private MovementController mMovementController;
+
+  public GameScreen(PlayPanel panel, MovementController movementController) {
     bgColor = Color.WHITE;
     controlPanel = panel;
+    mMovementController = movementController;
 
     myImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     myBuffer = myImage.getGraphics();
     myBuffer.setColor(bgColor);
     myBuffer.fillRect(0, 0, WIDTH, HEIGHT);
+
+    curSprite = ImageLibrary.faceDown;
+    curC = 8;
+    curR = 7;
 
     try {
       loadMap(mapName);
@@ -159,46 +160,29 @@ public class GameScreen extends JPanel {
     maybeLoadNextMap();
 
     boolean hasMoved = true; //for wild pokemon in grass/ocean
-    moveSpriteIndex++;
-    if (downPressed) {
+    if (mMovementController.isDownPressed()) {
       if (map[curR + 1][curC].canMoveHere()) {
         curR++;
       }
-      curDirection = 0;
-    } else if (leftPressed) {
+    } else if (mMovementController.isLeftPressed()) {
       if (map[curR][curC - 1].canMoveHere()) {
         curC--;
       }
-      curDirection = 1;
-    } else if (upPressed) {
+    } else if (mMovementController.isUpPressed()) {
       if (map[curR - 1][curC].canMoveHere()) {
         curR--;
       }
-      curDirection = 2;
-    } else if (rightPressed) {
+    } else if (mMovementController.isRightPressed()) {
       if (map[curR][curC + 1].canMoveHere()) {
         curC++;
       }
-      curDirection = 3;
     } else {
       hasMoved = false;
-      moveSpriteIndex = -1;
-      if (curDirection == 0) {
-        curSprite = ImageLibrary.faceDown;
-      } else if (curDirection == 1) {
-        curSprite = ImageLibrary.faceLeft;
-      } else if (curDirection == 2) {
-        curSprite = ImageLibrary.faceUp;
-      } else {
-        curSprite = ImageLibrary.faceRight;
-      }
+      curSprite = mMovementController.getStationarySprite();
     }
 
     if (hasMoved) {
-      if (moveSpriteIndex == ImageLibrary.movementSprites[curDirection].length) {
-        moveSpriteIndex = 0;
-      }
-      curSprite = ImageLibrary.movementSprites[curDirection][moveSpriteIndex];
+      curSprite = mMovementController.getWalkingSprite();
 
       //code for wild pokemon encounter:
       maybeInitPokemonBattle();

@@ -16,22 +16,25 @@ public class PlayPanel extends JPanel {
   // have that pokemon at one time or not.
   static boolean[] hasSeenPokemon = new boolean[hasPokemon.length];
   static int myMoney = 0;
-  // static int myTime;
+
+  private MovementController mMovementController;
 
   public PlayPanel() {
     myName = "tester";
     uploadInformation(myName);
 
-//    initGame();
+    //initGame();
+    mMovementController = new MovementController();
 
     setLayout(new GridLayout(2, 1));
 
-    game = new GameScreen(this);
+    game = new GameScreen(this, mMovementController);
     game.canMove = true;
     add(game);
 
     options = new OptionsPanel(game);
     add(options);
+
 
     addKeyListener(new Key());
     addMouseMotionListener(new Mouse());
@@ -240,48 +243,38 @@ public class PlayPanel extends JPanel {
   public class Key extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_UP) {
-        game.upPressed = true;
-        game.downPressed = false;
-        game.leftPressed = false;
-        game.rightPressed = false;
+        mMovementController.setUpPressed(true);
+        mMovementController.setDownPressed(false);
+        mMovementController.setLeftPressed(false);
+        mMovementController.setRightPressed(false);
       } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-        game.upPressed = false;
-        game.downPressed = true;
-        game.leftPressed = false;
-        game.rightPressed = false;
+        mMovementController.setUpPressed(false);
+        mMovementController.setDownPressed(true);
+        mMovementController.setLeftPressed(false);
+        mMovementController.setRightPressed(false);
       } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-        game.upPressed = false;
-        game.downPressed = false;
-        game.leftPressed = true;
-        game.rightPressed = false;
+        mMovementController.setUpPressed(false);
+        mMovementController.setDownPressed(false);
+        mMovementController.setLeftPressed(true);
+        mMovementController.setRightPressed(false);
       } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-        game.upPressed = false;
-        game.downPressed = false;
-        game.leftPressed = false;
-        game.rightPressed = true;
+        mMovementController.setUpPressed(false);
+        mMovementController.setDownPressed(false);
+        mMovementController.setLeftPressed(false);
+        mMovementController.setRightPressed(true);
       }
-      // else if(e.getKeyCode() == KeyEvent.VK_SPACE)
-      // {
-      // 	//trigger pokemon battle, for testing purposes
-      // toBattle(true);
-      // }
-      // else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
-      // {
-      // 	//exit pokemon battle, for testing purposes
-      //
-      // toBattle(false);
-      // }
     }
 
     public void keyReleased(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_UP) {
-        game.upPressed = false;
+        mMovementController.setUpPressed(false);
       } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-        game.downPressed = false;
+        mMovementController.setDownPressed(false);
       } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-        game.leftPressed = false;
+        mMovementController.setLeftPressed(false);
       } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-        game.rightPressed = false;
+        mMovementController.setRightPressed(false);
+
       }
     }
   }

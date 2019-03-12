@@ -25,8 +25,8 @@ public class ImageLibrary {
   static ImageIcon[] moveDown_walk = {faceDownLeft, faceDown, faceDownRight, faceDown};
   static ImageIcon[] moveLeft_walk = {faceLeftLeft, faceLeft, faceLeftRight, faceLeft};
   static ImageIcon[] moveRight_walk = {faceRightLeft, faceRight, faceRightRight, faceRight};
-  static ImageIcon[][] movementSprites = {moveUp_walk, moveDown_walk, moveLeft_walk,
-      moveRight_walk};
+  static ImageIcon[][] movementSprites = {moveUp_walk, moveLeft_walk, moveRight_walk,
+      moveDown_walk};
   //terrain
   static ImageIcon blackSpace = new ImageIcon("resources/images/terrain_blackSpace.png");
   static ImageIcon gate = blackSpace;  //new ImageIcon("resources/images/terrain_gate.png");
