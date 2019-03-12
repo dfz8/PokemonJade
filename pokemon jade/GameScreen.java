@@ -34,26 +34,23 @@ public class GameScreen extends JPanel {
   private static boolean[][] buildings;
   private static boolean[][] items;
   //conditions:
-  static boolean canMove = false;
-  static boolean inBattle = false;
-  static boolean swapPokemon = false;
+  static boolean canMove;
+  static boolean inBattle;
+  static boolean swapPokemon;
 
-  static boolean inParty = false; // havent used
-
-  static boolean inSummary = false;
-  static Pokemon summaryPoke; //static ImageIcon summaryPoke;
-  static boolean inSave = false;
-  static boolean upPressed = false;
-  static boolean downPressed = false;
-  static boolean leftPressed = false;
-  static boolean rightPressed = false;
-  static boolean isAttacking = false;
-  static boolean enemyIsAttacking = false;
+  static boolean inSummary;
+  static Pokemon summaryPoke;
+  static boolean inSave;
+  static boolean upPressed;
+  static boolean downPressed;
+  static boolean leftPressed;
+  static boolean rightPressed;
+  static boolean isAttacking;
+  static boolean enemyIsAttacking;
   //player sprite info
   private ImageIcon curSprite = ImageLibrary.faceDown;
-  private static int moveSpriteIndex = 0;
-  private static int curDirection = 0; //0 = down, 1 = left, 2 = up, 3 = right
-  private static int increment = 2;//2 = walking, 5 = running, 10 = bike
+  private static int moveSpriteIndex;
+  private static int curDirection;
   static int curC = 8; // current position
   static int curR = 5; // within the map
   //battle info
@@ -71,8 +68,8 @@ public class GameScreen extends JPanel {
   Pokemon enemy;
   static String myAttackName = "";
   static String enemyAttackName = "";
-  ImageIcon enemyIcon = null;//ImageLibrary.raikou;
-  ImageIcon myPokeIcon = null;// ImageLibrary.bulbosaurBack;
+  ImageIcon enemyIcon;
+  ImageIcon myPokeIcon;
   //extras:
   static Font normalFont = new Font("Ariel", Font.PLAIN, 10);
   static Font extraLargeFont = new Font("Agency FB", Font.BOLD, 30);
@@ -243,8 +240,8 @@ public class GameScreen extends JPanel {
 
   private void drawSummaryScreen() {
     bgColor = Color.WHITE;
-    ImageIcon poke = new ImageIcon("./resources/images/Pokemon/" + summaryPoke.getName() +
-                                   ".png");
+    ImageIcon poke = new ImageIcon(
+        "./resources/images/Pokemon/" + summaryPoke.getName() + ".png");
     myBuffer.drawImage(poke.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);
