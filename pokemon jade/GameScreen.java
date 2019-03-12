@@ -146,7 +146,6 @@ public class GameScreen extends JPanel {
                              null);
         }
         map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
-
       }
     }
 
@@ -270,24 +269,35 @@ public class GameScreen extends JPanel {
     myBuffer.setFont(smallFont);
     myBuffer.drawString("HP:", 10, 65);
     myBuffer.drawRect(22, 59, 101, 7);
-    myBuffer.setColor(getPokemonHealthBarColor(summaryPoke));
-    myBuffer.fillRect(23,
-                      60,
-                      (int) (100.0 * summaryPoke.getCurrentHP() / summaryPoke.getMaxHP()),
-                      6);
+    drawHPBar(summaryPoke, 0, 37);
     //exp
+    drawExpBar(summaryPoke, 0, 40);
+    myBuffer.drawString(
+        summaryPoke.getMyEXP() + " out of " + summaryPoke.getMyNextLevelEXP(),
+        23,
+        100);
+  }
+
+  private void drawHPBar(Pokemon pokemon, int x, int y) {
+    myBuffer.setColor(getPokemonHealthBarColor(pokemon));
+    myBuffer.fillRect(
+        x + 23,
+        y + 23,
+        (int) ((100) * (1.0 * myPoke.getCurrentHP() / myPoke.getMaxHP())),
+        7);
+  }
+
+  private void drawExpBar(Pokemon pokemon, int x, int y) {
     myBuffer.setColor(Color.BLACK);
-    //myBuffer.drawString("EXP: ",
+    myBuffer.drawRect(x + 23, y + 40, 100, 4);
     myBuffer.setColor(Color.BLUE);
-    myBuffer.fillRect(23,
-                      80,
-                      (int) (100.0 * (summaryPoke.getMyEXP() - summaryPoke.getMyPastLevelEXP()) / (
-                          summaryPoke
-                              .getMyNextLevelEXP() - summaryPoke.getMyPastLevelEXP())),
-                      5);
-    myBuffer.drawString(summaryPoke.getMyEXP() + " out of " + summaryPoke.getMyNextLevelEXP(),
-                        23,
-                        100);
+
+    myBuffer.fillRect(
+        x + 23,
+        y + 40,
+        (int) (100.0 * (pokemon.getMyEXP() - pokemon.getMyPastLevelEXP()) /
+               (pokemon.getMyNextLevelEXP() - pokemon.getMyPastLevelEXP())),
+        5);
   }
 
   private void drawBattleScene() {
@@ -327,30 +337,13 @@ public class GameScreen extends JPanel {
     myBuffer.drawString("LV: " + myPoke.getLevel(), myX + 90, myY + 20);
 
     //me:
-    myBuffer.setColor(getPokemonHealthBarColor(myPoke));
-    myBuffer.fillRect(myX + 23,
-                      myY + 23,
-                      (int) ((100) * (1.0 * myPoke.getCurrentHP() / myPoke.getMaxHP())),
-                      7);
+    drawHPBar(myPoke, myX, myY);
 
     //enemy:
-    myBuffer.setColor(getPokemonHealthBarColor(enemy));
-    myBuffer.fillRect(enemyX + 23,
-                      enemyY + 23,
-                      (int) ((100) * (1.0 * enemy.getCurrentHP() / enemy.getMaxHP())),
-                      7);
+    drawHPBar(enemy, enemyX, enemyY);
 
     //EXP Bar
-    myBuffer.setColor(Color.BLACK);
-    myBuffer.drawRect(myX + 23, myY + 40, 100, 4);
-    myBuffer.setColor(Color.BLUE);
-
-    myBuffer.fillRect(myX + 23,
-                      myY + 40,
-                      (int) (100.0 * (myPoke.getMyEXP() - myPoke.getMyPastLevelEXP()) / (
-                          myPoke.getMyNextLevelEXP() - myPoke
-                              .getMyPastLevelEXP())),
-                      5);
+    drawExpBar(myPoke, myX, myY);
 
     //textbox:
     myBuffer.setColor(Color.BLACK);
@@ -574,7 +567,6 @@ public class GameScreen extends JPanel {
   }
 
   public void setRandomEnemy() {
-
     int enemyUsed = (int) (Math.random() * wildPokemonArray.length);
     String[] enemyInfo = wildPokemonArray[enemyUsed].split("\\.");
     //    String[] enemyArray = loadEnemyArray();
