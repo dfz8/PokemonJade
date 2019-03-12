@@ -25,6 +25,8 @@ public class ImageLibrary {
   static ImageIcon[] moveDown_walk = {faceDownLeft, faceDown, faceDownRight, faceDown};
   static ImageIcon[] moveLeft_walk = {faceLeftLeft, faceLeft, faceLeftRight, faceLeft};
   static ImageIcon[] moveRight_walk = {faceRightLeft, faceRight, faceRightRight, faceRight};
+  static ImageIcon[][] movementSprites = {moveUp_walk, moveDown_walk, moveLeft_walk,
+      moveRight_walk};
   //terrain
   static ImageIcon blackSpace = new ImageIcon("resources/images/terrain_blackSpace.png");
   static ImageIcon gate = blackSpace;  //new ImageIcon("resources/images/terrain_gate.png");
@@ -34,7 +36,7 @@ public class ImageLibrary {
   static ImageIcon doorMat_down_left = new ImageIcon(
       "resources/images/terrain_doorMat_down_left.png");
   static ImageIcon doorMat_up_right = new ImageIcon("resources/images/terrain_doorMat_up_right" +
-                                                        ".png");
+                                                    ".png");
   static ImageIcon doorMat_down_right = new ImageIcon(
       "resources/images/terrain_doorMat_down_right.png");
   //forest
@@ -76,5 +78,5 @@ public class ImageLibrary {
   // static ImageIcon raikou = new ImageIcon("resources/images/raikou.png");
 
   // static ImageIcon bulbosaurBack = new ImageIcon("resources/images/bulbosaurBack.png");
-   // testing icon added as of update 1.01
+  // testing icon added as of update 1.01
 }

@@ -156,93 +156,89 @@ public class GameScreen extends JPanel {
   }
 
   private void handleMovementOfPlayer() {
-    //gate stepping code:
-    if (map[curR][curC].isGate()) {
-      int newR = map[curR][curC].getMapLinkRow();
-      int newC = map[curR][curC].getMapLinkCol();
-      try {
-        loadMap(map[curR][curC].getMapLink());
-      } catch (IOException a) {
-        System.out.println(
-            "Error: loadMap() has failed in GameScreen @ RefreshListener: " + map[curR][curC]
-                .getMapLink());
-      }
-      curR = newR;
-      curC = newC;
+    if (!canMove) {
+      return;
     }
-    //^^^^^
-    if (canMove) {
-      boolean hasMoved = true; //for wild pokemon in grass/ocean
-      if (downPressed) {
-        if (map[curR + 1][curC].canMoveHere()) {
-          curR++;
-        }
 
-        moveSpriteIndex++;
-        if (moveSpriteIndex == ImageLibrary.moveDown_walk.length)
-          moveSpriteIndex = 0;
-        curSprite = ImageLibrary.moveDown_walk[moveSpriteIndex];
-        curDirection = 0;
-      } else if (leftPressed) {
-        if (map[curR][curC - 1].canMoveHere()) {
-          curC--;
+    maybeLoadNextMap();
 
-        }
-
-        moveSpriteIndex++;
-        if (moveSpriteIndex == ImageLibrary.moveLeft_walk.length)
-          moveSpriteIndex = 0;
-        curSprite = ImageLibrary.moveLeft_walk[moveSpriteIndex];
-        curDirection = 1;
-      } else if (upPressed) {
-        if (map[curR - 1][curC].canMoveHere()) {
-          curR--;
-          //move bg objects
-        }
-
-        moveSpriteIndex++;
-        if (moveSpriteIndex == ImageLibrary.moveUp_walk.length)
-          moveSpriteIndex = 0;
-        curSprite = ImageLibrary.moveUp_walk[moveSpriteIndex];
-        curDirection = 2;
-      } else if (rightPressed) {
-        if (map[curR][curC + 1].canMoveHere()) {
-          curC++;
-        }
-
-        moveSpriteIndex++;
-        if (moveSpriteIndex == ImageLibrary.moveRight_walk.length)
-          moveSpriteIndex = 0;
-        curSprite = ImageLibrary.moveRight_walk[moveSpriteIndex];
-        curDirection = 3;
+    boolean hasMoved = true; //for wild pokemon in grass/ocean
+    moveSpriteIndex++;
+    if (downPressed) {
+      if (map[curR + 1][curC].canMoveHere()) {
+        curR++;
+      }
+      curDirection = 0;
+    } else if (leftPressed) {
+      if (map[curR][curC - 1].canMoveHere()) {
+        curC--;
+      }
+      curDirection = 1;
+    } else if (upPressed) {
+      if (map[curR - 1][curC].canMoveHere()) {
+        curR--;
+      }
+      curDirection = 2;
+    } else if (rightPressed) {
+      if (map[curR][curC + 1].canMoveHere()) {
+        curC++;
+      }
+      curDirection = 3;
+    } else {
+      hasMoved = false;
+      moveSpriteIndex = -1;
+      if (curDirection == 0) {
+        curSprite = ImageLibrary.faceDown;
+      } else if (curDirection == 1) {
+        curSprite = ImageLibrary.faceLeft;
+      } else if (curDirection == 2) {
+        curSprite = ImageLibrary.faceUp;
       } else {
-        //no key is pressed so you're resting
-        hasMoved = false;
-        moveSpriteIndex = -1;
-        if (curDirection == 0)
-          curSprite = ImageLibrary.faceDown;
-        else if (curDirection == 1)
-          curSprite = ImageLibrary.faceLeft;
-        else if (curDirection == 2)
-          curSprite = ImageLibrary.faceUp;
-        else // if(curDirection = 3)
-          curSprite = ImageLibrary.faceRight;
-      }
-      //code for wild pokemon encoutner:
-      if (hasMoved) {
-        if (map[curR][curC].getType() == Terrain.GRASS) {
-          int randomNum = (int) (Math.random() * 256);
-          if (randomNum <= 32)//<--should be 32 for normal run, 128 for test
-            controlPanel.toBattle(true);
-        }
+        curSprite = ImageLibrary.faceRight;
       }
     }
+
+    if (hasMoved) {
+      if (moveSpriteIndex == ImageLibrary.movementSprites[curDirection].length) {
+        moveSpriteIndex = 0;
+      }
+      curSprite = ImageLibrary.movementSprites[curDirection][moveSpriteIndex];
+
+      //code for wild pokemon encounter:
+      maybeInitPokemonBattle();
+    }
+
     //healing:
     if (map[curR][curC].getType() == Terrain.HEALING_TILE) {
       for (int i = 0; i < 6; i++) {
         if (PlayPanel.myPokemon[i] != null)
           PlayPanel.myPokemon[i].heal(PlayPanel.myPokemon[i].getMaxHP() - PlayPanel.myPokemon[i]
               .getCurrentHP());
+      }
+    }
+  }
+
+  private void maybeLoadNextMap() {
+    if (map[curR][curC].isGate()) {
+      try {
+        int newR = map[curR][curC].getMapLinkRow();
+        int newC = map[curR][curC].getMapLinkCol();
+        loadMap(map[curR][curC].getMapLink());
+        curR = newR;
+        curC = newC;
+      } catch (IOException a) {
+        System.out.println(
+            "Error: loadMap() has failed in GameScreen @ RefreshListener: "
+            + map[curR][curC].getMapLink());
+        System.exit(0);
+      }
+    }
+  }
+
+  private void maybeInitPokemonBattle() {
+    if (map[curR][curC].getType() == Terrain.GRASS) {
+      if ((int) (Math.random() * 256) <= 32) {
+        controlPanel.toBattle(true);
       }
     }
   }
