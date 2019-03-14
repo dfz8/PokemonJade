@@ -7,8 +7,9 @@ import pokemon.ui.OptionBoard.TextPlacement;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 public class OptionsPanel extends JPanel {
   private Graphics myBuffer;
@@ -83,174 +84,17 @@ public class OptionsPanel extends JPanel {
                                 BufferedImage.TYPE_INT_RGB);
     myBuffer = myImage.getGraphics();
     background = Color.BLACK;
-
     inBattle = usingItem = switchingPokemon = false;
 
-    //normal game options:
-    //instantiate game buttons which are actually optionboards
-    normalOptions = new OptionBoard[6];
-    // for(int i = 0; i < normalOptions.length; i++)
-    normalOptions[0] = new OptionBoard(10, 10, 100, 35, Color.GREEN, "Pokemon");
-    normalOptions[1] = new OptionBoard(150, 10, 100, 35, Color.GREEN, "Pokedex");
-    normalOptions[2] = new OptionBoard(10, 60, 100, 35, Color.GREEN, PlayPanel.myName);
-    normalOptions[3] = new OptionBoard(150, 60, 100, 35, Color.GREEN, "Bag");
-    normalOptions[4] = new OptionBoard(10, 110, 100, 35, Color.GREEN, "Save");
-    normalOptions[5] = new OptionBoard(150, 110, 100, 35, Color.GREEN, "Options");
-
-    pokemonOptions = new OptionBoard[7];
-    pokemonOptions[0] = new OptionBoard(10, 10, 120, 45, Color.WHITE, "", TextPlacement.HIGH);
-    pokemonOptions[1] = new OptionBoard(135, 10, 120, 45, Color.WHITE, "", TextPlacement.HIGH);
-    pokemonOptions[2] = new OptionBoard(10, 65, 120, 45, Color.WHITE, "", TextPlacement.HIGH);
-    pokemonOptions[3] = new OptionBoard(135, 65, 120, 45, Color.WHITE, "", TextPlacement.HIGH);
-    pokemonOptions[4] = new OptionBoard(10, 120, 120, 45, Color.WHITE, "", TextPlacement.HIGH);
-    pokemonOptions[5] = new OptionBoard(135, 120, 120, 45, Color.WHITE, "", TextPlacement.HIGH);
-    pokemonOptions[6] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 60,
-        GameDriver.SCREEN_HEIGHT - 40,
-        50,
-        35,
-        Color.BLUE,
-        "Back");
-
-    pokedexOptions = new OptionBoard[10];
-    pokedexOptions[0] = new OptionBoard(10, 10, 120, 20, Color.WHITE, "");
-    pokedexOptions[1] = new OptionBoard(10, 40, 120, 20, Color.WHITE, "");
-    pokedexOptions[2] = new OptionBoard(10, 70, 120, 20, Color.WHITE, "");
-    pokedexOptions[3] = new OptionBoard(10, 100, 120, 20, Color.WHITE, "");
-    pokedexOptions[4] = new OptionBoard(10, 130, 120, 20, Color.WHITE, "");
-    pokedexOptions[5] = new OptionBoard(10, 160, 120, 20, Color.WHITE, "");
-    pokedexOptions[6] = new OptionBoard(10, 190, 120, 20, Color.WHITE, "");
-    pokedexOptions[7] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 130,
-        GameDriver.SCREEN_HEIGHT - 60,
-        50,
-        20,
-        Color.WHITE,
-        "Up");
-    pokedexOptions[8] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 130,
-        GameDriver.SCREEN_HEIGHT - 30,
-        50,
-        20,
-        Color.WHITE,
-        "Down");
-    pokedexOptions[9] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 70,
-        GameDriver.SCREEN_HEIGHT - 60,
-        50,
-        50,
-        Color.WHITE,
-        "Back");
-
-
-    battleOptions = new OptionBoard[4];
-    battleOptions[0] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 260,
-        GameDriver.SCREEN_HEIGHT - 45,
-        70,
-        35,
-        Color.WHITE,
-        "Bag");
-    battleOptions[1] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 205,
-        GameDriver.SCREEN_HEIGHT - 195,
-        150,
-        50,
-        Color.WHITE,
-        "Fight");
-    battleOptions[2] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 170,
-        GameDriver.SCREEN_HEIGHT - 45,
-        70,
-        35,
-        Color.WHITE,
-        "Run");
-    battleOptions[3] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 85,
-        GameDriver.SCREEN_HEIGHT - 45,
-        70,
-        35,
-        Color.WHITE,
-        "Pokemon");
-
-    attackOptions = new OptionBoard[5];
-    attackOptions[0] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 245,
-        GameDriver.SCREEN_HEIGHT - 195,
-        70,
-        35,
-        Color.WHITE,
-        "1");
-    attackOptions[1] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 245,
-        GameDriver.SCREEN_HEIGHT - 115,
-        70,
-        35,
-        Color.WHITE,
-        "2");
-    attackOptions[2] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 165,
-        GameDriver.SCREEN_HEIGHT - 195,
-        70,
-        35,
-        Color.WHITE,
-        "3");
-    attackOptions[3] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 165,
-        GameDriver.SCREEN_HEIGHT - 115,
-        70,
-        35,
-        Color.WHITE,
-        "4");
-    attackOptions[4] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 60,
-        GameDriver.SCREEN_HEIGHT - 45,
-        50,
-        35,
-        Color.WHITE,
-        "Back");
-
-    bagOptions = new OptionBoard[2];
-    bagOptions[0] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 60,
-        GameDriver.SCREEN_HEIGHT - 45,
-        50,
-        35,
-        Color.WHITE,
-        "Back");
-    bagOptions[1] = new OptionBoard(
-        GameDriver.SCREEN_WIDTH - 245,
-        GameDriver.SCREEN_HEIGHT - 195,
-        70,
-        35,
-        Color.WHITE,
-        "Pokeball");
-
-    pokemonSelectOptions = new OptionBoard[4];
-    pokemonSelectOptions[0] = new OptionBoard(0, 0, 50, 20, Color.GREEN, "Move");
-    pokemonSelectOptions[1] = new OptionBoard(-10, -10, 0, 0, Color.BLACK, "dud");
-    pokemonSelectOptions[2] = new OptionBoard(0, 0, 50, 20, Color.GREEN, "Summary");
-    pokemonSelectOptions[3] = new OptionBoard(0, 0, 50, 20, Color.GREEN, "Back");
-
-    saveOptions = new OptionBoard[1];
-    saveOptions[0] = new OptionBoard(
-        20,
-        20,
-        GameDriver.SCREEN_WIDTH - 50,
-        GameDriver.SCREEN_HEIGHT
-        - 50,
-        Color.lightGray,
-        "");
-
-    personalOptions = new OptionBoard[1];
-    personalOptions[0] = new OptionBoard(
-        20,
-        20,
-        GameDriver.SCREEN_WIDTH - 50,
-        GameDriver.SCREEN_HEIGHT
-        - 50,
-        Color.ORANGE,
-        "");
+    normalOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.main);
+    pokemonOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.party);
+    pokedexOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.pokedex);
+    battleOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.battle);
+    attackOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.attacks);
+    bagOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.bag);
+    pokemonSelectOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.pokemonSelect);
+    saveOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.save);
+    personalOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.personal);
 
     curPanel = normalPanel;
 

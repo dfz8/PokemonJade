@@ -10,11 +10,11 @@ public class Bumper {
   private int myHeight;
   private Color myColor;
 
-  public Bumper(int x, int y, int xWidth, int yWidth, Color c) {
+  public Bumper(int x, int y, int width, int height, Color c) {
     myX = x;
     myY = y;
-    myWidth = xWidth;
-    myHeight = yWidth;
+    myWidth = width;
+    myHeight = height;
     myColor = c;
   }
 
