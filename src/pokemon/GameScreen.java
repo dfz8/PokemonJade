@@ -25,8 +25,6 @@ public class GameScreen extends JPanel {
   //mandatory stuff
   BufferedImage myImage;
   Graphics myBuffer;
-  public static final int WIDTH = 275;
-  public static final int HEIGHT = 215;
   public static final int SPRITE_WIDTH = 23;
   public static final int SPRITE_HEIGHT = 26;
   Color bgColor;
@@ -83,10 +81,10 @@ public class GameScreen extends JPanel {
     controlPanel = panel;
     mMovementController = movementController;
 
-    myImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    myImage = new BufferedImage(GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
     myBuffer = myImage.getGraphics();
     myBuffer.setColor(bgColor);
-    myBuffer.fillRect(0, 0, WIDTH, HEIGHT);
+    myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
 
     curSprite = ImageLibrary.faceDown;
     curC = 8;
@@ -103,13 +101,13 @@ public class GameScreen extends JPanel {
   }
 
   public void paintComponent(Graphics g) {
-    g.drawImage(myImage, 0, 0, WIDTH, HEIGHT, null);
+    g.drawImage(myImage, 0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, null);
   }
 
   public class RefreshListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       myBuffer.setColor(bgColor);
-      myBuffer.fillRect(0, 0, WIDTH, HEIGHT);
+      myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
 
       if (inSummary) {
         drawSummaryScreen();
@@ -151,8 +149,8 @@ public class GameScreen extends JPanel {
     }
 
     myBuffer.drawImage(curSprite.getImage(),
-                       WIDTH / 2 - SPRITE_WIDTH / 2,
-                       HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5,
+                       GameDriver.SCREEN_WIDTH / 2 - SPRITE_WIDTH / 2,
+                       GameDriver.SCREEN_HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5,
                        null); // -5 for visual purposes
   }
 
@@ -326,7 +324,7 @@ public class GameScreen extends JPanel {
 
     //textbox:
     myBuffer.setColor(Color.BLACK);
-    myBuffer.drawRect(0, myY + 60, WIDTH - 1, HEIGHT - 50 - myY);
+    myBuffer.drawRect(0, myY + 60, GameDriver.SCREEN_WIDTH - 1, GameDriver.SCREEN_HEIGHT - 50 - myY);
     myBuffer.setFont(normalFont);
 
     if (controlPanel.options.switchingPokemon) {

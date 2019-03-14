@@ -13,8 +13,6 @@ public class OptionsPanel extends JPanel {
   private Graphics myBuffer;
   private BufferedImage myImage;
   private Color background;
-  private final int WIDTH = 275;
-  private final int HEIGHT = 215;
 
   public static boolean inBattle;
   // private boolean isAttacking;
@@ -79,7 +77,7 @@ public class OptionsPanel extends JPanel {
   public OptionsPanel(GameScreen panel) {
     game = panel;
 
-    myImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    myImage = new BufferedImage(GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
     myBuffer = myImage.getGraphics();
     background = Color.BLACK;
 
@@ -103,7 +101,7 @@ public class OptionsPanel extends JPanel {
     pokemonOptions[3] = new OptionBoard(135, 65, 120, 45, Color.WHITE, "", OptionBoard.Y_HIGH);
     pokemonOptions[4] = new OptionBoard(10, 120, 120, 45, Color.WHITE, "", OptionBoard.Y_HIGH);
     pokemonOptions[5] = new OptionBoard(135, 120, 120, 45, Color.WHITE, "", OptionBoard.Y_HIGH);
-    pokemonOptions[6] = new OptionBoard(WIDTH - 60, HEIGHT - 40, 50, 35, Color.BLUE, "Back");
+    pokemonOptions[6] = new OptionBoard(GameDriver.SCREEN_WIDTH - 60, GameDriver.SCREEN_HEIGHT - 40, 50, 35, Color.BLUE, "Back");
 
     pokedexOptions = new OptionBoard[10];
     pokedexOptions[0] = new OptionBoard(10, 10, 120, 20, Color.WHITE, "");
@@ -113,27 +111,27 @@ public class OptionsPanel extends JPanel {
     pokedexOptions[4] = new OptionBoard(10, 130, 120, 20, Color.WHITE, "");
     pokedexOptions[5] = new OptionBoard(10, 160, 120, 20, Color.WHITE, "");
     pokedexOptions[6] = new OptionBoard(10, 190, 120, 20, Color.WHITE, "");
-    pokedexOptions[7] = new OptionBoard(WIDTH - 130, HEIGHT - 60, 50, 20, Color.WHITE, "Up");
-    pokedexOptions[8] = new OptionBoard(WIDTH - 130, HEIGHT - 30, 50, 20, Color.WHITE, "Down");
-    pokedexOptions[9] = new OptionBoard(WIDTH - 70, HEIGHT - 60, 50, 50, Color.WHITE, "Back");
+    pokedexOptions[7] = new OptionBoard(GameDriver.SCREEN_WIDTH - 130, GameDriver.SCREEN_HEIGHT - 60, 50, 20, Color.WHITE, "Up");
+    pokedexOptions[8] = new OptionBoard(GameDriver.SCREEN_WIDTH - 130, GameDriver.SCREEN_HEIGHT - 30, 50, 20, Color.WHITE, "Down");
+    pokedexOptions[9] = new OptionBoard(GameDriver.SCREEN_WIDTH - 70, GameDriver.SCREEN_HEIGHT - 60, 50, 50, Color.WHITE, "Back");
 
 
     battleOptions = new OptionBoard[4];
-    battleOptions[0] = new OptionBoard(WIDTH - 260, HEIGHT - 45, 70, 35, Color.WHITE, "Bag");
-    battleOptions[1] = new OptionBoard(WIDTH - 205, HEIGHT - 195, 150, 50, Color.WHITE, "Fight");
-    battleOptions[2] = new OptionBoard(WIDTH - 170, HEIGHT - 45, 70, 35, Color.WHITE, "Run");
-    battleOptions[3] = new OptionBoard(WIDTH - 85, HEIGHT - 45, 70, 35, Color.WHITE, "Pokemon");
+    battleOptions[0] = new OptionBoard(GameDriver.SCREEN_WIDTH - 260, GameDriver.SCREEN_HEIGHT - 45, 70, 35, Color.WHITE, "Bag");
+    battleOptions[1] = new OptionBoard(GameDriver.SCREEN_WIDTH - 205, GameDriver.SCREEN_HEIGHT - 195, 150, 50, Color.WHITE, "Fight");
+    battleOptions[2] = new OptionBoard(GameDriver.SCREEN_WIDTH - 170, GameDriver.SCREEN_HEIGHT - 45, 70, 35, Color.WHITE, "Run");
+    battleOptions[3] = new OptionBoard(GameDriver.SCREEN_WIDTH - 85, GameDriver.SCREEN_HEIGHT - 45, 70, 35, Color.WHITE, "Pokemon");
 
     attackOptions = new OptionBoard[5];
-    attackOptions[0] = new OptionBoard(WIDTH - 245, HEIGHT - 195, 70, 35, Color.WHITE, "1");
-    attackOptions[1] = new OptionBoard(WIDTH - 245, HEIGHT - 115, 70, 35, Color.WHITE, "2");
-    attackOptions[2] = new OptionBoard(WIDTH - 165, HEIGHT - 195, 70, 35, Color.WHITE, "3");
-    attackOptions[3] = new OptionBoard(WIDTH - 165, HEIGHT - 115, 70, 35, Color.WHITE, "4");
-    attackOptions[4] = new OptionBoard(WIDTH - 60, HEIGHT - 45, 50, 35, Color.WHITE, "Back");
+    attackOptions[0] = new OptionBoard(GameDriver.SCREEN_WIDTH - 245, GameDriver.SCREEN_HEIGHT - 195, 70, 35, Color.WHITE, "1");
+    attackOptions[1] = new OptionBoard(GameDriver.SCREEN_WIDTH - 245, GameDriver.SCREEN_HEIGHT - 115, 70, 35, Color.WHITE, "2");
+    attackOptions[2] = new OptionBoard(GameDriver.SCREEN_WIDTH - 165, GameDriver.SCREEN_HEIGHT - 195, 70, 35, Color.WHITE, "3");
+    attackOptions[3] = new OptionBoard(GameDriver.SCREEN_WIDTH - 165, GameDriver.SCREEN_HEIGHT - 115, 70, 35, Color.WHITE, "4");
+    attackOptions[4] = new OptionBoard(GameDriver.SCREEN_WIDTH - 60, GameDriver.SCREEN_HEIGHT - 45, 50, 35, Color.WHITE, "Back");
 
     bagOptions = new OptionBoard[2];
-    bagOptions[0] = new OptionBoard(WIDTH - 60, HEIGHT - 45, 50, 35, Color.WHITE, "Back");
-    bagOptions[1] = new OptionBoard(WIDTH - 245, HEIGHT - 195, 70, 35, Color.WHITE, "Pokeball");
+    bagOptions[0] = new OptionBoard(GameDriver.SCREEN_WIDTH - 60, GameDriver.SCREEN_HEIGHT - 45, 50, 35, Color.WHITE, "Back");
+    bagOptions[1] = new OptionBoard(GameDriver.SCREEN_WIDTH - 245, GameDriver.SCREEN_HEIGHT - 195, 70, 35, Color.WHITE, "Pokeball");
 
     pokemonSelectOptions = new OptionBoard[4];
     pokemonSelectOptions[0] = new OptionBoard(0, 0, 50, 20, Color.GREEN, "Move");
@@ -142,10 +140,12 @@ public class OptionsPanel extends JPanel {
     pokemonSelectOptions[3] = new OptionBoard(0, 0, 50, 20, Color.GREEN, "Back");
 
     saveOptions = new OptionBoard[1];
-    saveOptions[0] = new OptionBoard(20, 20, WIDTH - 50, HEIGHT - 50, Color.lightGray, "");
+    saveOptions[0] = new OptionBoard(20, 20, GameDriver.SCREEN_WIDTH - 50, GameDriver.SCREEN_HEIGHT
+                                                                           - 50, Color.lightGray, "");
 
     personalOptions = new OptionBoard[1];
-    personalOptions[0] = new OptionBoard(20, 20, WIDTH - 50, HEIGHT - 50, Color.ORANGE, "");
+    personalOptions[0] = new OptionBoard(20, 20, GameDriver.SCREEN_WIDTH - 50, GameDriver.SCREEN_HEIGHT
+                                                                               - 50, Color.ORANGE, "");
 
     curPanel = normalPanel;
 
@@ -207,7 +207,7 @@ public class OptionsPanel extends JPanel {
   private boolean isMouseOver(int x, int y, OptionBoard board) {
     // HEIGHT displacement since two screens are stacked on top of each other
     return (board.getX() <= x && x <= board.getX() + board.getXWidth())
-           && (board.getY() + HEIGHT <= y && y <= board.getY() + board.getYWidth() + HEIGHT);
+           && (board.getY() + GameDriver.SCREEN_HEIGHT <= y && y <= board.getY() + board.getYWidth() + GameDriver.SCREEN_HEIGHT);
   }
 
   public void checkClick(int x, int y) {
@@ -411,19 +411,19 @@ public class OptionsPanel extends JPanel {
   }
 
   public void paintComponent(Graphics g) {
-    g.drawImage(myImage, 0, 0, WIDTH, HEIGHT, null);
+    g.drawImage(myImage, 0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, null);
   }
 
   public class RefreshListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       myBuffer.setColor(background);
-      myBuffer.fillRect(0, 0, WIDTH, HEIGHT);
+      myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
       // todo: move set font code to the specific panels
       myBuffer.setFont(GameScreen.normalFont);
 
       if (curPanel == blackPanel) {
         myBuffer.setColor(Color.BLACK);
-        myBuffer.fillRect(0, 0, WIDTH, HEIGHT);
+        myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
         repaint();
         return;
       } else if (curPanel == partyPanel) {
@@ -459,9 +459,9 @@ public class OptionsPanel extends JPanel {
   private void drawPokemonPartyScreen() {
     // text + info box:
     myBuffer.setColor(Color.WHITE);
-    myBuffer.fillRect(10, HEIGHT - 40, WIDTH - 60 - 10 - 10, 35);
+    myBuffer.fillRect(10, GameDriver.SCREEN_HEIGHT - 40, GameDriver.SCREEN_WIDTH - 60 - 10 - 10, 35);
     myBuffer.setColor(Color.BLACK);
-    myBuffer.drawString(partyText, 10 + 5, HEIGHT - 40 + 10);
+    myBuffer.drawString(partyText, 10 + 5, GameDriver.SCREEN_HEIGHT - 40 + 10);
     //tiles w/ pokemon:
     for (int i = 0; i < pokemonOptions.length; i++) {
       pokemonOptions[i].draw(myBuffer);
@@ -540,11 +540,13 @@ public class OptionsPanel extends JPanel {
   private void drawPokedexScreen() {
     // has seen/ has owned info box :
     myBuffer.setColor(Color.WHITE);
-    myBuffer.fillRect(WIDTH - 130, HEIGHT - 100, 110, 30);
+    myBuffer.fillRect(GameDriver.SCREEN_WIDTH - 130, GameDriver.SCREEN_HEIGHT - 100, 110, 30);
     myBuffer.setFont(GameScreen.normalFont);
     myBuffer.setColor(Color.BLACK);
-    myBuffer.drawString("Seen: " + numPokemonSeen, WIDTH - 125, HEIGHT - 80);
-    myBuffer.drawString("Caught: " + numPokemonOwned, WIDTH - 70, HEIGHT - 80);
+    myBuffer.drawString("Seen: " + numPokemonSeen, GameDriver.SCREEN_WIDTH - 125, GameDriver.SCREEN_HEIGHT
+                                                                                  - 80);
+    myBuffer.drawString("Caught: " + numPokemonOwned, GameDriver.SCREEN_WIDTH - 70, GameDriver.SCREEN_HEIGHT
+                                                                                    - 80);
 
     for (int i = 0; i < pokedexOptions.length; i++) { //-3 to leave out up, down, and back
       if (i < pokedexOptions.length - 3) {
@@ -567,7 +569,8 @@ public class OptionsPanel extends JPanel {
           if (pokedexOptions[i].isHighlighted()) {
             ImageIcon curImage = new ImageIcon("images/Pokemon/" + Pokemon.getPokemon(
                 pokedexStartInd + i - 1) + ".png");
-            myBuffer.drawImage(curImage.getImage(), WIDTH - 130, HEIGHT - 190, null);
+            myBuffer.drawImage(curImage.getImage(), GameDriver.SCREEN_WIDTH - 130, GameDriver.SCREEN_HEIGHT
+                                                                                   - 190, null);
           }
         //pokeballs next to pokemon you have caught
         ImageIcon pokeball = new ImageIcon("images/pokeball.png"); //move to imageLibrary?
@@ -585,32 +588,43 @@ public class OptionsPanel extends JPanel {
 
   private void drawSaveScreen() {
     ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
-    myBuffer.drawImage(me.getImage(), 30, 30, WIDTH - 240, HEIGHT - 180, null);
+    myBuffer.drawImage(me.getImage(), 30, 30, GameDriver.SCREEN_WIDTH - 240, GameDriver.SCREEN_HEIGHT
+                                                                             - 180, null);
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(GameScreen.extraLargeFont);
-    myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
+    myBuffer.drawString("Name: " + PlayPanel.myName, GameDriver.SCREEN_WIDTH - 180, GameDriver.SCREEN_HEIGHT
+                                                                                    - 160);
     myBuffer.setFont(GameScreen.largerLargeFont);
-    myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
-    myBuffer.drawString("Number of pokemon.entities.Pokemon Seen: " + numPokemonSeen, WIDTH - 250, HEIGHT - 95);
+    myBuffer.drawString("Money: " + PlayPanel.myMoney, GameDriver.SCREEN_WIDTH - 250, GameDriver.SCREEN_HEIGHT
+                                                                                      - 120);
+    myBuffer.drawString("Number of pokemon.entities.Pokemon Seen: " + numPokemonSeen, GameDriver.SCREEN_WIDTH
+                                                                                      - 250, GameDriver.SCREEN_HEIGHT
+                                                                                             - 95);
     myBuffer.drawString(
-        "Number of pokemon.entities.Pokemon Caught: " + numPokemonOwned, WIDTH - 250, HEIGHT - 70);
-    myBuffer.drawString("Location: " + game.mapName, WIDTH - 250, HEIGHT - 45);
+        "Number of pokemon.entities.Pokemon Caught: " + numPokemonOwned, GameDriver.SCREEN_WIDTH
+                                                                         - 250, GameDriver.SCREEN_HEIGHT
+                                                                                - 70);
+    myBuffer.drawString("Location: " + game.mapName, GameDriver.SCREEN_WIDTH - 250, GameDriver.SCREEN_HEIGHT
+                                                                                    - 45);
   }
 
   private void drawPersonalScreen() {
     ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
-    myBuffer.drawImage(me.getImage(), 30, 30, WIDTH - 240, HEIGHT - 180, null);
+    myBuffer.drawImage(me.getImage(), 30, 30, GameDriver.SCREEN_WIDTH - 240, GameDriver.SCREEN_HEIGHT
+                                                                             - 180, null);
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(GameScreen.extraLargeFont);
-    myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
+    myBuffer.drawString("Name: " + PlayPanel.myName, GameDriver.SCREEN_WIDTH - 180, GameDriver.SCREEN_HEIGHT
+                                                                                    - 160);
     myBuffer.setFont(GameScreen.largerLargeFont);
-    myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
+    myBuffer.drawString("Money: " + PlayPanel.myMoney, GameDriver.SCREEN_WIDTH - 250, GameDriver.SCREEN_HEIGHT
+                                                                                      - 120);
     myBuffer.drawString("Number of pokemon.entities.Pokemon Seen: " + numPokemonSeen,
-                        WIDTH - 250,
-                        HEIGHT - 95);
+                        GameDriver.SCREEN_WIDTH - 250,
+                        GameDriver.SCREEN_HEIGHT - 95);
     myBuffer.drawString("Number of pokemon.entities.Pokemon Caught: " + numPokemonOwned,
-                        WIDTH - 250,
-                        HEIGHT - 70);
+                        GameDriver.SCREEN_WIDTH - 250,
+                        GameDriver.SCREEN_HEIGHT - 70);
   }
 
   private void updateAttackOptions() {
