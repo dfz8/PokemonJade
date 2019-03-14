@@ -89,7 +89,7 @@ public class OptionsPanel extends JPanel {
     //instantiate game buttons which are actually optionboards
     normalOptions = new OptionBoard[6];
     // for(int i = 0; i < normalOptions.length; i++)
-    normalOptions[0] = new OptionBoard(10, 10, 100, 35, Color.GREEN, "pokemon.entities.Pokemon");
+    normalOptions[0] = new OptionBoard(10, 10, 100, 35, Color.GREEN, "Pokemon");
     normalOptions[1] = new OptionBoard(150, 10, 100, 35, Color.GREEN, "Pokedex");
     normalOptions[2] = new OptionBoard(10, 60, 100, 35, Color.GREEN, PlayPanel.myName);
     normalOptions[3] = new OptionBoard(150, 60, 100, 35, Color.GREEN, "Bag");
@@ -122,7 +122,7 @@ public class OptionsPanel extends JPanel {
     battleOptions[0] = new OptionBoard(WIDTH - 260, HEIGHT - 45, 70, 35, Color.WHITE, "Bag");
     battleOptions[1] = new OptionBoard(WIDTH - 205, HEIGHT - 195, 150, 50, Color.WHITE, "Fight");
     battleOptions[2] = new OptionBoard(WIDTH - 170, HEIGHT - 45, 70, 35, Color.WHITE, "Run");
-    battleOptions[3] = new OptionBoard(WIDTH - 85, HEIGHT - 45, 70, 35, Color.WHITE, "pokemon.entities.Pokemon");
+    battleOptions[3] = new OptionBoard(WIDTH - 85, HEIGHT - 45, 70, 35, Color.WHITE, "Pokemon");
 
     attackOptions = new OptionBoard[5];
     attackOptions[0] = new OptionBoard(WIDTH - 245, HEIGHT - 195, 70, 35, Color.WHITE, "1");
