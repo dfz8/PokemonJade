@@ -6,9 +6,9 @@ Made in collaboration with Naveen Ambati and Tina Ju.
 
 In order to play the game, make sure Java is installed on your computer.
 
-To run, download the entire folder and run GameDriver:
+To run, download the entire folder and run pokemon.GameDriver:
 
-  javac GameDriver
+  javac pokemon.GameDriver
   
 
 The project is far from polished, but I hope you'll find it enjoyable anyways.

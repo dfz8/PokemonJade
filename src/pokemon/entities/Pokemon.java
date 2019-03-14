@@ -1,5 +1,7 @@
+package pokemon.entities;
+
 public class Pokemon {
-  static double rate = 1.5;//1.124478;
+  public static double rate = 1.5;//1.124478;
 
   private String myName;
   private String myType;
@@ -31,7 +33,7 @@ public class Pokemon {
    	*/
 
   //list of first 151 pokemon:
-  static String[] pokemons = {"Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon",
+  public static String[] pokemons = {"Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon",
       "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
       "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate",
       "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash",

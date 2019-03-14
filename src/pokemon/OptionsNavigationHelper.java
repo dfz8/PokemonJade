@@ -1,3 +1,5 @@
+package pokemon;
+
 class OptionsNavigationHelper {
 
   static void toNormal() {

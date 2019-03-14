@@ -1,4 +1,4 @@
-//David Zhao, 3/31/2011
+package pokemon;//David Zhao, 3/31/2011
 //top screen of a "DS"
 /*
 RC C C C ...
@@ -8,6 +8,10 @@ R
 .
 matrix[r][c]
 */
+
+import pokemon.controllers.MovementController;
+import pokemon.entities.Pokemon;
+import pokemon.entities.Terrain;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,10 +25,10 @@ public class GameScreen extends JPanel {
   //mandatory stuff
   BufferedImage myImage;
   Graphics myBuffer;
-  private static final int WIDTH = 275;
-  private static final int HEIGHT = 215;
-  static final int SPRITE_WIDTH = 23;
-  static final int SPRITE_HEIGHT = 26;
+  public static final int WIDTH = 275;
+  public static final int HEIGHT = 215;
+  public static final int SPRITE_WIDTH = 23;
+  public static final int SPRITE_HEIGHT = 26;
   Color bgColor;
   Color myColor;
   private static PlayPanel controlPanel;
@@ -208,7 +212,7 @@ public class GameScreen extends JPanel {
         curC = newC;
       } catch (IOException a) {
         AlertHelper.fatal(
-            "Error: loadMap() has failed in GameScreen @ RefreshListener: "
+            "Error: loadMap() has failed in pokemon.GameScreen @ RefreshListener: "
             + map[curR][curC].getMapLink());
       }
     }
@@ -225,7 +229,7 @@ public class GameScreen extends JPanel {
   private void drawSummaryScreen() {
     bgColor = Color.WHITE;
     ImageIcon poke = new ImageIcon(
-        "./resources/images/Pokemon/" + summaryPoke.getName() + ".png");
+        "./resources/images/pokemon.entities.Pokemon/" + summaryPoke.getName() + ".png");
     myBuffer.drawImage(poke.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);
@@ -234,7 +238,7 @@ public class GameScreen extends JPanel {
     myBuffer.drawString("Level: " + summaryPoke.getLevel(), 10, 40);
 
     //stats:
-    myBuffer.drawString("Attack:", 10, 150);
+    myBuffer.drawString("pokemon.Attack:", 10, 150);
     myBuffer.drawString("" + summaryPoke.getAttackLevel(), 70, 150);
     myBuffer.drawString("Defense:", 10, 170);
     myBuffer.drawString("" + summaryPoke.getDefenseLevel(), 70, 170);
@@ -279,7 +283,7 @@ public class GameScreen extends JPanel {
     bgColor = Color.WHITE;
 
     //sprite of pokemon:
-    myPokeIcon = new ImageIcon("./resources/images/Pokemon/" + myPoke.getName() + "Back.png");
+    myPokeIcon = new ImageIcon("./resources/images/pokemon.entities.Pokemon/" + myPoke.getName() + "Back.png");
     myBuffer.drawImage(myPokeIcon.getImage(), attackX, attackY, null);
     myBuffer.drawImage(enemyIcon.getImage(), attackXEnemy, attackYEnemy, null);
     //draw display of hp and stuff:
@@ -403,8 +407,8 @@ public class GameScreen extends JPanel {
       if (enemyMove == 1) {
         AttackLibrary.fill();
         enemyAttackName = enemy.chooseAttackEnemy();
-        //b = new Attack(enemyAttackName,AttackLibrary.getType(enemyAttackName),10,
-        // AttackLibrary.getAttackDamage(enemyAttackName));
+        //b = new pokemon.Attack(enemyAttackName,pokemon.AttackLibrary.getType(enemyAttackName),10,
+        // pokemon.AttackLibrary.getAttackDamage(enemyAttackName));
       }
 
       if (enemyMove <= 5) {
@@ -421,7 +425,7 @@ public class GameScreen extends JPanel {
 
       } else if (enemyMove >= 11) {
 
-        // AttackLibrary.fill();
+        // pokemon.AttackLibrary.fill();
         // enemyAttackName = enemy.chooseAttackEnemy();
         double accuracy = Math.random() * 100;
         if (accuracy > 5) {
@@ -513,7 +517,7 @@ public class GameScreen extends JPanel {
         150,
         150); //default
     setRandomEnemy();
-    enemyIcon = new ImageIcon("./resources/images/Pokemon/" + enemy.getName() + ".png");
+    enemyIcon = new ImageIcon("./resources/images/pokemon.entities.Pokemon/" + enemy.getName() + ".png");
 
     //pokedex:
     controlPanel.hasSeenPokemon[Pokemon.getIndex(enemy.getName())] = true;

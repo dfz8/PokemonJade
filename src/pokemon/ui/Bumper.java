@@ -1,3 +1,5 @@
+package pokemon.ui;
+
 import java.awt.*;
 
 public class Bumper {

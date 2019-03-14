@@ -1,4 +1,7 @@
-//David Zhao, 3/31/2011
+package pokemon;//David Zhao, 3/31/2011
+
+import pokemon.controllers.MovementController;
+import pokemon.entities.Pokemon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +46,7 @@ public class PlayPanel extends JPanel {
   }
 
   private static void initGame() {
-    AlertHelper.alert("Welcome to Pokemon: Jade!");
+    AlertHelper.alert("Welcome to pokemon.entities.Pokemon: Jade!");
     String choice = JOptionPane.showInputDialog("1. New game?\n2. Saved game?");
     if (choice.equals("2")) {
       myName = JOptionPane.showInputDialog("What's your player name? (case sensitive)");
@@ -76,8 +79,8 @@ public class PlayPanel extends JPanel {
   }
 
   private static void runNux() {
-    AlertHelper.alert("Welcome to the world of Pokemon! But first...");
-    AlertHelper.alert("I'm Professor Oak, a Pokemon expert.");
+    AlertHelper.alert("Welcome to the world of pokemon.entities.Pokemon! But first...");
+    AlertHelper.alert("I'm Professor Oak, a pokemon.entities.Pokemon expert.");
     AlertHelper.alert(
         "I'm glad you want to be a pokemon trainer!  It takes courage" +
         " and hard work to be a great one.");

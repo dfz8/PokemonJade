@@ -1,4 +1,8 @@
-//David Zhao, 3/31/2011
+package pokemon;//David Zhao, 3/31/2011
+
+import pokemon.entities.PokeBall;
+import pokemon.entities.Pokemon;
+import pokemon.ui.OptionBoard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,7 +71,7 @@ public class OptionsPanel extends JPanel {
         pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
     }
     OptionsPanel.curPanel = OptionsPanel.partyPanel;
-    OptionsPanel.partyText = "Select a Pokemon.";
+    OptionsPanel.partyText = "Select a pokemon.entities.Pokemon.";
 
     GameScreen.canMove = false;
   }
@@ -85,7 +89,7 @@ public class OptionsPanel extends JPanel {
     //instantiate game buttons which are actually optionboards
     normalOptions = new OptionBoard[6];
     // for(int i = 0; i < normalOptions.length; i++)
-    normalOptions[0] = new OptionBoard(10, 10, 100, 35, Color.GREEN, "Pokemon");
+    normalOptions[0] = new OptionBoard(10, 10, 100, 35, Color.GREEN, "pokemon.entities.Pokemon");
     normalOptions[1] = new OptionBoard(150, 10, 100, 35, Color.GREEN, "Pokedex");
     normalOptions[2] = new OptionBoard(10, 60, 100, 35, Color.GREEN, PlayPanel.myName);
     normalOptions[3] = new OptionBoard(150, 60, 100, 35, Color.GREEN, "Bag");
@@ -118,7 +122,7 @@ public class OptionsPanel extends JPanel {
     battleOptions[0] = new OptionBoard(WIDTH - 260, HEIGHT - 45, 70, 35, Color.WHITE, "Bag");
     battleOptions[1] = new OptionBoard(WIDTH - 205, HEIGHT - 195, 150, 50, Color.WHITE, "Fight");
     battleOptions[2] = new OptionBoard(WIDTH - 170, HEIGHT - 45, 70, 35, Color.WHITE, "Run");
-    battleOptions[3] = new OptionBoard(WIDTH - 85, HEIGHT - 45, 70, 35, Color.WHITE, "Pokemon");
+    battleOptions[3] = new OptionBoard(WIDTH - 85, HEIGHT - 45, 70, 35, Color.WHITE, "pokemon.entities.Pokemon");
 
     attackOptions = new OptionBoard[5];
     attackOptions[0] = new OptionBoard(WIDTH - 245, HEIGHT - 195, 70, 35, Color.WHITE, "1");
@@ -218,7 +222,7 @@ public class OptionsPanel extends JPanel {
   //where the click code is run
   public void searchButton(String s) {
     if (curPanel == normalPanel) {
-      if (s.equals("Pokemon")) {
+      if (s.equals("pokemon.entities.Pokemon")) {
         toParty();
       } else if (s.equals("Pokedex"))
         OptionsNavigationHelper.toPokedex();
@@ -249,7 +253,7 @@ public class OptionsPanel extends JPanel {
               //switch
               if (GameScreen.inBattle) {
                 if (i == 0)
-                  //AlertHelper.alert("That pokemon is already out!");
+                  //pokemon.AlertHelper.alert("That pokemon is already out!");
                   partyText = "That pokemon is already out!";
                 else {
                   switchPokemonInd = i;
@@ -333,7 +337,7 @@ public class OptionsPanel extends JPanel {
         OptionsNavigationHelper.toAttacks();
       if (s.equals("Bag"))
         OptionsNavigationHelper.toBag();
-      if (s.equals("Pokemon"))
+      if (s.equals("pokemon.entities.Pokemon"))
         toSwitchPokemon();
       if (s.equals("Run")) {
         game.resetOrderOfPokemonInParty();
@@ -385,14 +389,14 @@ public class OptionsPanel extends JPanel {
                 game.enemy.getMaxHP());
             OptionsNavigationHelper.toNormal();
           } else {
-            AlertHelper.alert("Awww, the Pokemon broke out of the pokeball!");
+            AlertHelper.alert("Awww, the pokemon.entities.Pokemon broke out of the pokeball!");
             OptionsNavigationHelper.toBlack();
             GameScreen.isAttacking = false;
             game.enemyIsAttacking = true;
           }
         } else
           JOptionPane.showMessageDialog(null,
-                                        "You've already caught this Pokemon!\nSave your " +
+                                        "You've already caught this pokemon.entities.Pokemon!\nSave your " +
                                         "pokeballs!");
       }
 
@@ -586,9 +590,9 @@ public class OptionsPanel extends JPanel {
     myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
     myBuffer.setFont(GameScreen.largerLargeFont);
     myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
-    myBuffer.drawString("Number of Pokemon Seen: " + numPokemonSeen, WIDTH - 250, HEIGHT - 95);
+    myBuffer.drawString("Number of pokemon.entities.Pokemon Seen: " + numPokemonSeen, WIDTH - 250, HEIGHT - 95);
     myBuffer.drawString(
-        "Number of Pokemon Caught: " + numPokemonOwned, WIDTH - 250, HEIGHT - 70);
+        "Number of pokemon.entities.Pokemon Caught: " + numPokemonOwned, WIDTH - 250, HEIGHT - 70);
     myBuffer.drawString("Location: " + game.mapName, WIDTH - 250, HEIGHT - 45);
   }
 
@@ -600,10 +604,10 @@ public class OptionsPanel extends JPanel {
     myBuffer.drawString("Name: " + PlayPanel.myName, WIDTH - 180, HEIGHT - 160);
     myBuffer.setFont(GameScreen.largerLargeFont);
     myBuffer.drawString("Money: " + PlayPanel.myMoney, WIDTH - 250, HEIGHT - 120);
-    myBuffer.drawString("Number of Pokemon Seen: " + numPokemonSeen,
+    myBuffer.drawString("Number of pokemon.entities.Pokemon Seen: " + numPokemonSeen,
                         WIDTH - 250,
                         HEIGHT - 95);
-    myBuffer.drawString("Number of Pokemon Caught: " + numPokemonOwned,
+    myBuffer.drawString("Number of pokemon.entities.Pokemon Caught: " + numPokemonOwned,
                         WIDTH - 250,
                         HEIGHT - 70);
   }

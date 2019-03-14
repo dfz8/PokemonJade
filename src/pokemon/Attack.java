@@ -1,3 +1,7 @@
+package pokemon;
+
+import pokemon.entities.Pokemon;
+
 public class Attack {
   private String name;
   private String type;
@@ -13,7 +17,7 @@ public class Attack {
 
   }
 
-  // public static int getAttackDamage(Pokemon user, Pokemon opponent, int moveDamage){
+  // public static int getAttackDamage(pokemon.entities.Pokemon user, pokemon.entities.Pokemon opponent, int moveDamage){
   // double damage = ((((((user.getLevel() * 2 / 5) + 2) * moveDamage * user.getAttackLevel()) /
   // 50) / opponent.getDefenseLevel()) + 2);
   // if(Math.random() < 0.1) //critical hit

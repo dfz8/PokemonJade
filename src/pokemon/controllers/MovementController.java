@@ -1,3 +1,7 @@
+package pokemon.controllers;
+
+import pokemon.ImageLibrary;
+
 import javax.swing.*;
 
 public class MovementController {

@@ -1,13 +1,13 @@
-//David Zhao	12/9/2010
+package pokemon.ui;//David Zhao	12/9/2010
 //updated by David as of 6/11
 
 import java.awt.*;
 import javax.swing.*;
 
 public class OptionBoard extends Bumper {
-  static final int Y_HIGH = 2;
-  static final int Y_MIDDLE = 1;
-  static final int Y_LOW = 0;
+  public static final int Y_HIGH = 2;
+  public static final int Y_MIDDLE = 1;
+  public static final int Y_LOW = 0;
   private int myLocation;
 
   private ImageIcon myImage;

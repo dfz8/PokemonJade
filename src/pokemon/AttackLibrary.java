@@ -1,3 +1,5 @@
+package pokemon;
+
 public class AttackLibrary {
   static Attack[] attackArray = new Attack[29];
 
@@ -30,7 +32,7 @@ public class AttackLibrary {
     attackArray[25] = new Attack("Vine Whip", "Grass", 10, 35);
     attackArray[26] = new Attack("Absorb", "Grass", 25, 20);
     attackArray[27] = new Attack("Gust", "Flying", 35, 40);
-    attackArray[28] = new Attack("Quick Attack", "Normal", 30, 40);
+    attackArray[28] = new Attack("Quick pokemon.Attack", "Normal", 30, 40);
   }
 
   public static Attack[] returnAttacks() {

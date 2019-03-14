@@ -1,3 +1,8 @@
+package pokemon.entities;
+
+import pokemon.GameScreen;
+import pokemon.ImageLibrary;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,36 +22,36 @@ public class Terrain {
     neg numbers = terrain you can't walk through
   */
 
-  static final int UNKNOWN = -12345;
+  public static final int UNKNOWN = -12345;
 
-  static final int POKEMON_CENTER_UL = -1001; //P1
-  static final int POKEMON_CENTER_UM = -1002; //P2
-  static final int POKEMON_CENTER_UR = -1003; //P3
-  static final int POKEMON_CENTER_ML = -1004; //P4
-  static final int POKEMON_CENTER_MM = -1005; //P5
-  static final int POKEMON_CENTER_MR = -1006; //P6
-  static final int POKEMON_CENTER_TL = -1007; //P7
-  static final int POKEMON_CENTER_TM = -1008; //P8
-  static final int POKEMON_CENTER_TR = -1009; //P9
+  public static final int POKEMON_CENTER_UL = -1001; //P1
+  public static final int POKEMON_CENTER_UM = -1002; //P2
+  public static final int POKEMON_CENTER_UR = -1003; //P3
+  public static final int POKEMON_CENTER_ML = -1004; //P4
+  public static final int POKEMON_CENTER_MM = -1005; //P5
+  public static final int POKEMON_CENTER_MR = -1006; //P6
+  public static final int POKEMON_CENTER_TL = -1007; //P7
+  public static final int POKEMON_CENTER_TM = -1008; //P8
+  public static final int POKEMON_CENTER_TR = -1009; //P9
 
-  static final int SIGNPOST = -12;          // s
-  static final int TREE_NORMAL = -11;       // t
-  static final int TREE_DARK = -10;         // T
+  public static final int SIGNPOST = -12;          // s
+  public static final int TREE_NORMAL = -11;       // t
+  public static final int TREE_DARK = -10;         // T
 
-  static final int BLACK_SPACE = 0;         // _
-  static final int DOORMAT_UP_LEFT = 1;     // A
-  static final int DOORMAT_DOWN_LEFT = 2;   // a
-  static final int DOORMAT_UP_RIGHT = 3;    // B
-  static final int DOORMAT_DOWN_RIGHT = 4;  // b
-  static final int GROUND = 5;              // .
-  static final int GRASS = 6;               // g
-  static final int FOREST_GRASS_NORMAL = 7; // ,
-  static final int FLOWERS = 8;             // y
+  public static final int BLACK_SPACE = 0;         // _
+  public static final int DOORMAT_UP_LEFT = 1;     // A
+  public static final int DOORMAT_DOWN_LEFT = 2;   // a
+  public static final int DOORMAT_UP_RIGHT = 3;    // B
+  public static final int DOORMAT_DOWN_RIGHT = 4;  // b
+  public static final int GROUND = 5;              // .
+  public static final int GRASS = 6;               // g
+  public static final int FOREST_GRASS_NORMAL = 7; // ,
+  public static final int FLOWERS = 8;             // y
 
-  static final int HEALING_TILE = 500;      // +
-  static final int GATE_GROUND = 501;       // !
-  static final int GATE_BLACK_SPACE = 501;  // @
-  static final int GATE_FOREST_GRASS_NORMAL = 502; //#
+  public static final int HEALING_TILE = 500;      // +
+  public static final int GATE_GROUND = 501;       // !
+  public static final int GATE_BLACK_SPACE = 501;  // @
+  public static final int GATE_FOREST_GRASS_NORMAL = 502; //#
 
   private ImageIcon myImage;
   private int myTerrainType;

@@ -1,3 +1,7 @@
+package pokemon.entities;
+
+import pokemon.AlertHelper;
+
 public class PokeBall {
   public int myType;
   public int myTotalHealth;
