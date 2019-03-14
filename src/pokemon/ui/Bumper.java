@@ -6,23 +6,15 @@ public class Bumper {
 
   private int myX;
   private int myY;
-  private int myXWidth;
-  private int myYWidth;
+  private int myWidth;
+  private int myHeight;
   private Color myColor;
-
-  public Bumper() {
-    myX = 50;
-    myY = 50;
-    myYWidth = 100;
-    myXWidth = 50;
-    myColor = Color.BLACK;
-  }
 
   public Bumper(int x, int y, int xWidth, int yWidth, Color c) {
     myX = x;
     myY = y;
-    myXWidth = xWidth;
-    myYWidth = yWidth;
+    myWidth = xWidth;
+    myHeight = yWidth;
     myColor = c;
   }
 
@@ -35,12 +27,12 @@ public class Bumper {
     return myY;
   }
 
-  public int getXWidth() {
-    return myXWidth;
+  public int getWidth() {
+    return myWidth;
   }
 
-  public int getYWidth() {
-    return myYWidth;
+  public int getHeight() {
+    return myHeight;
   }
 
   public Color getColor() {
@@ -56,12 +48,12 @@ public class Bumper {
     myY = y;
   }
 
-  public void setXWidth(int x) {
-    myXWidth = x;
+  public void setWidth(int x) {
+    myWidth = x;
   }
 
-  public void setYWidth(int y) {
-    myYWidth = y;
+  public void setHeight(int y) {
+    myHeight = y;
   }
 
   public void setColor(Color c) {
@@ -69,9 +61,9 @@ public class Bumper {
   }
 
   // draws a rectangular bumper on the buffer
-  public void draw(Graphics myBuffer) {
-    myBuffer.setColor(getColor());
-    myBuffer.fillRect(getX(), getY(), getXWidth(), getYWidth());
+  public void draw(Graphics buffer) {
+    buffer.setColor(getColor());
+    buffer.fillRect(getX(), getY(), getWidth(), getHeight());
   }
 
 }

@@ -1,34 +1,40 @@
-package pokemon.ui;//David Zhao	12/9/2010
-//updated by David as of 6/11
+package pokemon.ui;
 
 import java.awt.*;
 import javax.swing.*;
 
 public class OptionBoard extends Bumper {
-  public static final int Y_HIGH = 2;
-  public static final int Y_MIDDLE = 1;
-  public static final int Y_LOW = 0;
-  private int myLocation;
+
+  public enum TextPlacement {
+    HIGH,
+    MIDDLE,
+    LOW
+  }
+
+  public static final TextPlacement Y_MIDDLE = TextPlacement.MIDDLE;
+  public static final TextPlacement Y_LOW = TextPlacement.LOW;
+  private static final int HIGHLIGHT_SIZE = 1;
+
+  private TextPlacement myTextPlacement;
 
   private ImageIcon myImage;
   private String myText;
-  private boolean lookForClick = false;
-  private boolean showHighlight = false;
-  private boolean hasPicAsImage = false;
-  private static int highlightSize = 1;
+  private boolean lookForClick;
+  private boolean showHighlight;
+  private boolean hasPicAsImage ;
 
   public OptionBoard(int x, int y, int width, int height, Color c, String text) {
     super(x, y, width, height, c);
     lookForClick = true;
     myText = text;
-    myLocation = 0;// Y_LOW;
+    myTextPlacement = Y_LOW;
   }
 
-  public OptionBoard(int x, int y, int width, int height, Color c, String text, int myLoc) {
+  public OptionBoard(int x, int y, int width, int height, Color c, String text, TextPlacement textPlacement) {
     super(x, y, width, height, c);
     lookForClick = true;
     myText = text;
-    myLocation = myLoc;
+    myTextPlacement = textPlacement;
   }
 
   public OptionBoard(int x, int y, int width, int height, String picName, boolean click) {
@@ -57,23 +63,21 @@ public class OptionBoard extends Bumper {
   public void draw(Graphics buffer) {
     buffer.setColor(Color.RED);
     if (showHighlight && lookForClick) //shows the highlight
-      buffer.fillRect(getX() - highlightSize,
-                      getY() - highlightSize,
-                      getXWidth() + 2 * highlightSize,
-                      getYWidth() + 2 * highlightSize);
+      buffer.fillRect(
+          getX() - HIGHLIGHT_SIZE,
+          getY() - HIGHLIGHT_SIZE,
+          getWidth() + 2 * HIGHLIGHT_SIZE,
+          getHeight() + 2 * HIGHLIGHT_SIZE);
     if (hasPicAsImage)
-      buffer.drawImage(myImage.getImage(), getX(), getY(), getXWidth(), getYWidth(), null);
+      buffer.drawImage(myImage.getImage(), getX(), getY(), getWidth(), getHeight(), null);
     else {
-      buffer.setColor(getColor());
-      buffer.fillRect(getX(), getY(), getXWidth(), getYWidth());
+      super.draw(buffer);
     }
     buffer.setColor(Color.BLACK);
-
-    int decrement = myLocation * getYWidth() / 2;
-    if (myLocation == Y_HIGH)
-      decrement -= (getYWidth() / 4 + 3);
-    buffer.drawString(myText, getX(), getY() + getYWidth() - decrement - 1);
-
+    int decrement = 0; // myTextPlacement * getHeight() / 2;
+    if (myTextPlacement == TextPlacement.HIGH)
+      decrement -= (getHeight() / 4 + 3);
+    buffer.drawString(myText, getX(), getY() + getHeight() - decrement - 1);
   }
 
   public void setText(String t) {
