@@ -81,7 +81,9 @@ public class GameScreen extends JPanel {
     controlPanel = panel;
     mMovementController = movementController;
 
-    myImage = new BufferedImage(GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
+    myImage = new BufferedImage(GameDriver.SCREEN_WIDTH,
+                                GameDriver.SCREEN_HEIGHT,
+                                BufferedImage.TYPE_INT_RGB);
     myBuffer = myImage.getGraphics();
     myBuffer.setColor(bgColor);
     myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
@@ -227,7 +229,7 @@ public class GameScreen extends JPanel {
   private void drawSummaryScreen() {
     bgColor = Color.WHITE;
     ImageIcon poke = new ImageIcon(
-        "./resources/images/pokemon.entities.Pokemon/" + summaryPoke.getName() + ".png");
+        "./resources/images/pokemon/" + summaryPoke.getName() + ".png");
     myBuffer.drawImage(poke.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);
@@ -245,43 +247,23 @@ public class GameScreen extends JPanel {
     myBuffer.drawString(summaryPoke.getCurrentHP() + " / " + summaryPoke.getMaxHP(), 40, 80);
     myBuffer.setFont(smallFont);
     myBuffer.drawString("HP:", 10, 65);
-    myBuffer.drawRect(22, 59, 101, 7);
-    drawHPBar(summaryPoke, 0, 37);
+    DrawingHelper.drawFullSizeHPBar(myBuffer, summaryPoke, 23, 60);
     //exp
-    drawExpBar(summaryPoke, 0, 40);
+    DrawingHelper.drawExpBar(myBuffer, summaryPoke, 23, 85);
+    myBuffer.setColor(Color.BLACK);
+    myBuffer.drawString("XP:", 10, 85);
     myBuffer.drawString(
         summaryPoke.getMyEXP() + " out of " + summaryPoke.getMyNextLevelEXP(),
         23,
         100);
   }
 
-  private void drawHPBar(Pokemon pokemon, int x, int y) {
-    myBuffer.setColor(getPokemonHealthBarColor(pokemon));
-    myBuffer.fillRect(
-        x + 23,
-        y + 23,
-        (int) ((100) * (1.0 * myPoke.getCurrentHP() / myPoke.getMaxHP())),
-        7);
-  }
-
-  private void drawExpBar(Pokemon pokemon, int x, int y) {
-    myBuffer.setColor(Color.BLACK);
-    myBuffer.drawRect(x + 23, y + 40, 100, 4);
-    myBuffer.setColor(Color.BLUE);
-
-    myBuffer.fillRect(
-        x + 23,
-        y + 40,
-        (int) (100.0 * (pokemon.getMyEXP() - pokemon.getMyPastLevelEXP()) /
-               (pokemon.getMyNextLevelEXP() - pokemon.getMyPastLevelEXP())),
-        5);
-  }
-
   private void drawBattleScene() {
     bgColor = Color.WHITE;
 
     //sprite of pokemon:
-    myPokeIcon = new ImageIcon("./resources/images/pokemon.entities.Pokemon/" + myPoke.getName() + "Back.png");
+    myPokeIcon = new ImageIcon(
+        "./resources/images/pokemon/" + myPoke.getName() + "Back.png");
     myBuffer.drawImage(myPokeIcon.getImage(), attackX, attackY, null);
     myBuffer.drawImage(enemyIcon.getImage(), attackXEnemy, attackYEnemy, null);
     //draw display of hp and stuff:
@@ -313,18 +295,17 @@ public class GameScreen extends JPanel {
     myBuffer.drawString("LV: " + enemy.getLevel(), enemyX + 90, enemyY + 20);
     myBuffer.drawString("LV: " + myPoke.getLevel(), myX + 90, myY + 20);
 
-    //me:
-    drawHPBar(myPoke, myX, myY);
 
-    //enemy:
-    drawHPBar(enemy, enemyX, enemyY);
-
-    //EXP Bar
-    drawExpBar(myPoke, myX, myY);
+    DrawingHelper.drawFullSizeHPBar(myBuffer, myPoke, myX + 23, myY + 23);
+    DrawingHelper.drawFullSizeHPBar(myBuffer, enemy, enemyX + 23, enemyY + 23);
+    DrawingHelper.drawExpBar(myBuffer, myPoke, myX + 23, myY + 40);
 
     //textbox:
     myBuffer.setColor(Color.BLACK);
-    myBuffer.drawRect(0, myY + 60, GameDriver.SCREEN_WIDTH - 1, GameDriver.SCREEN_HEIGHT - 50 - myY);
+    myBuffer.drawRect(0,
+                      myY + 60,
+                      GameDriver.SCREEN_WIDTH - 1,
+                      GameDriver.SCREEN_HEIGHT - 50 - myY);
     myBuffer.setFont(normalFont);
 
     if (controlPanel.options.switchingPokemon) {
@@ -516,7 +497,8 @@ public class GameScreen extends JPanel {
         .setMaxHp(150)
         .build();
     setRandomEnemy();
-    enemyIcon = new ImageIcon("./resources/images/pokemon.entities.Pokemon/" + enemy.getName() + ".png");
+    enemyIcon = new ImageIcon(
+        "./resources/images/pokemon.entities.Pokemon/" + enemy.getName() + ".png");
 
     //pokedex:
     controlPanel.hasSeenPokemon[Pokemon.getIndex(enemy.getName())] = true;
@@ -574,14 +556,6 @@ public class GameScreen extends JPanel {
     enemy.setAttackTwo(enemyInfo[3]);
     enemy.setAttackThree(enemyInfo[4]);
     enemy.setAttackFour(enemyInfo[5]);
-  }
-
-  public Color getPokemonHealthBarColor(Pokemon poke) {
-    if (1.0 * poke.getCurrentHP() / poke.getMaxHP() < .25)
-      return Color.RED;
-    if (1.0 * poke.getCurrentHP() / poke.getMaxHP() < .5)
-      return Color.YELLOW;
-    return Color.GREEN;
   }
 
   public static void loadMap(String name) throws IOException {

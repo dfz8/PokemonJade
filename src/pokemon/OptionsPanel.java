@@ -3,7 +3,6 @@ package pokemon;
 import pokemon.entities.PokeBall;
 import pokemon.entities.Pokemon;
 import pokemon.ui.OptionBoard;
-import pokemon.ui.OptionBoard.TextPlacement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,9 +41,10 @@ public class OptionsPanel extends JPanel {
   static int numPokemonOwned = 0;
   static String partyText = "";
 
+  // todo refactor each into a controller
   OptionBoard[] normalOptions;
   OptionBoard[] pokemonOptions;
-  OptionBoard[] pokemonSelectOptions; //shows once you click on a pokemon in the party
+  OptionBoard[] pokemonSelectOptions;
   OptionBoard[] pokedexOptions;
   OptionBoard[] battleOptions;
   OptionBoard[] attackOptions;
@@ -429,32 +429,12 @@ public class OptionsPanel extends JPanel {
         } else
           pokemonOptions[i].setColor(Color.WHITE);
 
-
-        //bar outline
-        myBuffer.setColor(Color.BLACK);
-        myBuffer.drawRect(pokemonOptions[i].getX() + x_inc - 1,
-                          pokemonOptions[i].getY() + y_inc + 1,
-                          51,
-                          6);
-        //hp bar
-        Color c;
-        if ((1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP()
-            > .5)
-          c = Color.GREEN;
-        else if (
-            (1.0 * PlayPanel.myPokemon[i].getCurrentHP()) / PlayPanel.myPokemon[i].getMaxHP()
-            > .25)
-          c = Color.YELLOW;
-        else
-          c = Color.RED;
-        myBuffer.setColor(c);
-        myBuffer.fillRect(
+        DrawingHelper.drawHalfSizeHPBar(
+            myBuffer,
+            PlayPanel.myPokemon[i],
             pokemonOptions[i].getX() + x_inc,
-            pokemonOptions[i].getY() + y_inc + 2,
-            (int) ((50) * (1.0 * PlayPanel.myPokemon[i].getCurrentHP()
-                           / PlayPanel.myPokemon[i]
-                               .getMaxHP())),
-            5);
+            pokemonOptions[i].getY() + y_inc + 2);
+
         //hp text
         myBuffer.setFont(GameScreen.smallFont);
         myBuffer.setColor(Color.BLACK);

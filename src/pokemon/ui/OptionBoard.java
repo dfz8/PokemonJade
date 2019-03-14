@@ -11,8 +11,6 @@ public class OptionBoard extends Bumper {
     LOW
   }
 
-  public static final TextPlacement Y_MIDDLE = TextPlacement.MIDDLE;
-  public static final TextPlacement Y_LOW = TextPlacement.LOW;
   private static final int HIGHLIGHT_SIZE = 1;
 
   private TextPlacement myTextPlacement;
@@ -27,7 +25,7 @@ public class OptionBoard extends Bumper {
     super(x, y, width, height, c);
     lookForClick = true;
     myText = text;
-    myTextPlacement = Y_LOW;
+    myTextPlacement = TextPlacement.LOW;
   }
 
   public OptionBoard(int x, int y, int width, int height, Color c, String text, TextPlacement textPlacement) {
