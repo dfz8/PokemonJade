@@ -59,19 +59,20 @@ public class PlayPanel extends JPanel {
       GameScreen.curR = 7;
       GameScreen.curC = 11;
       myPokemon = new Pokemon[100];
-      myPokemon[0] = new Pokemon(
-          "Bulbasaur",
-          "Grass",
-          "Tackle",
-          "Vine Whip",
-          "Absorb",
-          "Headbutt",
-          5,
-          (int) (Math.pow(Pokemon.rate, 5)),
-          14,
-          16,
-          26,
-          26);
+      myPokemon[0] = new Pokemon.Builder()
+          .setName("Bulbasaur")
+          .setType("Grass")
+          .setFirstAttack("Tackle")
+          .setSecondAttack("Vine Whip")
+          .setThirdAttack("Absorb")
+          .setFourthAttack("Headbutt")
+          .setLevel(5)
+          .setExp((int) (Math.pow(Pokemon.expBase, 5)))
+          .setAttack(14)
+          .setDefense(16)
+          .setHp(26)
+          .setMaxHp(26)
+          .build();
       hasPokemon[0] = true;
       hasSeenPokemon[0] = true;
       save();
@@ -166,7 +167,7 @@ public class PlayPanel extends JPanel {
         if (input.equals("null"))
           myPokemon[i] = null;
         else {
-          myPokemon[i] = new Pokemon(input);
+          myPokemon[i] = new Pokemon.Builder().createFrom(input);
           hasPokemon[Pokemon.getIndex(myPokemon[i].getName())] = true; ///<----remove later,
           hasSeenPokemon[Pokemon.getIndex(myPokemon[i].getName())] = true; // also remove later
         }

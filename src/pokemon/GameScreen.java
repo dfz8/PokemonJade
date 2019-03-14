@@ -503,19 +503,20 @@ public class GameScreen extends JPanel {
     myPoke = PlayPanel.myPokemon[0];
 
 
-    enemy = new Pokemon(
-        "Raikou",
-        "Electric",
-        "Tackle",
-        "Shock",
-        "Thunder",
-        "Headbutt",
-        50,
-        0,
-        55,
-        30,
-        150,
-        150); //default
+    enemy = new Pokemon.Builder()
+        .setName("Raikou")
+        .setType("Electric")
+        .setFirstAttack("Tackle")
+        .setSecondAttack("Shock")
+        .setThirdAttack("Thunder")
+        .setFourthAttack("Headbutt")
+        .setLevel(50)
+        .setExp(0)
+        .setAttack(55)
+        .setDefense(30)
+        .setHp(150)
+        .setMaxHp(150)
+        .build();
     setRandomEnemy();
     enemyIcon = new ImageIcon("./resources/images/pokemon.entities.Pokemon/" + enemy.getName() + ".png");
 

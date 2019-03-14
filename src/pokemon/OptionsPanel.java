@@ -374,19 +374,20 @@ public class OptionsPanel extends JPanel {
             PlayPanel.hasPokemon[Pokemon.getIndex(game.enemy.getName())] = true;
             PlayPanel.hasSeenPokemon[Pokemon.getIndex(game.enemy.getName())] = true;
 
-            PlayPanel.myPokemon[index] = new Pokemon(
-                game.enemy.getName(),
-                game.enemy.getType(),
-                game.enemy.getAttackOne(),
-                game.enemy.getAttackTwo(),
-                game.enemy.getAttackThree(),
-                game.enemy.getAttackFour(),
-                game.enemy.getLevel(),
-                game.enemy.getMyEXP(),
-                game.enemy.getAttackLevel(),
-                game.enemy.getDefenseLevel(),
-                game.enemy.getCurrentHP(),
-                game.enemy.getMaxHP());
+            PlayPanel.myPokemon[index] = new Pokemon.Builder()
+                .setName(game.enemy.getName())
+                .setType(game.enemy.getType())
+                .setFirstAttack(game.enemy.getAttackOne())
+                .setSecondAttack(game.enemy.getAttackTwo())
+                .setThirdAttack(game.enemy.getAttackThree())
+                .setFourthAttack(game.enemy.getAttackFour())
+                .setLevel(game.enemy.getLevel())
+                .setExp(game.enemy.getMyEXP())
+                .setAttack(game.enemy.getAttackLevel())
+                .setDefense(game.enemy.getDefenseLevel())
+                .setHp(game.enemy.getCurrentHP())
+                .setMaxHp(game.enemy.getMaxHP())
+                .build();
             OptionsNavigationHelper.toNormal();
           } else {
             AlertHelper.alert("Awww, the pokemon.entities.Pokemon broke out of the pokeball!");

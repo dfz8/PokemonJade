@@ -1,7 +1,7 @@
 package pokemon.entities;
 
 public class Pokemon {
-  public static double rate = 1.5;//1.124478;
+  public static double expBase = 1.5;//1.124478;
 
   private String myName;
   private String myType;
@@ -18,7 +18,7 @@ public class Pokemon {
   private int myEXP;
   private int myCurrentHP;
   private int myMaxHP;
-  private int myNextLevelEXP = (int) (Math.pow(rate, myLevel + 1));
+  private int myNextLevelEXP;
 
   public boolean gainIsSlow = false;
   public boolean gainIsMedium = false;
@@ -60,72 +60,27 @@ public class Pokemon {
    		*/
 
 
-  public Pokemon(String n,
-                 String t,
-                 String a1,
-                 String a2,
-                 String a3,
-                 String a4,
-                 int l,
-                 int aL,
-                 int sA,
-                 int dL,
-                 int sD,
-                 int s,
-                 int e,
-                 int hp) {
-    myName = n;
-    myType = t;
-    attackOne = a1;
-    attackTwo = a2;
-    attackThree = a3;
-    attackFour = a4;
-    myLevel = l;
-    myAttackLevel = aL;
-    mySpecialAttack = sA;
-    myDefenseLevel = dL;
-    mySpecialDefense = sD;
-    mySpeed = s;
-    myEXP = e;
-    //not sure which hp to set to
-    myMaxHP = hp;
+  private Pokemon(Builder builder) {
+    myName = builder.name;
+    myType = builder.type;
+    attackOne = builder.firstAttack;
+    attackTwo = builder.secondAttack;
+    attackThree = builder.thirdAttack;
+    attackFour = builder.fourthAttack;
+    myLevel = builder.level;
+    myAttackLevel = builder.attack;
+    mySpecialAttack = builder.specialAttack;
+    myDefenseLevel = builder.defense;
+    mySpecialDefense =builder.specialDefense;
+    mySpeed = builder.speed;
+    myEXP = builder.exp;
+    myMaxHP = builder.maxHp;
 
     myNextLevelEXP = myEXP * 3;
-
-  }
-
-  public Pokemon(String n,
-                 String t,
-                 String a1,
-                 String a2,
-                 String a3,
-                 String a4,
-                 int l,
-                 int e,
-                 int al,
-                 int dl,
-                 int hp,
-                 int mhp) {
-    myName = n;
-    myType = t;
-    attackOne = a1;
-    attackTwo = a2;
-    attackThree = a3;
-    attackFour = a4;
-    myLevel = l;
-    myEXP = e;
-    //not sure which hp to set to
-    myCurrentHP = hp;
-    myMaxHP = mhp;
-    myAttackLevel = al;
-    myDefenseLevel = dl;
-
-    myNextLevelEXP = (int) (Math.pow(rate, myLevel + 1));
-
   }
 
 
-  public Pokemon(String allData) {
+  private Pokemon(String allData) {
     String[] info = allData.split(", ");
     myName = info[0];
     myType = info[1];
@@ -140,8 +95,7 @@ public class Pokemon {
     myCurrentHP = Integer.parseInt(info[10]);
     myMaxHP = Integer.parseInt(info[11]);
 
-    myNextLevelEXP = (int) (Math.pow(rate, myLevel + 1));
-
+    myNextLevelEXP = (int) (Math.pow(expBase, myLevel + 1));
   }
 
   public static String getPokemon(int index) {
@@ -221,7 +175,7 @@ public class Pokemon {
   }
 
   public int getMyPastLevelEXP() {
-    return (int) (Math.pow(rate, myLevel));
+    return (int) (Math.pow(expBase, myLevel));
   }
 
   //setMethods
@@ -285,7 +239,8 @@ public class Pokemon {
 
   public String toString() {
     return myName + ", " + myType + ", " + attackOne + ", " + attackTwo + ", " + attackThree + "," +
-        " " + attackFour + ", " + myLevel + ", " + myAttackLevel + ", " + myDefenseLevel + ", " + myEXP + ", " + myCurrentHP + ", " + myMaxHP;
+           " " + attackFour + ", " + myLevel + ", " + myAttackLevel + ", " + myDefenseLevel + ", "
+           + myEXP + ", " + myCurrentHP + ", " + myMaxHP;
   }
 
   public void revive() {
@@ -321,7 +276,7 @@ public class Pokemon {
       int hp = (int) (Math.random() * 2 + 2);
       myCurrentHP += hp;
       myMaxHP += hp;
-      myNextLevelEXP = (int) (Math.pow(rate, myLevel + 1));
+      myNextLevelEXP = (int) (Math.pow(expBase, myLevel + 1));
     }
 
   }
@@ -337,5 +292,107 @@ public class Pokemon {
     else
       return attackFour;
 
+  }
+
+  public static class Builder {
+    private String name;
+    private String type;
+    private String firstAttack;
+    private String secondAttack;
+    private String thirdAttack;
+    private String fourthAttack;
+    private int level;
+    private int attack;
+    private int specialAttack;
+    private int defense;
+    private int specialDefense;
+    private int speed;
+    private int exp;
+    private int hp;
+    private int maxHp;
+    private String allData;
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder setType(String type) {
+      this.type = type;
+      return this;
+    }
+
+    public Builder setFirstAttack(String firstAttack) {
+      this.firstAttack = firstAttack;
+      return this;
+    }
+
+    public Builder setSecondAttack(String secondAttack) {
+      this.secondAttack = secondAttack;
+      return this;
+    }
+
+    public Builder setThirdAttack(String thirdAttack) {
+      this.thirdAttack = thirdAttack;
+      return this;
+    }
+
+    public Builder setFourthAttack(String fourthAttack) {
+      this.fourthAttack = fourthAttack;
+      return this;
+    }
+
+    public Builder setLevel(int level) {
+      this.level = level;
+      return this;
+    }
+
+    public Builder setAttack(int attack) {
+      this.attack = attack;
+      return this;
+    }
+
+    public Builder setSpecialAttack(int specialAttack) {
+      this.specialAttack = specialAttack;
+      return this;
+    }
+
+    public Builder setDefense(int defense) {
+      this.defense = defense;
+      return this;
+    }
+
+    public Builder setSpecialDefense(int specialDefense) {
+      this.specialDefense = specialDefense;
+      return this;
+    }
+
+    public Builder setSpeed(int speed) {
+      this.speed = speed;
+      return this;
+    }
+
+    public Builder setExp(int exp) {
+      this.exp = exp;
+      return this;
+    }
+
+    public Builder setHp(int hp) {
+      this.hp = hp;
+      return this;
+    }
+
+    public Builder setMaxHp(int maxHp) {
+      this.maxHp = maxHp;
+      return this;
+    }
+
+    public Pokemon createFrom(String allData) {
+      return new Pokemon(allData);
+    }
+
+    public Pokemon build() {
+      return new Pokemon(this);
+    }
   }
 }
