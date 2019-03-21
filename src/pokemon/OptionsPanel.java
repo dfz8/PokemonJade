@@ -472,8 +472,7 @@ public class OptionsPanel extends JPanel {
             pokemonOptions[i].getX() + x_inc,
             pokemonOptions[i].getY() + pokemonOptions[i].getHeight() - 3);
         //Image
-        ImageIcon pokeImage =
-            new ImageIcon("images/Pokemon/" + PlayPanel.myPokemon[i].getName() + ".png");
+        ImageIcon pokeImage = SpriteHelper.getPokemonFront(PlayPanel.myPokemon[i].getName());
         myBuffer.drawImage(
             pokeImage.getImage(),
             pokemonOptions[i].getX() + pokemonOptions[i].getWidth() - 40,
@@ -502,56 +501,55 @@ public class OptionsPanel extends JPanel {
         GameDriver.SCREEN_HEIGHT
         - 80);
 
-    for (int i = 0; i < pokedexOptions.length; i++) { //-3 to leave out up, down, and back
-      if (i < pokedexOptions.length - 3) {
-        //number
-        String numText = "";
-        if (pokedexStartInd + i + 1 < 100) //+1 for array ind
-        {
-          numText += "0";
-        }
-        if (pokedexStartInd + i + 1 < 10) {
-          numText += "0";
-        }
-        //text
-        if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1]) {
-          pokedexOptions[i].setText(
-              numText + (pokedexStartInd + i) + ". \t" + Pokemon.getPokemon(
-                  pokedexStartInd + i - 1));
-        } else {
-          pokedexOptions[i].setText(numText + (pokedexStartInd + i) + ". \t?????");
-        }
+    ImageIcon pokeball = SpriteHelper.getMisc("pokeball");
 
-        //image of pokemon you're hovering over
-        if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1]) {
-          if (pokedexOptions[i].isHighlighted()) {
-            ImageIcon curImage = new ImageIcon("images/Pokemon/" + Pokemon.getPokemon(
-                pokedexStartInd + i - 1) + ".png");
-            myBuffer.drawImage(
-                curImage.getImage(),
-                GameDriver.SCREEN_WIDTH - 130,
-                GameDriver.SCREEN_HEIGHT
-                - 190,
-                null);
-          }
-        }
-        //pokeballs next to pokemon you have caught
-        ImageIcon pokeball = new ImageIcon("images/pokeball.png"); //move to imageLibrary?
-        if (PlayPanel.hasPokemon[pokedexStartInd + i - 1]) {
+    for (int i = 0; i < pokedexOptions.length - 3; i++) {
+      //-3 to leave out up, down, and back options
+      // todo: switch to numberformat
+      String numText = "";
+      if (pokedexStartInd + i + 1 < 100) {
+        numText += "0";
+      }
+      if (pokedexStartInd + i + 1 < 10) {
+        numText += "0";
+      }
+      //text
+      if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1]) {
+        pokedexOptions[i].setText(
+            numText + (pokedexStartInd + i) + ". \t" + Pokemon.getPokemon(
+                pokedexStartInd + i - 1));
+      } else {
+        pokedexOptions[i].setText(numText + (pokedexStartInd + i) + ". \t?????");
+      }
+
+      //image of pokemon you're hovering over
+      if (PlayPanel.hasSeenPokemon[pokedexStartInd + i - 1]) {
+        if (pokedexOptions[i].isHighlighted()) {
+          ImageIcon curImage = SpriteHelper.getPokemonFront(Pokemon.getPokemon(
+              pokedexStartInd + i - 1));
           myBuffer.drawImage(
-              pokeball.getImage(),
-              pokedexOptions[i].getX() + pokedexOptions[i].getWidth() - 20,
-              pokedexOptions[i].getY(),
-              20,
-              20,
+              curImage.getImage(),
+              GameDriver.SCREEN_WIDTH - 130,
+              GameDriver.SCREEN_HEIGHT
+              - 190,
               null);
         }
+      }
+      //pokeballs next to pokemon you have caught
+      if (PlayPanel.hasPokemon[pokedexStartInd + i - 1]) {
+        myBuffer.drawImage(
+            pokeball.getImage(),
+            pokedexOptions[i].getX() + pokedexOptions[i].getWidth() - 20,
+            pokedexOptions[i].getY(),
+            20,
+            20,
+            null);
       }
     }
   }
 
   private void drawSaveScreen() {
-    ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
+    ImageIcon me = SpriteHelper.getMisc("boy_walk_down_rest");
     myBuffer.drawImage(
         me.getImage(),
         30,
@@ -593,7 +591,7 @@ public class OptionsPanel extends JPanel {
   }
 
   private void drawPersonalScreen() {
-    ImageIcon me = new ImageIcon("images/boy_walk_down_rest.png");
+    ImageIcon me = SpriteHelper.getMisc("boy_walk_down_rest");
     myBuffer.drawImage(
         me.getImage(),
         30,

@@ -232,9 +232,8 @@ public class GameScreen extends JPanel {
 
   private void drawSummaryScreen() {
     bgColor = Color.WHITE;
-    ImageIcon poke = new ImageIcon(
-        "./resources/images/Pokemon/" + summaryPoke.getName() + ".png");
-    myBuffer.drawImage(poke.getImage(), 150, 10, null);
+    ImageIcon pokemon = SpriteHelper.getPokemonFront(summaryPoke.getName());
+    myBuffer.drawImage(pokemon.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(largerLargeFont);
@@ -242,7 +241,7 @@ public class GameScreen extends JPanel {
     myBuffer.drawString("Level: " + summaryPoke.getLevel(), 10, 40);
 
     //stats:
-    myBuffer.drawString("pokemon.Attack:", 10, 150);
+    myBuffer.drawString("Attack:", 10, 150);
     myBuffer.drawString("" + summaryPoke.getAttackLevel(), 70, 150);
     myBuffer.drawString("Defense:", 10, 170);
     myBuffer.drawString("" + summaryPoke.getDefenseLevel(), 70, 170);
@@ -266,8 +265,7 @@ public class GameScreen extends JPanel {
     bgColor = Color.WHITE;
 
     //sprite of pokemon:
-    myPokeIcon = new ImageIcon(
-        "./resources/images/Pokemon/" + myPoke.getName() + "Back.png");
+    myPokeIcon = SpriteHelper.getPokemonBack(myPoke.getName());
     myBuffer.drawImage(myPokeIcon.getImage(), attackX, attackY, null);
     myBuffer.drawImage(enemyIcon.getImage(), attackXEnemy, attackYEnemy, null);
     //draw display of hp and stuff:
@@ -508,8 +506,7 @@ public class GameScreen extends JPanel {
         .setMaxHp(150)
         .build();
     setRandomEnemy();
-    enemyIcon = new ImageIcon(
-        "./resources/images/Pokemon/" + enemy.getName() + ".png");
+    enemyIcon = SpriteHelper.getPokemonFront(enemy.getName());
 
     //pokedex:
     controlPanel.hasSeenPokemon[Pokemon.getIndex(enemy.getName())] = true;
