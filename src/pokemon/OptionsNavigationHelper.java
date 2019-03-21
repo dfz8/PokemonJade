@@ -71,10 +71,12 @@ class OptionsNavigationHelper {
     OptionsPanel.numPokemonOwned = 0;
 
     for (int i = 0; i < PlayPanel.hasSeenPokemon.length; i++) {
-      if (PlayPanel.hasSeenPokemon[i])
+      if (PlayPanel.hasSeenPokemon[i]) {
         OptionsPanel.numPokemonSeen++;
-      if (PlayPanel.hasPokemon[i])
+      }
+      if (PlayPanel.hasPokemon[i]) {
         OptionsPanel.numPokemonOwned++;
+      }
     }
   }
 }

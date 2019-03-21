@@ -164,9 +164,9 @@ public class PlayPanel extends JPanel {
       myPokemon = new Pokemon[Integer.parseInt(in.readLine())];
       for (int i = 0; i < myPokemon.length; i++) {
         String input = in.readLine();
-        if (input.equals("null"))
+        if (input.equals("null")) {
           myPokemon[i] = null;
-        else {
+        } else {
           myPokemon[i] = new Pokemon.Builder().createFrom(input);
           hasPokemon[Pokemon.getIndex(myPokemon[i].getName())] = true; ///<----remove later,
           hasSeenPokemon[Pokemon.getIndex(myPokemon[i].getName())] = true; // also remove later
@@ -181,8 +181,9 @@ public class PlayPanel extends JPanel {
         String[] info = in.readLine().split(" ");
 
 
-        if (info[1].equals("true"))
+        if (info[1].equals("true")) {
           hasSeenPokemon[i] = true;
+        }
         // else
         // hasSeenPokemon[i] = false;
 
@@ -206,25 +207,28 @@ public class PlayPanel extends JPanel {
       //your pokemon
       out.println(myPokemon.length + "");
       for (int i = 0; i < myPokemon.length; i++) {
-        if (myPokemon[i] == null)
+        if (myPokemon[i] == null) {
           out.println("null");
-        else
+        } else {
           out.println(myPokemon[i].toString());
+        }
       }
       out.println(game.mapName);
       out.println("" + game.curR);
       out.println("" + game.curC);
 
       for (int i = 0; i < hasPokemon.length; i++) {
-        if (hasPokemon[i])
+        if (hasPokemon[i]) {
           out.print("true");
-        else
+        } else {
           out.print("false");
+        }
 
-        if (hasSeenPokemon[i])
+        if (hasSeenPokemon[i]) {
           out.print(" true");
-        else
+        } else {
           out.print(" false");
+        }
         out.println();
       }
 
@@ -236,9 +240,11 @@ public class PlayPanel extends JPanel {
   public static boolean hasRepeat() {
     for (int pokeIndex = 0; pokeIndex < myPokemon.length; pokeIndex++) {
 
-      if (myPokemon[pokeIndex] != null)
-        if (game.enemy.getName().equals(myPokemon[pokeIndex].getName()))
+      if (myPokemon[pokeIndex] != null) {
+        if (game.enemy.getName().equals(myPokemon[pokeIndex].getName())) {
           return true;
+        }
+      }
     }
     return false;
 

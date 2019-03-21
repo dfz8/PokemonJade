@@ -32,7 +32,7 @@ public class ImageLibrary {
   public static ImageIcon doorMat_down_left = new ImageIcon(
       "resources/images/terrain_doorMat_down_left.png");
   public static ImageIcon doorMat_up_right = new ImageIcon("resources/images/terrain_doorMat_up_right" +
-                                                    ".png");
+                                                           ".png");
   public static ImageIcon doorMat_down_right = new ImageIcon(
       "resources/images/terrain_doorMat_down_right.png");
   //forest

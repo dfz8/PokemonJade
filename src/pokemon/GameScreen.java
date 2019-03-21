@@ -81,9 +81,10 @@ public class GameScreen extends JPanel {
     controlPanel = panel;
     mMovementController = movementController;
 
-    myImage = new BufferedImage(GameDriver.SCREEN_WIDTH,
-                                GameDriver.SCREEN_HEIGHT,
-                                BufferedImage.TYPE_INT_RGB);
+    myImage = new BufferedImage(
+        GameDriver.SCREEN_WIDTH,
+        GameDriver.SCREEN_HEIGHT,
+        BufferedImage.TYPE_INT_RGB);
     myBuffer = myImage.getGraphics();
     myBuffer.setColor(bgColor);
     myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
@@ -141,19 +142,21 @@ public class GameScreen extends JPanel {
 
         if (map[r][c].getType() != Terrain.GROUND) {
           // draw ground as a background for all sprites
-          myBuffer.drawImage(ImageLibrary.ground.getImage(),
-                             (c - curC + 6) * SPRITE_WIDTH - SPRITE_WIDTH / 2,
-                             (r - curR + 4) * SPRITE_HEIGHT - SPRITE_HEIGHT / 2,
-                             null);
+          myBuffer.drawImage(
+              ImageLibrary.ground.getImage(),
+              (c - curC + 6) * SPRITE_WIDTH - SPRITE_WIDTH / 2,
+              (r - curR + 4) * SPRITE_HEIGHT - SPRITE_HEIGHT / 2,
+              null);
         }
         map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
       }
     }
 
-    myBuffer.drawImage(curSprite.getImage(),
-                       GameDriver.SCREEN_WIDTH / 2 - SPRITE_WIDTH / 2,
-                       GameDriver.SCREEN_HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5,
-                       null); // -5 for visual purposes
+    myBuffer.drawImage(
+        curSprite.getImage(),
+        GameDriver.SCREEN_WIDTH / 2 - SPRITE_WIDTH / 2,
+        GameDriver.SCREEN_HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5,
+        null); // -5 for visual purposes
   }
 
   private void handleMovementOfPlayer() {
@@ -195,9 +198,10 @@ public class GameScreen extends JPanel {
     //healing:
     if (map[curR][curC].getType() == Terrain.HEALING_TILE) {
       for (int i = 0; i < 6; i++) {
-        if (PlayPanel.myPokemon[i] != null)
+        if (PlayPanel.myPokemon[i] != null) {
           PlayPanel.myPokemon[i].heal(PlayPanel.myPokemon[i].getMaxHP() - PlayPanel.myPokemon[i]
               .getCurrentHP());
+        }
       }
     }
   }
@@ -229,7 +233,7 @@ public class GameScreen extends JPanel {
   private void drawSummaryScreen() {
     bgColor = Color.WHITE;
     ImageIcon poke = new ImageIcon(
-        "./resources/images/pokemon/" + summaryPoke.getName() + ".png");
+        "./resources/images/Pokemon/" + summaryPoke.getName() + ".png");
     myBuffer.drawImage(poke.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);
@@ -263,7 +267,7 @@ public class GameScreen extends JPanel {
 
     //sprite of pokemon:
     myPokeIcon = new ImageIcon(
-        "./resources/images/pokemon/" + myPoke.getName() + "Back.png");
+        "./resources/images/Pokemon/" + myPoke.getName() + "Back.png");
     myBuffer.drawImage(myPokeIcon.getImage(), attackX, attackY, null);
     myBuffer.drawImage(enemyIcon.getImage(), attackXEnemy, attackYEnemy, null);
     //draw display of hp and stuff:
@@ -302,10 +306,11 @@ public class GameScreen extends JPanel {
 
     //textbox:
     myBuffer.setColor(Color.BLACK);
-    myBuffer.drawRect(0,
-                      myY + 60,
-                      GameDriver.SCREEN_WIDTH - 1,
-                      GameDriver.SCREEN_HEIGHT - 50 - myY);
+    myBuffer.drawRect(
+        0,
+        myY + 60,
+        GameDriver.SCREEN_WIDTH - 1,
+        GameDriver.SCREEN_HEIGHT - 50 - myY);
     myBuffer.setFont(normalFont);
 
     if (controlPanel.options.switchingPokemon) {
@@ -357,10 +362,11 @@ public class GameScreen extends JPanel {
         double accuracy = Math.random() * 100;
         if (accuracy > 5) {
           AttackLibrary.fill();
-          Attack a = new Attack(myAttackName,
-                                AttackLibrary.getType(myAttackName),
-                                10,
-                                AttackLibrary.getAttackDamage(myAttackName));
+          Attack a = new Attack(
+              myAttackName,
+              AttackLibrary.getType(myAttackName),
+              10,
+              AttackLibrary.getAttackDamage(myAttackName));
           a.giveDamage(myPoke, enemy, a.getAttackDamage()); //actually attack the enemy
           //a.giveDamage(myPoke,enemy); //actually attack the enemy
         }
@@ -408,10 +414,11 @@ public class GameScreen extends JPanel {
         // enemyAttackName = enemy.chooseAttackEnemy();
         double accuracy = Math.random() * 100;
         if (accuracy > 5) {
-          Attack b = new Attack(enemyAttackName,
-                                AttackLibrary.getType(enemyAttackName),
-                                10,
-                                AttackLibrary.getAttackDamage(enemyAttackName));
+          Attack b = new Attack(
+              enemyAttackName,
+              AttackLibrary.getType(enemyAttackName),
+              10,
+              AttackLibrary.getAttackDamage(enemyAttackName));
           b.giveDamage(enemy, myPoke, b.getAttackDamage()); //actually attack the enemy
         }
         //a.giveDamage(enemy,myPoke);
@@ -431,10 +438,12 @@ public class GameScreen extends JPanel {
 
         int pokeLeft = 0;
         for (int i = 0; i < 6; i++) {
-          if (PlayPanel.myPokemon[i] == null)
+          if (PlayPanel.myPokemon[i] == null) {
             break;
-          if (!PlayPanel.myPokemon[i].isFainted())
+          }
+          if (!PlayPanel.myPokemon[i].isFainted()) {
             pokeLeft++;
+          }
         }
         if (pokeLeft == 0) {
           resetOrderOfPokemonInParty();
@@ -447,13 +456,15 @@ public class GameScreen extends JPanel {
   }
 
   public void saveParty() {
-    for (int i = 0; i < normalParty.length; i++)
+    for (int i = 0; i < normalParty.length; i++) {
       normalParty[i] = PlayPanel.myPokemon[i];
+    }
   }
 
   public void resetOrderOfPokemonInParty() {
-    for (int i = 0; i < normalParty.length; i++)
+    for (int i = 0; i < normalParty.length; i++) {
       PlayPanel.myPokemon[i] = normalParty[i];
+    }
   }
 
   public void toBattle() {
@@ -498,7 +509,7 @@ public class GameScreen extends JPanel {
         .build();
     setRandomEnemy();
     enemyIcon = new ImageIcon(
-        "./resources/images/pokemon.entities.Pokemon/" + enemy.getName() + ".png");
+        "./resources/images/Pokemon/" + enemy.getName() + ".png");
 
     //pokedex:
     controlPanel.hasSeenPokemon[Pokemon.getIndex(enemy.getName())] = true;
@@ -520,8 +531,9 @@ public class GameScreen extends JPanel {
     int count = Integer.parseInt(infile.nextLine());
     String[] enemyArray = new String[count];
 
-    for (int enemyIndex = 0; enemyIndex < enemyArray.length; enemyIndex++)
+    for (int enemyIndex = 0; enemyIndex < enemyArray.length; enemyIndex++) {
       enemyArray[enemyIndex] = infile.nextLine();
+    }
     return enemyArray;
   }
 
@@ -583,11 +595,12 @@ public class GameScreen extends JPanel {
 
     buildings = new boolean[height][width];
     items = new boolean[height][width];
-    for (int r = 0; r < height; r++)
+    for (int r = 0; r < height; r++) {
       for (int c = 0; c < width; c++) {
         buildings[r][c] = false;
         items[r][c] = false;
       }
+    }
 
     //setting up links between maps
     for (int i = 0; i < gateCount; i++) {
