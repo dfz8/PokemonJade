@@ -5,6 +5,7 @@ import pokemon.entities.PokeBall;
 import pokemon.entities.Pokemon;
 import pokemon.enums.Menu;
 import pokemon.ui.OptionBoard;
+import pokemon.ui.Styles;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,8 +60,8 @@ public class OptionsPanel extends JPanel {
         pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
       }
     }
-    OptionsPanel.curMenu = Menu.party;
-    OptionsPanel.partyText = "Select a Pokemon.";
+    curMenu = Menu.party;
+    partyText = "Select a Pokemon.";
 
     GameScreen.canMove = false;
   }
@@ -89,7 +90,7 @@ public class OptionsPanel extends JPanel {
 
     curMenu = Menu.main;
 
-    t = new Timer(10, new RefreshListener());
+    t = new Timer(30, new RefreshListener());
     t.start();
   }
 
@@ -368,7 +369,7 @@ public class OptionsPanel extends JPanel {
       myBuffer.setColor(background);
       myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
       // todo: move set font code to the specific panels
-      myBuffer.setFont(GameScreen.normalFont);
+      myBuffer.setFont(Styles.normalFont);
 
       if (curMenu == Menu.blackScreen) {
         myBuffer.setColor(Color.BLACK);
@@ -441,13 +442,13 @@ public class OptionsPanel extends JPanel {
             pokemonOptions[i].getY() + y_inc + 2);
 
         //hp text
-        myBuffer.setFont(GameScreen.smallFont);
+        myBuffer.setFont(Styles.smallFont);
         myBuffer.setColor(Color.BLACK);
         myBuffer.drawString(
             "HP:",
             pokemonOptions[i].getX() + x_inc - 12,
             pokemonOptions[i].getY() + y_inc + 7);
-        myBuffer.setFont(GameScreen.normalFont);
+        myBuffer.setFont(Styles.normalFont);
         myBuffer.drawString(
             PlayPanel.myPokemon[i].getCurrentHP() + "/" + PlayPanel.myPokemon[i]
                 .getMaxHP(),
@@ -475,7 +476,7 @@ public class OptionsPanel extends JPanel {
     // has seen/ has owned info box :
     myBuffer.setColor(Color.WHITE);
     myBuffer.fillRect(GameDriver.SCREEN_WIDTH - 130, GameDriver.SCREEN_HEIGHT - 100, 110, 30);
-    myBuffer.setFont(GameScreen.normalFont);
+    myBuffer.setFont(Styles.normalFont);
     myBuffer.setColor(Color.BLACK);
     myBuffer.drawString(
         "Seen: " + mPlayPanel.getPlayer().getNumSeenPokemon(),
@@ -544,12 +545,12 @@ public class OptionsPanel extends JPanel {
         GameDriver.SCREEN_HEIGHT - 180,
         null);
     myBuffer.setColor(Color.BLACK);
-    myBuffer.setFont(GameScreen.extraLargeFont);
+    myBuffer.setFont(Styles.extraLargeFont);
     myBuffer.drawString(
         "Name: " + mPlayPanel.getPlayer().getName(),
         GameDriver.SCREEN_WIDTH - 180,
         GameDriver.SCREEN_HEIGHT - 160);
-    myBuffer.setFont(GameScreen.largerLargeFont);
+    myBuffer.setFont(Styles.largerLargeFont);
     myBuffer.drawString(
         "Money: " + mPlayPanel.getPlayer().getMoney(),
         GameDriver.SCREEN_WIDTH - 250,
@@ -578,12 +579,12 @@ public class OptionsPanel extends JPanel {
         GameDriver.SCREEN_HEIGHT - 180,
         null);
     myBuffer.setColor(Color.BLACK);
-    myBuffer.setFont(GameScreen.extraLargeFont);
+    myBuffer.setFont(Styles.extraLargeFont);
     myBuffer.drawString(
         "Name: " + mPlayPanel.getPlayer().getName(),
         GameDriver.SCREEN_WIDTH - 180,
         GameDriver.SCREEN_HEIGHT - 160);
-    myBuffer.setFont(GameScreen.largerLargeFont);
+    myBuffer.setFont(Styles.largerLargeFont);
     myBuffer.drawString(
         "Money: " + mPlayPanel.getPlayer().getMoney(),
         GameDriver.SCREEN_WIDTH - 250,

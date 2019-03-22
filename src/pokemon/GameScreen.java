@@ -12,6 +12,7 @@ matrix[r][c]
 import pokemon.controllers.MovementController;
 import pokemon.entities.Pokemon;
 import pokemon.entities.Terrain;
+import pokemon.ui.Styles;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,33 +23,35 @@ import java.io.*;
 import java.util.Scanner;
 
 public class GameScreen extends JPanel {
-  //mandatory stuff
-  BufferedImage myImage;
-  Graphics myBuffer;
   public static final int SPRITE_WIDTH = 23;
   public static final int SPRITE_HEIGHT = 26;
-  Color bgColor;
-  Color myColor;
-  private static PlayPanel controlPanel;
-  Timer t;
-  static String mapName = ""; //for saving purposes
+
+  private PlayPanel mPlayPanel;
+  private BufferedImage myImage;
+  private Graphics myBuffer;
+  private Color bgColor;
+  private Timer t;
+
+  static String mapName = "";
   private static Terrain[][] map;
   private static boolean[][] buildings;
   private static boolean[][] items;
+
   //conditions:
   static boolean canMove;
   static boolean inBattle;
   static boolean swapPokemon;
-
   static boolean inSummary;
   static Pokemon summaryPoke;
   static boolean inSave;
   static boolean isAttacking;
   static boolean enemyIsAttacking;
+
   //player sprite info
   private ImageIcon curSprite;
   static int curC;
   static int curR;
+
   //battle info
   private static int attackX = 5;
   private static int attackY = 50;
@@ -66,26 +69,16 @@ public class GameScreen extends JPanel {
   static String enemyAttackName = "";
   ImageIcon enemyIcon;
   ImageIcon myPokeIcon;
-  //extras:
-  static Font normalFont = new Font("Ariel", Font.PLAIN, 10);
-  static Font extraLargeFont = new Font("Agency FB", Font.BOLD, 30);
-  static Font largerLargeFont = new Font("Agency FB", Font.BOLD, 20);
-  static Font largeFont = new Font("Agency FB", Font.BOLD, 15);
-  static Font mediumFont = new Font("Agency FB", Font.BOLD, 12);
-  static Font smallFont = new Font("Agency FB", Font.BOLD, 10);
 
   private MovementController mMovementController;
 
   public GameScreen(PlayPanel playPanel) {
     bgColor = Color.WHITE;
-    controlPanel = playPanel;
+    mPlayPanel = playPanel;
     mMovementController = playPanel.getMovementController();
     canMove = true;
 
-    myImage = new BufferedImage(
-        GameDriver.SCREEN_WIDTH,
-        GameDriver.SCREEN_HEIGHT,
-        BufferedImage.TYPE_INT_RGB);
+    myImage = new BufferedImage(GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
     myBuffer = myImage.getGraphics();
     myBuffer.setColor(bgColor);
     myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
@@ -238,7 +231,7 @@ public class GameScreen extends JPanel {
     myBuffer.drawImage(pokemon.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);
-    myBuffer.setFont(largerLargeFont);
+    myBuffer.setFont(Styles.largerLargeFont);
     myBuffer.drawString(summaryPoke.getName().toUpperCase(), 10, 20);
     myBuffer.drawString("Level: " + summaryPoke.getLevel(), 10, 40);
 
@@ -248,9 +241,9 @@ public class GameScreen extends JPanel {
     myBuffer.drawString("Defense:", 10, 170);
     myBuffer.drawString("" + summaryPoke.getDefenseLevel(), 70, 170);
     //hp
-    myBuffer.setFont(normalFont);
+    myBuffer.setFont(Styles.normalFont);
     myBuffer.drawString(summaryPoke.getCurrentHP() + " / " + summaryPoke.getMaxHP(), 40, 80);
-    myBuffer.setFont(smallFont);
+    myBuffer.setFont(Styles.smallFont);
     myBuffer.drawString("HP:", 10, 65);
     DrawingHelper.drawFullSizeHPBar(myBuffer, summaryPoke, 23, 60);
     //exp
@@ -276,23 +269,22 @@ public class GameScreen extends JPanel {
     int myX = 100;
     int myY = 100;
 
-    myColor = Color.BLACK;
-    myBuffer.setColor(myColor);
+    myBuffer.setColor(Color.BLACK);
     //bg box
     myBuffer.drawRect(myX, myY, 140, 50);
     myBuffer.drawRect(enemyX, enemyY, 140, 40);
     //pokemon names
-    myBuffer.setFont(largeFont);
+    myBuffer.setFont(Styles.largeFont);
     myBuffer.drawString("" + enemy.getName().toUpperCase(), enemyX + 10, enemyY + 20);
     myBuffer.drawString("" + myPoke.getName().toUpperCase(), myX + 10, myY + 20);
     //your hp
-    myBuffer.setFont(mediumFont);
+    myBuffer.setFont(Styles.mediumFont);
     myBuffer.drawString(myPoke.getCurrentHP() + "/" + myPoke.getMaxHP(), myX + 25, myY + 40);
     //healthbar outline
     myBuffer.drawRect(myX + 23 - 1, myY + 23 - 1, 101, 7 + 1);
     myBuffer.drawRect(enemyX + 23 - 1, enemyY + 23 - 1, 101, 7 + 1);
     //hp bar text
-    myBuffer.setFont(smallFont);
+    myBuffer.setFont(Styles.smallFont);
     myBuffer.drawString("HP:", myX + 10, myY + 30);
     myBuffer.drawString("HP:", enemyX + 10, enemyY + 30);
     //pokemon levels
@@ -311,14 +303,14 @@ public class GameScreen extends JPanel {
         myY + 60,
         GameDriver.SCREEN_WIDTH - 1,
         GameDriver.SCREEN_HEIGHT - 50 - myY);
-    myBuffer.setFont(normalFont);
+    myBuffer.setFont(Styles.normalFont);
 
-    if (controlPanel.getOptionsPanel().switchingPokemon) {
+    if (mPlayPanel.getOptionsPanel().switchingPokemon) {
       myBuffer.drawString("Which pokemon do you want to switch out?", 5, 170);
     }
 
     if (swapPokemon) {
-      controlPanel.getOptionsPanel().switchingPokemon = false;
+      mPlayPanel.getOptionsPanel().switchingPokemon = false;
       if (switchingMove < 16)//drawing pokemon out
       {
         attackX -= 5;
@@ -328,7 +320,7 @@ public class GameScreen extends JPanel {
       } else if (switchingMove == 16)//switch the two pokemon
       {
         //switch pokemon
-        myPoke = controlPanel.myPokemon[0];//controlPanel.getOptionsPanel().switchPokemonInd];
+        myPoke = mPlayPanel.myPokemon[0];//mPlayPanel.getOptionsPanel().switchPokemonInd];
         switchingMove++;
       } else if (switchingMove < 32) //putting pokemon in
       {
@@ -448,7 +440,7 @@ public class GameScreen extends JPanel {
           resetOrderOfPokemonInParty();
           OptionsNavigationHelper.toNormal();
         } else {
-          controlPanel.getOptionsPanel().toSwitchPokemon();
+          mPlayPanel.getOptionsPanel().toSwitchPokemon();
         }
       }
     }
@@ -508,7 +500,7 @@ public class GameScreen extends JPanel {
     setRandomEnemy();
     enemyIcon = SpriteHelper.getPokemonFront(enemy.getName());
 
-    controlPanel.getPlayer().markSeenPokemon(enemy.getName());
+    mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
 
     attackX = 5;
     attackY = 80;
