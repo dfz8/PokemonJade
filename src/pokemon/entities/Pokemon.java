@@ -1,5 +1,7 @@
 package pokemon.entities;
 
+import pokemon.AlertHelper;
+
 public class Pokemon {
   public static double expBase = 1.5;//1.124478;
 
@@ -33,32 +35,24 @@ public class Pokemon {
    	*/
 
   //list of first 151 pokemon:
-  public static String[] pokemons = {"Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon",
-      "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
-      "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate",
-      "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash",
-      "Nidoran F", "Nidorina", "Nidoqueen", "Nidoran M", "Nidorino", "Nidoking", "Clefairy",
-      "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish",
-      "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio",
-      "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine",
-      "Polywag", "Polywhirl", "Polywrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke",
-      "Machamp", "Bellsprout",
-      "Weepinbell", "Victreebel", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem",
-      "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo"
-      , "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter"
-      , "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode",
-      "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung",
-      "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horse",
-      "aSeadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx",
-      "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto",
-      "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto",
-      "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair"
-      , "Dragonite", "Mewtwo", "Mew", "Raikou"};
-         /*
-   		false index numbers:
-   		Raikou is currently: 152, should be: 243
-   		*/
-
+  // note: Raikou is currently: 152, should be: 243
+  public static String[] pokemons = {
+      "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise",
+      "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata",
+      "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran F",
+      "Nidorina", "Nidoqueen", "Nidoran M", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales",
+      "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat",
+      "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe",
+      "Arcanine", "Polywag", "Polywhirl", "Polywrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp",
+      "Bellsprout", "Weepinbell", "Victreebel", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta",
+      "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong",
+      "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby",
+      "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan",
+      "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horse", "aSeadra",
+      "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir",
+      "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon",
+      "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini",
+      "Dragonair", "Dragonite", "Mewtwo", "Mew", "Raikou"};
 
   private Pokemon(Builder builder) {
     myName = builder.name;
@@ -71,14 +65,13 @@ public class Pokemon {
     myAttackLevel = builder.attack;
     mySpecialAttack = builder.specialAttack;
     myDefenseLevel = builder.defense;
-    mySpecialDefense =builder.specialDefense;
+    mySpecialDefense = builder.specialDefense;
     mySpeed = builder.speed;
     myEXP = builder.exp;
     myMaxHP = builder.maxHp;
 
     myNextLevelEXP = myEXP * 3;
   }
-
 
   private Pokemon(String allData) {
     String[] info = allData.split(", ");
@@ -102,11 +95,18 @@ public class Pokemon {
     return pokemons[index];
   }
 
-  public static int getIndex(String n) {
-    for (int i = 0; i < pokemons.length; i++)
-      if (n.equals(pokemons[i]))
+  public static int getIndex(String name) {
+    for (int i = 0; i < pokemons.length; i++) {
+      if (name.equals(pokemons[i])) {
         return i;
+      }
+    }
+    AlertHelper.fatal("Pokemon: " + name + ", not supported yet.");
     return -1;
+  }
+
+  public static int getNumPokemon() {
+    return pokemons.length;
   }
 
   // get Methods
@@ -236,7 +236,7 @@ public class Pokemon {
     myMaxHP = hp;
   }
 
-
+  @Override
   public String toString() {
     return myName + ", " + myType + ", " + attackOne + ", " + attackTwo + ", " + attackThree + "," +
            " " + attackFour + ", " + myLevel + ", " + myAttackLevel + ", " + myDefenseLevel + ", "
@@ -252,8 +252,9 @@ public class Pokemon {
   }
 
   public boolean isFainted() {
-    if (myCurrentHP <= 0)
+    if (myCurrentHP <= 0) {
       return true;
+    }
     return false;
   }
 
@@ -283,14 +284,15 @@ public class Pokemon {
 
   public String chooseAttackEnemy() {
     int decider = (int) (Math.random() * 4);
-    if (decider == 0)
+    if (decider == 0) {
       return attackOne;
-    else if (decider == 1)
+    } else if (decider == 1) {
       return attackTwo;
-    else if (decider == 2)
+    } else if (decider == 2) {
       return attackThree;
-    else
+    } else {
       return attackFour;
+    }
 
   }
 

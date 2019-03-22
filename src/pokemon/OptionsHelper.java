@@ -1,5 +1,6 @@
 package pokemon;
 
+import pokemon.controllers.PlayerController;
 import pokemon.ui.OptionBoard;
 import pokemon.ui.OptionBoard.TextPlacement;
 
@@ -22,13 +23,13 @@ public class OptionsHelper {
   private final static Color GREEN = Color.GREEN;
   private final static Color PLAIN = Color.WHITE;
 
-  public static OptionBoard[] setUpFor(Menu menu) {
+  public static OptionBoard[] setUpFor(Menu menu, PlayerController player) {
     switch (menu) {
       case main:
         return new OptionBoard[]{
             new OptionBoard(10, 10, 100, 35, GREEN, "Pokemon"),
             new OptionBoard(150, 10, 100, 35, GREEN, "Pokedex"),
-            new OptionBoard(10, 60, 100, 35, GREEN, PlayPanel.myName),
+            new OptionBoard(10, 60, 100, 35, GREEN, player.getName()),
             new OptionBoard(150, 60, 100, 35, GREEN, "Bag"),
             new OptionBoard(10, 110, 100, 35, GREEN, "Save"),
             new OptionBoard(150, 110, 100, 35, GREEN, "Options")};

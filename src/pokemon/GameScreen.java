@@ -76,10 +76,11 @@ public class GameScreen extends JPanel {
 
   private MovementController mMovementController;
 
-  public GameScreen(PlayPanel panel, MovementController movementController) {
+  public GameScreen(PlayPanel playPanel, MovementController movementController) {
     bgColor = Color.WHITE;
-    controlPanel = panel;
+    controlPanel = playPanel;
     mMovementController = movementController;
+    canMove = true;
 
     myImage = new BufferedImage(
         GameDriver.SCREEN_WIDTH,
@@ -225,7 +226,7 @@ public class GameScreen extends JPanel {
   private void maybeInitPokemonBattle() {
     if (map[curR][curC].getType() == Terrain.GRASS) {
       if ((int) (Math.random() * 256) <= 32) {
-        controlPanel.toBattle(true);
+        toBattle();
       }
     }
   }
@@ -233,6 +234,7 @@ public class GameScreen extends JPanel {
   private void drawSummaryScreen() {
     bgColor = Color.WHITE;
     ImageIcon pokemon = SpriteHelper.getPokemonFront(summaryPoke.getName());
+    AlertHelper.debug("" + (pokemon.getImage() == null));
     myBuffer.drawImage(pokemon.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);

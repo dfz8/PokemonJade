@@ -1,8 +1,10 @@
 package pokemon;
 
+import pokemon.controllers.PlayerController;
 import pokemon.entities.PokeBall;
 import pokemon.entities.Pokemon;
 import pokemon.ui.OptionBoard;
+import pokemon.OptionsHelper.Menu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +22,7 @@ public class OptionsPanel extends JPanel {
   public static boolean usingItem;
   public static boolean switchingPokemon;
 
+  private PlayPanel mPlayPanel;
   private GameScreen game;
   static final int normalPanel = 0;
   static final int battlePanel = 1;
@@ -77,7 +80,8 @@ public class OptionsPanel extends JPanel {
     GameScreen.canMove = false;
   }
 
-  public OptionsPanel(GameScreen panel) {
+  public OptionsPanel(PlayPanel playPanel, GameScreen panel) {
+    mPlayPanel = playPanel;
     game = panel;
 
     myImage = new BufferedImage(
@@ -88,15 +92,16 @@ public class OptionsPanel extends JPanel {
     background = Color.BLACK;
     inBattle = usingItem = switchingPokemon = false;
 
-    normalOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.main);
-    pokemonOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.party);
-    pokedexOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.pokedex);
-    battleOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.battle);
-    attackOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.attacks);
-    bagOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.bag);
-    pokemonSelectOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.pokemonSelect);
-    saveOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.save);
-    personalOptions = OptionsHelper.setUpFor(OptionsHelper.Menu.personal);
+    PlayerController player = mPlayPanel.getPlayer();
+    normalOptions = OptionsHelper.setUpFor(Menu.main, player);
+    pokemonOptions = OptionsHelper.setUpFor(Menu.party, player);
+    pokedexOptions = OptionsHelper.setUpFor(Menu.pokedex, player);
+    battleOptions = OptionsHelper.setUpFor(Menu.battle, player);
+    attackOptions = OptionsHelper.setUpFor(Menu.attacks, player);
+    bagOptions = OptionsHelper.setUpFor(Menu.bag, player);
+    pokemonSelectOptions = OptionsHelper.setUpFor(Menu.pokemonSelect, player);
+    saveOptions = OptionsHelper.setUpFor(Menu.save, player);
+    personalOptions = OptionsHelper.setUpFor(Menu.personal, player);
 
     curPanel = normalPanel;
 
@@ -180,7 +185,7 @@ public class OptionsPanel extends JPanel {
         OptionsNavigationHelper.toPokedex();
       } else if (s.equals("Save")) {
         OptionsNavigationHelper.toSave();
-      } else if (s.equals(PlayPanel.myName)) {
+      } else if (s.equals(mPlayPanel.getPlayer().getName())) {
         OptionsNavigationHelper.toPersonal();
       } else if (s.equals("Bag")) {
         AlertHelper.alert("Coming Soon");
@@ -322,47 +327,43 @@ public class OptionsPanel extends JPanel {
       if (s.equals("Back")) {
         OptionsNavigationHelper.toBattle();
       } else if (s.equals("Pokeball")) {
-
-        if (!PlayPanel.hasRepeat()) {
-          if (p.isCaught()) {
-            int index = 0;
-            for (int occupy = 0; occupy < PlayPanel.myPokemon.length; occupy++) {
-              if (PlayPanel.myPokemon[occupy] == null) {
-                index = occupy;
-                break;
-              }
+        if (p.isCaught()) {
+          int index = 0;
+          for (int occupy = 0; occupy < PlayPanel.myPokemon.length; occupy++) {
+            if (PlayPanel.myPokemon[occupy] == null) {
+              index = occupy;
+              break;
             }
-            PlayPanel.hasPokemon[Pokemon.getIndex(game.enemy.getName())] = true;
-            PlayPanel.hasSeenPokemon[Pokemon.getIndex(game.enemy.getName())] = true;
-
-            PlayPanel.myPokemon[index] = new Pokemon.Builder()
-                .setName(game.enemy.getName())
-                .setType(game.enemy.getType())
-                .setFirstAttack(game.enemy.getAttackOne())
-                .setSecondAttack(game.enemy.getAttackTwo())
-                .setThirdAttack(game.enemy.getAttackThree())
-                .setFourthAttack(game.enemy.getAttackFour())
-                .setLevel(game.enemy.getLevel())
-                .setExp(game.enemy.getMyEXP())
-                .setAttack(game.enemy.getAttackLevel())
-                .setDefense(game.enemy.getDefenseLevel())
-                .setHp(game.enemy.getCurrentHP())
-                .setMaxHp(game.enemy.getMaxHP())
-                .build();
-            OptionsNavigationHelper.toNormal();
-          } else {
-            AlertHelper.alert("Awww, the pokemon broke out of the pokeball!");
-            OptionsNavigationHelper.toBlack();
-            GameScreen.isAttacking = false;
-            game.enemyIsAttacking = true;
           }
+          PlayPanel.hasPokemon[Pokemon.getIndex(game.enemy.getName())] = true;
+          PlayPanel.hasSeenPokemon[Pokemon.getIndex(game.enemy.getName())] = true;
+
+          PlayPanel.myPokemon[index] = new Pokemon.Builder()
+              .setName(game.enemy.getName())
+              .setType(game.enemy.getType())
+              .setFirstAttack(game.enemy.getAttackOne())
+              .setSecondAttack(game.enemy.getAttackTwo())
+              .setThirdAttack(game.enemy.getAttackThree())
+              .setFourthAttack(game.enemy.getAttackFour())
+              .setLevel(game.enemy.getLevel())
+              .setExp(game.enemy.getMyEXP())
+              .setAttack(game.enemy.getAttackLevel())
+              .setDefense(game.enemy.getDefenseLevel())
+              .setHp(game.enemy.getCurrentHP())
+              .setMaxHp(game.enemy.getMaxHP())
+              .build();
+          OptionsNavigationHelper.toNormal();
         } else {
-          AlertHelper.alert("You've already caught this Pokemon!\nSave your pokeballs!");
+          AlertHelper.alert("Awww, the pokemon broke out of the pokeball!");
+          OptionsNavigationHelper.toBlack();
+          GameScreen.isAttacking = false;
+          game.enemyIsAttacking = true;
         }
       }
 
     } else if (curPanel == savePanel) {
       if (s.equals("")) {
+        mPlayPanel.save();
         OptionsNavigationHelper.toNormal();
       }
     } else if (curPanel == personalPanel) {
@@ -561,13 +562,13 @@ public class OptionsPanel extends JPanel {
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(GameScreen.extraLargeFont);
     myBuffer.drawString(
-        "Name: " + PlayPanel.myName,
+        "Name: " + mPlayPanel.getPlayer().getName(),
         GameDriver.SCREEN_WIDTH - 180,
         GameDriver.SCREEN_HEIGHT
         - 160);
     myBuffer.setFont(GameScreen.largerLargeFont);
     myBuffer.drawString(
-        "Money: " + PlayPanel.myMoney,
+        "Money: " + mPlayPanel.getPlayer().getMoney(),
         GameDriver.SCREEN_WIDTH - 250,
         GameDriver.SCREEN_HEIGHT
         - 120);
@@ -603,13 +604,13 @@ public class OptionsPanel extends JPanel {
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(GameScreen.extraLargeFont);
     myBuffer.drawString(
-        "Name: " + PlayPanel.myName,
+        "Name: " + mPlayPanel.getPlayer().getName(),
         GameDriver.SCREEN_WIDTH - 180,
         GameDriver.SCREEN_HEIGHT
         - 160);
     myBuffer.setFont(GameScreen.largerLargeFont);
     myBuffer.drawString(
-        "Money: " + PlayPanel.myMoney,
+        "Money: " + mPlayPanel.getPlayer().getMoney(),
         GameDriver.SCREEN_WIDTH - 250,
         GameDriver.SCREEN_HEIGHT
         - 120);

@@ -1,6 +1,9 @@
 package pokemon;//David Zhao, 3/31/2011
 
+import static pokemon.AlertHelper.alert;
+
 import pokemon.controllers.MovementController;
+import pokemon.controllers.PlayerController;
 import pokemon.entities.Pokemon;
 
 import javax.swing.*;
@@ -9,35 +12,30 @@ import java.awt.event.*;
 import java.io.*;
 
 public class PlayPanel extends JPanel {
+  private static final String SAVE_DELIMITER = " ";
+
   public static GameScreen game;
   public static OptionsPanel options;
 
-  //Personal
-  static String myName = "";
   static Pokemon[] myPokemon; //first six is party, empty slots are "null"
   static boolean[] hasPokemon = new boolean[Pokemon.pokemons.length]; //tells the user if they
   // have that pokemon at one time or not.
   static boolean[] hasSeenPokemon = new boolean[hasPokemon.length];
-  static int myMoney = 0;
 
+  private PlayerController mPlayerController;
   private MovementController mMovementController;
 
   public PlayPanel() {
-    myName = "tester";
-    uploadInformation(myName);
-
-    //initGame();
+    initGame();
     mMovementController = new MovementController();
 
     setLayout(new GridLayout(2, 1));
 
     game = new GameScreen(this, mMovementController);
-    game.canMove = true;
     add(game);
 
-    options = new OptionsPanel(game);
+    options = new OptionsPanel(this, game);
     add(options);
-
 
     addKeyListener(new Key());
     addMouseMotionListener(new Mouse());
@@ -45,20 +43,27 @@ public class PlayPanel extends JPanel {
     setFocusable(true);
   }
 
-  private static void initGame() {
-    AlertHelper.alert("Welcome to pokemon.entities.Pokemon: Jade!");
-    String choice = JOptionPane.showInputDialog("1. New game?\n2. Saved game?");
+  public PlayerController getPlayer() {
+    return mPlayerController;
+  }
+
+  private void initGame() {
+    //    alert("Welcome to pokemon.entities.Pokemon: Jade!");
+    //    String choice = JOptionPane.showInputDialog("1. New game?\n2. Saved game?");
+    String choice = "2";
     if (choice.equals("2")) {
-      myName = JOptionPane.showInputDialog("What's your player name? (case sensitive)");
-      uploadInformation(myName);
+      String playerName = "tester";
+      //      playerName = JOptionPane.showInputDialog("What's your player name? (case sensitive)");
+      mPlayerController = loadSaveFileFor(playerName);
     } else {
-      runNux();
-      myPokemon = new Pokemon[100];
-      myMoney = 3000;
+      String playerName = runNux();
+      mPlayerController = new PlayerController(playerName, 3000);
+
       GameScreen.mapName = "hometown";
       GameScreen.curR = 7;
       GameScreen.curC = 11;
-      myPokemon = new Pokemon[100];
+
+      myPokemon = new Pokemon[Pokemon.getNumPokemon()];
       myPokemon[0] = new Pokemon.Builder()
           .setName("Bulbasaur")
           .setType("Grass")
@@ -73,103 +78,92 @@ public class PlayPanel extends JPanel {
           .setHp(26)
           .setMaxHp(26)
           .build();
-      hasPokemon[0] = true;
-      hasSeenPokemon[0] = true;
-      save();
+      mPlayerController.initCaughtPokemon(myPokemon[0]);
+      mPlayerController.markCaughtPokemon(myPokemon[0].getName());
+      mPlayerController.markSeenPokemon(myPokemon[0].getName());
     }
   }
 
-  private static void runNux() {
-    AlertHelper.alert("Welcome to the world of pokemon.entities.Pokemon! But first...");
-    AlertHelper.alert("I'm Professor Oak, a pokemon.entities.Pokemon expert.");
-    AlertHelper.alert(
+  private String runNux() {
+    alert("Welcome to the world of pokemon.entities.Pokemon! But first...");
+    alert("I'm Professor Oak, a pokemon.entities.Pokemon expert.");
+    alert(
         "I'm glad you want to be a pokemon trainer!  It takes courage" +
         " and hard work to be a great one.");
-    AlertHelper.alert(
+    alert(
         "In this world, you can explore, battle pokemon, and, if you " +
         "can, capture the pokemon.");
-    AlertHelper.alert(
+    alert(
         "Since you're the last one to come for your first pokemon, I " +
         "sorta ran out. ^^;");
-    AlertHelper.alert(
+    alert(
         "The only pokemon I can give you is Bubbles, a level 50 " +
         "bulbasaur.");
-    AlertHelper.alert(
+    alert(
         "Unfortunately, you won't be able to experience the " +
         "bittersweet memories of training a pokemon from scratch " +
         "and watching as the pokemon and you improve everyday.");
-    AlertHelper.alert("But actually, it's not that fun. -.-");
-    AlertHelper.alert(
+    alert("But actually, it's not that fun. -.-");
+    alert(
         "So now you can expericence the sheer awesomeness of totally " +
         "wrecking at pokemon battles!");
-    AlertHelper.alert("Oh by the way...");
+    alert("Oh by the way...");
 
     int yesno;
+    String name;
     do {
-      myName = JOptionPane.showInputDialog("What is your name?");
-      yesno = JOptionPane.showConfirmDialog(null, "Cool! So your name is " + myName + ".");
-
-      boolean fileExists = false;
-      try {
-        BufferedReader test =
-            new BufferedReader(new FileReader(new File("./savefiles/" + myName + ". ")));
-        fileExists = true;
-      } catch (FileNotFoundException e) {
-      }
-      if (fileExists) {
-        AlertHelper.alert(
+      name = JOptionPane.showInputDialog("What is your name?");
+      yesno = JOptionPane.showConfirmDialog(null, "Cool! So your name is " + name + ".");
+      File test = new File("./savefiles/" + name + ". ");
+      if (test.exists()) {
+        alert(
             "I'm sorry. Someone already used that player name. " +
             "\n\tPlease use a different one.");
-        yesno = JOptionPane.YES_OPTION - 1; //prob def not an option
+        yesno = JOptionPane.YES_OPTION - 1;
       }
-
     }
     while (yesno != JOptionPane.YES_OPTION);
 
     int noob = JOptionPane.showConfirmDialog(null, "Are you new to this game?");
     if (noob == JOptionPane.YES_OPTION) {
-      AlertHelper.alert(
+      alert(
           "To move, the basic game commands still apply.\nJust go " +
           "ahead and use your arrow keys.\nUp: Arrow up\nRight: " +
           "Arrow right\nDown: Arrow down\n Left: Arrow left");
-      AlertHelper.alert(
+      alert(
           "To access information or save the game, just click the " +
           "corresponding button under the game screen.\nREMEMBER " +
           "TO SAVE OFTEN");
-      AlertHelper.alert(
+      alert(
           "And catching a pokemon's just as easy!\nClick the option " +
           "when you think it's time to capture the pokemon.\nIf " +
           "the pokemon's health is low enough or you get lucky, " +
           "you'll catch a pokemon!");
-      AlertHelper.alert("YEAH! GOTTA CATCH 'EM ALL, POKEMON!");
+      alert("YEAH! GOTTA CATCH 'EM ALL, POKEMON!");
     }
-    AlertHelper.alert(
+    alert(
         "Pay close attention to white tiles with a red cross. " +
         "\nThat's the healing tile. \nWalk over it to heal your " +
         "pokemon.");
+
+    return name;
   }
 
-  public static void uploadInformation(String name) {
+  private PlayerController loadSaveFileFor(String name) {
     try {
-      BufferedReader in = new BufferedReader(new FileReader(new File("./savefiles/" + name + ".pksf"
-      )));
-      myName = name;
+      BufferedReader in = new BufferedReader(new FileReader(new File("./savefiles/" + name + ".pksf")));
+      PlayerController player = new PlayerController(name, Integer.parseInt(in.readLine()));
 
-      myMoney = Integer.parseInt(in.readLine());
+      int numPokemonInSaveFile = Integer.parseInt(in.readLine());
 
-      //for(int i = 0; i < hasPokemon.length; i++)
-      //hasPokemon[i] = false;
-
-      //your pokemon
-      myPokemon = new Pokemon[Integer.parseInt(in.readLine())];
-      for (int i = 0; i < myPokemon.length; i++) {
-        String input = in.readLine();
-        if (input.equals("null")) {
-          myPokemon[i] = null;
-        } else {
+      myPokemon = new Pokemon[Pokemon.getNumPokemon()];
+      // todo: switch to numPokemonInSaveFile after refactor
+      String input;
+      for (int i = 0; i < numPokemonInSaveFile; i++) {
+        input = in.readLine();
+        if (!input.equals("null")) {
           myPokemon[i] = new Pokemon.Builder().createFrom(input);
-          hasPokemon[Pokemon.getIndex(myPokemon[i].getName())] = true; ///<----remove later,
-          hasSeenPokemon[Pokemon.getIndex(myPokemon[i].getName())] = true; // also remove later
+          player.initCaughtPokemon(myPokemon[i]);
         }
       }
 
@@ -177,77 +171,51 @@ public class PlayPanel extends JPanel {
       GameScreen.curR = Integer.parseInt(in.readLine());
       GameScreen.curC = Integer.parseInt(in.readLine());
 
-      for (int i = 0; i < hasPokemon.length; i++) {
-        String[] info = in.readLine().split(" ");
-
-
-        if (info[1].equals("true")) {
-          hasSeenPokemon[i] = true;
-        }
-        // else
-        // hasSeenPokemon[i] = false;
-
-        if (info[0].equals("true")) {
+      String[] pokedexInfo;
+      for (int i = 0; i < numPokemonInSaveFile; i++) {
+        pokedexInfo = in.readLine().split(SAVE_DELIMITER);
+        if (pokedexInfo[0].equals("true")) {
           hasPokemon[i] = true;
           hasSeenPokemon[i] = true;
+          player.markCaughtPokemon(i);
+          player.markSeenPokemon(i);
+        } else if (pokedexInfo[1].equals("true")) {
+          hasSeenPokemon[i] = true;
+          player.markSeenPokemon(i);
         }
-        // else
-        // hasPokemon[i] = false;
-
       }
+      return player;
     } catch (IOException e) {
+      AlertHelper.fatal("Can not find save file for " + name);
+      return null;
     }
   }
 
-  public static void save() {
+  public void save() {
     try {
-      PrintStream out = new PrintStream(new FileOutputStream("./savefiles/" + myName + ".pksf"));
-      out.println(myMoney + "");
+      PrintStream out = new PrintStream(new FileOutputStream("./savefiles/" + mPlayerController.getName() + ".pksf"));
+      out.println(mPlayerController.getMoney());
 
-      //your pokemon
-      out.println(myPokemon.length + "");
-      for (int i = 0; i < myPokemon.length; i++) {
-        if (myPokemon[i] == null) {
-          out.println("null");
-        } else {
-          out.println(myPokemon[i].toString());
-        }
-      }
-      out.println(game.mapName);
-      out.println("" + game.curR);
-      out.println("" + game.curC);
-
-      for (int i = 0; i < hasPokemon.length; i++) {
-        if (hasPokemon[i]) {
-          out.print("true");
-        } else {
-          out.print("false");
-        }
-
-        if (hasSeenPokemon[i]) {
-          out.print(" true");
-        } else {
-          out.print(" false");
-        }
-        out.println();
+      int numCaughtPokemon = mPlayerController.getNumCaughtPokemon();
+      out.println(numCaughtPokemon);
+      for (int i = 0; i < numCaughtPokemon; i++) {
+        out.println(mPlayerController.getPokemon(i));
       }
 
+      out.println(GameScreen.mapName);
+      out.println(GameScreen.curR);
+      out.println(GameScreen.curC);
+
+      for (int i = 0; i < Pokemon.getNumPokemon(); i++) {
+        out.print(mPlayerController.hasCaughtPokemon(i));
+        out.print(SAVE_DELIMITER);
+        out.println(mPlayerController.hasSeenPokemon(i));
+      }
+
+      alert("Saved!");
     } catch (IOException e) {
+      AlertHelper.debug("Error when saving: " + e.getMessage());
     }
-
-  }
-
-  public static boolean hasRepeat() {
-    for (int pokeIndex = 0; pokeIndex < myPokemon.length; pokeIndex++) {
-
-      if (myPokemon[pokeIndex] != null) {
-        if (game.enemy.getName().equals(myPokemon[pokeIndex].getName())) {
-          return true;
-        }
-      }
-    }
-    return false;
-
   }
 
   public class Key extends KeyAdapter {
@@ -284,7 +252,6 @@ public class PlayPanel extends JPanel {
         mMovementController.setLeftPressed(false);
       } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
         mMovementController.setRightPressed(false);
-
       }
     }
   }
@@ -300,14 +267,4 @@ public class PlayPanel extends JPanel {
       options.checkClick(e.getX(), e.getY());
     }
   }
-
-  public static void toBattle(boolean tf) {
-    if (tf) {
-      OptionsNavigationHelper.toBattle();
-      game.toBattle();
-    } else {
-      OptionsNavigationHelper.toNormal();
-    }
-  }
-
 }

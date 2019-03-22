@@ -61,7 +61,6 @@ class OptionsNavigationHelper {
     OptionsPanel.curPanel = OptionsPanel.savePanel;
     GameScreen.inSave = true;
     GameScreen.canMove = false;
-    PlayPanel.save();
     updatePokemonCount();
   }
 
