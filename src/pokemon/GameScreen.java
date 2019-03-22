@@ -76,10 +76,10 @@ public class GameScreen extends JPanel {
 
   private MovementController mMovementController;
 
-  public GameScreen(PlayPanel playPanel, MovementController movementController) {
+  public GameScreen(PlayPanel playPanel) {
     bgColor = Color.WHITE;
     controlPanel = playPanel;
-    mMovementController = movementController;
+    mMovementController = playPanel.getMovementController();
     canMove = true;
 
     myImage = new BufferedImage(
@@ -313,12 +313,12 @@ public class GameScreen extends JPanel {
         GameDriver.SCREEN_HEIGHT - 50 - myY);
     myBuffer.setFont(normalFont);
 
-    if (controlPanel.options.switchingPokemon) {
+    if (controlPanel.getOptionsPanel().switchingPokemon) {
       myBuffer.drawString("Which pokemon do you want to switch out?", 5, 170);
     }
 
     if (swapPokemon) {
-      controlPanel.options.switchingPokemon = false;
+      controlPanel.getOptionsPanel().switchingPokemon = false;
       if (switchingMove < 16)//drawing pokemon out
       {
         attackX -= 5;
@@ -328,7 +328,7 @@ public class GameScreen extends JPanel {
       } else if (switchingMove == 16)//switch the two pokemon
       {
         //switch pokemon
-        myPoke = controlPanel.myPokemon[0];//controlPanel.options.switchPokemonInd];
+        myPoke = controlPanel.myPokemon[0];//controlPanel.getOptionsPanel().switchPokemonInd];
         switchingMove++;
       } else if (switchingMove < 32) //putting pokemon in
       {
@@ -448,7 +448,7 @@ public class GameScreen extends JPanel {
           resetOrderOfPokemonInParty();
           OptionsNavigationHelper.toNormal();
         } else {
-          controlPanel.options.toSwitchPokemon();
+          controlPanel.getOptionsPanel().toSwitchPokemon();
         }
       }
     }

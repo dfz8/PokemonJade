@@ -22,7 +22,6 @@ public class OptionsPanel extends JPanel {
   public static boolean switchingPokemon;
 
   private PlayPanel mPlayPanel;
-  private GameScreen game;
   static final int normalPanel = 0;
   static final int battlePanel = 1;
   static final int switchPokemonPanel = 2;
@@ -77,9 +76,8 @@ public class OptionsPanel extends JPanel {
     GameScreen.canMove = false;
   }
 
-  public OptionsPanel(PlayPanel playPanel, GameScreen panel) {
+  public OptionsPanel(PlayPanel playPanel) {
     mPlayPanel = playPanel;
-    game = panel;
 
     myImage = new BufferedImage(
         GameDriver.SCREEN_WIDTH,
@@ -211,7 +209,7 @@ public class OptionsPanel extends JPanel {
                   partyText = "That pokemon is already out!";
                 } else {
                   switchPokemonInd = i;
-                  game.swapPokemon = true;
+                  mPlayPanel.getGameScreen().swapPokemon = true;
                   Pokemon temp = PlayPanel.myPokemon[i];
                   PlayPanel.myPokemon[i] = PlayPanel.myPokemon[0];
                   PlayPanel.myPokemon[0] = temp;
@@ -301,22 +299,22 @@ public class OptionsPanel extends JPanel {
         toSwitchPokemon();
       }
       if (s.equals("Run")) {
-        game.resetOrderOfPokemonInParty();
+        mPlayPanel.getGameScreen().resetOrderOfPokemonInParty();
         OptionsNavigationHelper.toNormal();
       }
     } else if (curPanel == attackSelectionPanel) {
-      if (s.equals(game.myPoke.getAttackOne())) {
+      if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackOne())) {
         GameScreen.isAttacking = true;
-        GameScreen.myAttackName = game.myPoke.getAttackOne();
-      } else if (s.equals(game.myPoke.getAttackTwo())) {
+        GameScreen.myAttackName = mPlayPanel.getGameScreen().myPoke.getAttackOne();
+      } else if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackTwo())) {
         GameScreen.isAttacking = true;
-        GameScreen.myAttackName = game.myPoke.getAttackTwo();
-      } else if (s.equals(game.myPoke.getAttackThree())) {
+        GameScreen.myAttackName = mPlayPanel.getGameScreen().myPoke.getAttackTwo();
+      } else if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackThree())) {
         GameScreen.isAttacking = true;
-        GameScreen.myAttackName = game.myPoke.getAttackThree();
-      } else if (s.equals(game.myPoke.getAttackFour())) {
+        GameScreen.myAttackName = mPlayPanel.getGameScreen().myPoke.getAttackThree();
+      } else if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackFour())) {
         GameScreen.isAttacking = true;
-        GameScreen.myAttackName = game.myPoke.getAttackFour();
+        GameScreen.myAttackName = mPlayPanel.getGameScreen().myPoke.getAttackFour();
       } else if (s.equals("Back")) {
         OptionsNavigationHelper.toBattle();
       }
@@ -332,22 +330,22 @@ public class OptionsPanel extends JPanel {
               break;
             }
           }
-          mPlayPanel.getPlayer().markCaughtPokemon(game.enemy.getName());
-          mPlayPanel.getPlayer().markSeenPokemon(game.enemy.getName());
+          mPlayPanel.getPlayer().markCaughtPokemon(mPlayPanel.getGameScreen().enemy.getName());
+          mPlayPanel.getPlayer().markSeenPokemon(mPlayPanel.getGameScreen().enemy.getName());
 
           PlayPanel.myPokemon[index] = new Pokemon.Builder()
-              .setName(game.enemy.getName())
-              .setType(game.enemy.getType())
-              .setFirstAttack(game.enemy.getAttackOne())
-              .setSecondAttack(game.enemy.getAttackTwo())
-              .setThirdAttack(game.enemy.getAttackThree())
-              .setFourthAttack(game.enemy.getAttackFour())
-              .setLevel(game.enemy.getLevel())
-              .setExp(game.enemy.getMyEXP())
-              .setAttack(game.enemy.getAttackLevel())
-              .setDefense(game.enemy.getDefenseLevel())
-              .setHp(game.enemy.getCurrentHP())
-              .setMaxHp(game.enemy.getMaxHP())
+              .setName(mPlayPanel.getGameScreen().enemy.getName())
+              .setType(mPlayPanel.getGameScreen().enemy.getType())
+              .setFirstAttack(mPlayPanel.getGameScreen().enemy.getAttackOne())
+              .setSecondAttack(mPlayPanel.getGameScreen().enemy.getAttackTwo())
+              .setThirdAttack(mPlayPanel.getGameScreen().enemy.getAttackThree())
+              .setFourthAttack(mPlayPanel.getGameScreen().enemy.getAttackFour())
+              .setLevel(mPlayPanel.getGameScreen().enemy.getLevel())
+              .setExp(mPlayPanel.getGameScreen().enemy.getMyEXP())
+              .setAttack(mPlayPanel.getGameScreen().enemy.getAttackLevel())
+              .setDefense(mPlayPanel.getGameScreen().enemy.getDefenseLevel())
+              .setHp(mPlayPanel.getGameScreen().enemy.getCurrentHP())
+              .setMaxHp(mPlayPanel.getGameScreen().enemy.getMaxHP())
               .build();
           OptionsNavigationHelper.toNormal();
         } else {
@@ -625,13 +623,13 @@ public class OptionsPanel extends JPanel {
       attackOptions[i].setColor(c);
 
       if (i == 0) {
-        attackOptions[i].setText("" + game.myPoke.getAttackOne());
+        attackOptions[i].setText("" + mPlayPanel.getGameScreen().myPoke.getAttackOne());
       } else if (i == 1) {
-        attackOptions[i].setText("" + game.myPoke.getAttackTwo());
+        attackOptions[i].setText("" + mPlayPanel.getGameScreen().myPoke.getAttackTwo());
       } else if (i == 2) {
-        attackOptions[i].setText("" + game.myPoke.getAttackThree());
+        attackOptions[i].setText("" + mPlayPanel.getGameScreen().myPoke.getAttackThree());
       } else {
-        attackOptions[i].setText("" + game.myPoke.getAttackFour());
+        attackOptions[i].setText("" + mPlayPanel.getGameScreen().myPoke.getAttackFour());
       }
     }
   }

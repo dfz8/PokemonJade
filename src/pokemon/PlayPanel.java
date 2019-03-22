@@ -14,8 +14,8 @@ import static pokemon.AlertHelper.alert;
 public class PlayPanel extends JPanel {
   private static final String SAVE_DELIMITER = " ";
 
-  public static GameScreen game;
-  public static OptionsPanel options;
+  private static GameScreen mGameScreen;
+  private static OptionsPanel mOptionsPanel;
 
   static Pokemon[] myPokemon; //first six is party, empty slots are "null"
 
@@ -23,16 +23,17 @@ public class PlayPanel extends JPanel {
   private MovementController mMovementController;
 
   public PlayPanel() {
+
     initGame();
     mMovementController = new MovementController();
 
     setLayout(new GridLayout(2, 1));
 
-    game = new GameScreen(this, mMovementController);
-    add(game);
+    mGameScreen = new GameScreen(this);
+    add(mGameScreen);
 
-    options = new OptionsPanel(this, game);
-    add(options);
+    mOptionsPanel = new OptionsPanel(this);
+    add(mOptionsPanel);
 
     addKeyListener(new Key());
     addMouseMotionListener(new Mouse());
@@ -42,6 +43,18 @@ public class PlayPanel extends JPanel {
 
   public PlayerController getPlayer() {
     return mPlayerController;
+  }
+
+  public MovementController getMovementController() {
+    return mMovementController;
+  }
+
+  public OptionsPanel getOptionsPanel() {
+    return mOptionsPanel;
+  }
+
+  public GameScreen getGameScreen() {
+    return mGameScreen;
   }
 
   private void initGame() {
@@ -252,13 +265,13 @@ public class PlayPanel extends JPanel {
 
   public class Mouse extends MouseMotionAdapter {
     public void mouseMoved(MouseEvent e) {
-      options.updateHighlightsForOptions(e.getX(), e.getY());
+      mOptionsPanel.updateHighlightsForOptions(e.getX(), e.getY());
     }
   }
 
   public class MouseClicks extends MouseAdapter {
     public void mouseClicked(MouseEvent e) {
-      options.checkClick(e.getX(), e.getY());
+      mOptionsPanel.checkClick(e.getX(), e.getY());
     }
   }
 }
