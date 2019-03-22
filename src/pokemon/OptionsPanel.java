@@ -1,9 +1,9 @@
 package pokemon;
 
-import pokemon.OptionsHelper.Menu;
 import pokemon.controllers.PlayerController;
 import pokemon.entities.PokeBall;
 import pokemon.entities.Pokemon;
+import pokemon.enums.Menu;
 import pokemon.ui.OptionBoard;
 
 import javax.swing.*;
@@ -22,18 +22,7 @@ public class OptionsPanel extends JPanel {
   public static boolean switchingPokemon;
 
   private PlayPanel mPlayPanel;
-  static final int normalPanel = 0;
-  static final int battlePanel = 1;
-  static final int switchPokemonPanel = 2;
-  static final int partyPanel = 3;
-  static final int useItemPanel = 4;
-  static final int pokedexPanel = 5;
-  static final int bagPanel = 6;
-  static final int savePanel = 7;
-  static final int personalPanel = 8;
-  static final int attackSelectionPanel = 9;
-  static final int blackPanel = 10; //added by david
-  static int curPanel;
+  static Menu curMenu;
 
   static boolean showPokemonSelectOptions = false;
   static int switchPokemonInd = -1;
@@ -55,8 +44,8 @@ public class OptionsPanel extends JPanel {
   PokeBall p = new PokeBall();
 
   public void toSwitchPokemon() {
-    OptionsPanel.curPanel = OptionsPanel.switchPokemonPanel;
-    OptionsPanel.switchingPokemon = true;
+    curMenu = Menu.pokemonSelect;
+    switchingPokemon = true;
     toParty();
 
     GameScreen.canMove = false;
@@ -70,7 +59,7 @@ public class OptionsPanel extends JPanel {
         pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
       }
     }
-    OptionsPanel.curPanel = OptionsPanel.partyPanel;
+    OptionsPanel.curMenu = Menu.party;
     OptionsPanel.partyText = "Select a Pokemon.";
 
     GameScreen.canMove = false;
@@ -92,20 +81,20 @@ public class OptionsPanel extends JPanel {
     pokemonOptions = OptionsHelper.setUpFor(Menu.party, player);
     pokedexOptions = OptionsHelper.setUpFor(Menu.pokedex, player);
     battleOptions = OptionsHelper.setUpFor(Menu.battle, player);
-    attackOptions = OptionsHelper.setUpFor(Menu.attacks, player);
+    attackOptions = OptionsHelper.setUpFor(Menu.attackSelection, player);
     bagOptions = OptionsHelper.setUpFor(Menu.bag, player);
     pokemonSelectOptions = OptionsHelper.setUpFor(Menu.pokemonSelect, player);
     saveOptions = OptionsHelper.setUpFor(Menu.save, player);
     personalOptions = OptionsHelper.setUpFor(Menu.personal, player);
 
-    curPanel = normalPanel;
+    curMenu = Menu.main;
 
     t = new Timer(10, new RefreshListener());
     t.start();
   }
 
   public void updateHighlightsForOptions(int x, int y) {
-    if (curPanel == partyPanel && !showPokemonSelectOptions) {
+    if (curMenu == Menu.party && !showPokemonSelectOptions) {
       // can come here when viewing pokemon, in battle and switching out pokemon
       for (int i = 0; i < pokemonOptions.length; i++) {
         pokemonOptions[i].showHighlight(
@@ -117,25 +106,27 @@ public class OptionsPanel extends JPanel {
   }
 
   private OptionBoard[] getOptionsForCurrentPanel() {
-    switch (curPanel) {
-      case normalPanel:
+    switch (curMenu) {
+      case main:
         return normalOptions;
-      case partyPanel:
+      case party:
         return showPokemonSelectOptions ? pokemonSelectOptions : pokemonOptions;
-      case battlePanel:
+      case battle:
         return battleOptions;
-      case pokedexPanel:
+      case pokedex:
         return pokedexOptions;
-      case attackSelectionPanel:
+      case attackSelection:
         return attackOptions;
-      case useItemPanel:
+      case bag:
         return bagOptions;
-      case savePanel:
+      case save:
         return saveOptions;
-      case personalPanel:
+      case personal:
         return personalOptions;
+      case blackScreen:
+        return null;
       default:
-        AlertHelper.fatal("Unrecognized panel id:" + curPanel);
+        AlertHelper.fatal("Unrecognized panel id:" + curMenu);
     }
     return null;
   }
@@ -173,7 +164,7 @@ public class OptionsPanel extends JPanel {
 
   //where the click code is run
   public void searchButton(String s) {
-    if (curPanel == normalPanel) {
+    if (curMenu == Menu.main) {
       if (s.equals("Pokemon")) {
         toParty();
       } else if (s.equals("Pokedex")) {
@@ -187,7 +178,7 @@ public class OptionsPanel extends JPanel {
       } else if (s.equals("Options")) {
         AlertHelper.alert("Coming Soon");
       }
-    } else if (curPanel == partyPanel) {
+    } else if (curMenu == Menu.party) {
       if (s.equals("Back")) {
         if (!showPokemonSelectOptions) {
           if (!switchingPokemon) {
@@ -270,7 +261,7 @@ public class OptionsPanel extends JPanel {
           }
         }
       }
-    } else if (curPanel == pokedexPanel) {
+    } else if (curMenu == Menu.pokedex) {
       if (s.equals("Up")) {
         pokedexStartInd -= pokedexOptions.length - 3;
         if (pokedexStartInd < 1) {
@@ -288,7 +279,7 @@ public class OptionsPanel extends JPanel {
 
       }
 
-    } else if (curPanel == battlePanel) {
+    } else if (curMenu == Menu.battle) {
       if (s.equals("Fight")) {
         OptionsNavigationHelper.toAttacks();
       }
@@ -302,7 +293,7 @@ public class OptionsPanel extends JPanel {
         mPlayPanel.getGameScreen().resetOrderOfPokemonInParty();
         OptionsNavigationHelper.toNormal();
       }
-    } else if (curPanel == attackSelectionPanel) {
+    } else if (curMenu == Menu.attackSelection) {
       if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackOne())) {
         GameScreen.isAttacking = true;
         GameScreen.myAttackName = mPlayPanel.getGameScreen().myPoke.getAttackOne();
@@ -318,7 +309,7 @@ public class OptionsPanel extends JPanel {
       } else if (s.equals("Back")) {
         OptionsNavigationHelper.toBattle();
       }
-    } else if (curPanel == useItemPanel) {
+    } else if (curMenu == Menu.bag) {
       if (s.equals("Back")) {
         OptionsNavigationHelper.toBattle();
       } else if (s.equals("Pokeball")) {
@@ -356,12 +347,12 @@ public class OptionsPanel extends JPanel {
         }
       }
 
-    } else if (curPanel == savePanel) {
+    } else if (curMenu == Menu.save) {
       if (s.equals("")) {
         mPlayPanel.save();
         OptionsNavigationHelper.toNormal();
       }
-    } else if (curPanel == personalPanel) {
+    } else if (curMenu == Menu.personal) {
       if (s.equals("")) {
         OptionsNavigationHelper.toNormal();
       }
@@ -379,12 +370,12 @@ public class OptionsPanel extends JPanel {
       // todo: move set font code to the specific panels
       myBuffer.setFont(GameScreen.normalFont);
 
-      if (curPanel == blackPanel) {
+      if (curMenu == Menu.blackScreen) {
         myBuffer.setColor(Color.BLACK);
         myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
         repaint();
         return;
-      } else if (curPanel == partyPanel) {
+      } else if (curMenu == Menu.party) {
         drawOptions();
         drawPokemonPartyScreen();
         if (showPokemonSelectOptions) {
@@ -397,13 +388,13 @@ public class OptionsPanel extends JPanel {
       drawOptions();
 
       // draw special overlays
-      if (curPanel == pokedexPanel) {
+      if (curMenu == Menu.pokedex) {
         drawPokedexScreen();
-      } else if (curPanel == savePanel) {
+      } else if (curMenu == Menu.save) {
         drawSaveScreen();
-      } else if (curPanel == personalPanel) {
+      } else if (curMenu == Menu.personal) {
         drawPersonalScreen();
-      } else if (curPanel == attackSelectionPanel) {
+      } else if (curMenu == Menu.attackSelection) {
         // todo: move updateAttackOptions to wherever init code should go
         updateAttackOptions();
         drawOptions();

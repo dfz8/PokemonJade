@@ -1,24 +1,13 @@
 package pokemon;
 
 import pokemon.controllers.PlayerController;
+import pokemon.enums.Menu;
 import pokemon.ui.OptionBoard;
 import pokemon.ui.OptionBoard.TextPlacement;
 
 import java.awt.*;
 
 public class OptionsHelper {
-  public enum Menu {
-    main,
-    party,
-    pokemonSelect,
-    pokedex,
-    battle,
-    attacks,
-    bag,
-    save,
-    personal,
-  }
-
 
   private final static Color GREEN = Color.GREEN;
   private final static Color PLAIN = Color.WHITE;
@@ -108,7 +97,7 @@ public class OptionsHelper {
                 35,
                 PLAIN,
                 "Pokemon")};
-      case attacks:
+      case attackSelection:
         return new OptionBoard[]{
             new OptionBoard(
                 GameDriver.SCREEN_WIDTH - 245,

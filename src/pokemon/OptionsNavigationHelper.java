@@ -1,9 +1,11 @@
 package pokemon;
 
+import pokemon.enums.Menu;
+
 class OptionsNavigationHelper {
 
   static void toNormal() {
-    OptionsPanel.curPanel = OptionsPanel.normalPanel;
+    OptionsPanel.curMenu = Menu.main;
     GameScreen.inBattle = false;
     GameScreen.canMove = true;
     GameScreen.inSummary = false;
@@ -14,18 +16,18 @@ class OptionsNavigationHelper {
   }
 
   static void toBag() {
-    OptionsPanel.curPanel = OptionsPanel.useItemPanel;
+    OptionsPanel.curMenu = Menu.bag;
     GameScreen.canMove = false;
     GameScreen.inBattle = true;
   }
 
   static void toBattle() {
-    OptionsPanel.curPanel = OptionsPanel.battlePanel;
+    OptionsPanel.curMenu = Menu.battle;
     OptionsPanel.switchingPokemon = false;
   }
 
   static void toBlack() {
-    OptionsPanel.curPanel = OptionsPanel.blackPanel;
+    OptionsPanel.curMenu = Menu.blackScreen;
   }
 
   static void toSummary(int i) {
@@ -37,24 +39,24 @@ class OptionsNavigationHelper {
   }
 
   static void toPersonal() {
-    OptionsPanel.curPanel = OptionsPanel.personalPanel;
+    OptionsPanel.curMenu = Menu.personal;
     GameScreen.canMove = false;
   }
 
   static void toPokedex() {
-    OptionsPanel.curPanel = OptionsPanel.pokedexPanel;
+    OptionsPanel.curMenu = Menu.pokedex;
     OptionsPanel.pokedexStartInd = 1; //not array
     GameScreen.canMove = false;
   }
 
   static void toAttacks() {
-    OptionsPanel.curPanel = OptionsPanel.attackSelectionPanel;
+    OptionsPanel.curMenu = Menu.attackSelection;
     GameScreen.canMove = false;
     GameScreen.inBattle = true;
   }
 
   static void toSave() {
-    OptionsPanel.curPanel = OptionsPanel.savePanel;
+    OptionsPanel.curMenu = Menu.save;
     GameScreen.inSave = true;
     GameScreen.canMove = false;
   }
