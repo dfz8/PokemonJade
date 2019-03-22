@@ -16,6 +16,7 @@ public class PlayPanel extends JPanel {
 
   private static GameScreen mGameScreen;
   private static OptionsPanel mOptionsPanel;
+  private static OptionsNavigationHelper mOptionsNavigationHelper;
 
   static Pokemon[] myPokemon; //first six is party, empty slots are "null"
 
@@ -23,15 +24,11 @@ public class PlayPanel extends JPanel {
   private MovementController mMovementController;
 
   public PlayPanel() {
-
     initGame();
-    mMovementController = new MovementController();
 
     setLayout(new GridLayout(2, 1));
-
     mGameScreen = new GameScreen(this);
     add(mGameScreen);
-
     mOptionsPanel = new OptionsPanel(this);
     add(mOptionsPanel);
 
@@ -39,6 +36,11 @@ public class PlayPanel extends JPanel {
     addMouseMotionListener(new Mouse());
     addMouseListener(new MouseClicks());
     setFocusable(true);
+  }
+
+  private void initControllers() {
+    mMovementController = new MovementController();
+    mOptionsNavigationHelper = new OptionsNavigationHelper(this);
   }
 
   public PlayerController getPlayer() {
@@ -57,7 +59,13 @@ public class PlayPanel extends JPanel {
     return mGameScreen;
   }
 
+  public OptionsNavigationHelper getOptionsNavigationHelper() {
+    return mOptionsNavigationHelper;
+  }
+
   private void initGame() {
+    initControllers();
+
     //    alert("Welcome to pokemon.entities.Pokemon: Jade!");
     //    String choice = JOptionPane.showInputDialog("1. New game?\n2. Saved game?");
     String choice = "2";
@@ -70,8 +78,7 @@ public class PlayPanel extends JPanel {
       mPlayerController = new PlayerController(playerName, 3000);
 
       GameScreen.mapName = "hometown";
-      GameScreen.curR = 7;
-      GameScreen.curC = 11;
+      mMovementController.setCoord(7, 11);
 
       myPokemon = new Pokemon[Pokemon.getNumPokemon()];
       myPokemon[0] = new Pokemon.Builder()
@@ -178,8 +185,7 @@ public class PlayPanel extends JPanel {
       }
 
       GameScreen.mapName = in.readLine();
-      GameScreen.curR = Integer.parseInt(in.readLine());
-      GameScreen.curC = Integer.parseInt(in.readLine());
+      mMovementController.setCoord(Integer.parseInt(in.readLine()), Integer.parseInt(in.readLine()));
 
       String[] pokedexInfo;
       for (int i = 0; i < numPokemonInSaveFile; i++) {
@@ -210,8 +216,8 @@ public class PlayPanel extends JPanel {
       }
 
       out.println(GameScreen.mapName);
-      out.println(GameScreen.curR);
-      out.println(GameScreen.curC);
+      out.println(mMovementController.getRow());
+      out.println(mMovementController.getCol());
 
       for (int i = 0; i < Pokemon.getNumPokemon(); i++) {
         out.print(mPlayerController.hasCaughtPokemon(i));

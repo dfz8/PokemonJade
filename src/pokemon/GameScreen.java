@@ -38,7 +38,6 @@ public class GameScreen extends JPanel {
   private static boolean[][] items;
 
   //conditions:
-  static boolean canMove;
   static boolean inBattle;
   static boolean swapPokemon;
   static boolean inSummary;
@@ -49,8 +48,6 @@ public class GameScreen extends JPanel {
 
   //player sprite info
   private ImageIcon curSprite;
-  static int curC;
-  static int curR;
 
   //battle info
   private static int attackX = 5;
@@ -76,7 +73,7 @@ public class GameScreen extends JPanel {
     bgColor = Color.WHITE;
     mPlayPanel = playPanel;
     mMovementController = playPanel.getMovementController();
-    canMove = true;
+    mMovementController.setCanMove(true);
 
     myImage = new BufferedImage(GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
     myBuffer = myImage.getGraphics();
@@ -84,8 +81,7 @@ public class GameScreen extends JPanel {
     myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
 
     curSprite = ImageLibrary.faceDown;
-    curC = 8;
-    curR = 7;
+    mMovementController.setCoord(7, 8);
 
     try {
       loadMap(mapName);
@@ -108,7 +104,7 @@ public class GameScreen extends JPanel {
 
       if (inSummary) {
         drawSummaryScreen();
-      } else if (canMove) {
+      } else if (mMovementController.canMove()) {
         //!inBattle)
         bgColor = Color.WHITE;
         handleMovementOfPlayer();
@@ -125,6 +121,8 @@ public class GameScreen extends JPanel {
   }
 
   private void drawMap() {
+    int curR = mMovementController.getRow();
+    int curC = mMovementController.getCol();
     for (int r = curR - 5; r < map.length && r < curR + 5; r++) {
       if (r < 0) {
         continue;
@@ -154,28 +152,30 @@ public class GameScreen extends JPanel {
   }
 
   private void handleMovementOfPlayer() {
-    if (!canMove) {
+    if (!mMovementController.canMove()) {
       return;
     }
 
     maybeLoadNextMap();
+    int curR = mMovementController.getRow();
+    int curC = mMovementController.getCol();
 
     boolean hasMoved = true; //for wild pokemon in grass/ocean
     if (mMovementController.isDownPressed()) {
       if (map[curR + 1][curC].canMoveHere()) {
-        curR++;
+        mMovementController.setRow(curR + 1);
       }
     } else if (mMovementController.isLeftPressed()) {
       if (map[curR][curC - 1].canMoveHere()) {
-        curC--;
+        mMovementController.setCol(curC - 1);
       }
     } else if (mMovementController.isUpPressed()) {
       if (map[curR - 1][curC].canMoveHere()) {
-        curR--;
+        mMovementController.setRow(curR - 1);
       }
     } else if (mMovementController.isRightPressed()) {
       if (map[curR][curC + 1].canMoveHere()) {
-        curC++;
+        mMovementController.setCol(curC + 1);
       }
     } else {
       hasMoved = false;
@@ -193,21 +193,22 @@ public class GameScreen extends JPanel {
     if (map[curR][curC].getType() == Terrain.HEALING_TILE) {
       for (int i = 0; i < 6; i++) {
         if (PlayPanel.myPokemon[i] != null) {
-          PlayPanel.myPokemon[i].heal(PlayPanel.myPokemon[i].getMaxHP() - PlayPanel.myPokemon[i]
-              .getCurrentHP());
+          PlayPanel.myPokemon[i].heal(
+              PlayPanel.myPokemon[i].getMaxHP() - PlayPanel.myPokemon[i].getCurrentHP());
         }
       }
     }
   }
 
   private void maybeLoadNextMap() {
+    int curR = mMovementController.getRow();
+    int curC = mMovementController.getCol();
     if (map[curR][curC].isGate()) {
       try {
         int newR = map[curR][curC].getMapLinkRow();
         int newC = map[curR][curC].getMapLinkCol();
         loadMap(map[curR][curC].getMapLink());
-        curR = newR;
-        curC = newC;
+        mMovementController.setCoord(newR, newC);
       } catch (IOException a) {
         AlertHelper.fatal(
             "Error: loadMap() has failed in pokemon.GameScreen @ RefreshListener: "
@@ -217,7 +218,7 @@ public class GameScreen extends JPanel {
   }
 
   private void maybeInitPokemonBattle() {
-    if (map[curR][curC].getType() == Terrain.GRASS) {
+    if (map[mMovementController.getRow()][mMovementController.getCol()].getType() == Terrain.GRASS) {
       if ((int) (Math.random() * 256) <= 32) {
         toBattle();
       }
@@ -316,7 +317,7 @@ public class GameScreen extends JPanel {
         attackX -= 5;
         switchingMove++;
         myBuffer.drawString("Come back " + myPoke.getName() + "!", 5, 170);
-        OptionsNavigationHelper.toBlack();
+        mPlayPanel.getOptionsNavigationHelper().toBlack();
       } else if (switchingMove == 16)//switch the two pokemon
       {
         //switch pokemon
@@ -336,7 +337,7 @@ public class GameScreen extends JPanel {
       }
     } else if (isAttacking) {
       if (myMove <= 5) {//moves towards
-        OptionsNavigationHelper.toBlack();
+        mPlayPanel.getOptionsNavigationHelper().toBlack();
         attackX = attackX + 3;
         //attackY=attackY-3;
         myMove++;
@@ -377,7 +378,7 @@ public class GameScreen extends JPanel {
         isAttacking = false;
 
         resetOrderOfPokemonInParty();
-        OptionsNavigationHelper.toNormal();
+        mPlayPanel.getOptionsNavigationHelper().toNormal();
       }
     } else if (enemyIsAttacking) {
       if (enemyMove == 1) {
@@ -416,7 +417,7 @@ public class GameScreen extends JPanel {
         enemyMove = 1;
         enemyIsAttacking = false;
 
-        OptionsNavigationHelper.toBattle();
+        mPlayPanel.getOptionsNavigationHelper().toBattle();
       }
       if (myPoke.isFainted()) {
         //put image somewhere outside of the screen
@@ -438,7 +439,7 @@ public class GameScreen extends JPanel {
         }
         if (pokeLeft == 0) {
           resetOrderOfPokemonInParty();
-          OptionsNavigationHelper.toNormal();
+          mPlayPanel.getOptionsNavigationHelper().toNormal();
         } else {
           mPlayPanel.getOptionsPanel().toSwitchPokemon();
         }
@@ -459,7 +460,7 @@ public class GameScreen extends JPanel {
   }
 
   public void toBattle() {
-    canMove = false;
+    mMovementController.setCanMove(false);
     inBattle = true;
 
     saveParty();

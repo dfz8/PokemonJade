@@ -12,6 +12,10 @@ public class MovementController {
     RIGHT
   }
 
+  private int mRow;
+  private int mCol;
+  private boolean mCanMove;
+
   private boolean upPressed;
   private boolean downPressed;
   private boolean leftPressed;
@@ -23,6 +27,35 @@ public class MovementController {
   public MovementController() {
     upPressed = downPressed = leftPressed = rightPressed = false;
     mLastDirection = Direction.DOWN;
+  }
+
+  public void setRow(int row) {
+    mRow = row;
+  }
+
+  public void setCol(int col) {
+    mCol = col;
+  }
+
+  public void setCoord(int row, int col) {
+    setRow(row);
+    setCol(col);
+  }
+
+  public int getRow() {
+    return mRow;
+  }
+
+  public int getCol() {
+    return mCol;
+  }
+
+  public void setCanMove(boolean value) {
+    mCanMove = value;
+  }
+
+  public boolean canMove() {
+    return mCanMove;
   }
 
   public boolean isUpPressed() {

@@ -49,7 +49,7 @@ public class OptionsPanel extends JPanel {
     switchingPokemon = true;
     toParty();
 
-    GameScreen.canMove = false;
+    mPlayPanel.getMovementController().setCanMove(false);
   }
 
   public void toParty() {
@@ -63,7 +63,7 @@ public class OptionsPanel extends JPanel {
     curMenu = Menu.party;
     partyText = "Select a Pokemon.";
 
-    GameScreen.canMove = false;
+    mPlayPanel.getMovementController().setCanMove(false);
   }
 
   public OptionsPanel(PlayPanel playPanel) {
@@ -169,11 +169,11 @@ public class OptionsPanel extends JPanel {
       if (s.equals("Pokemon")) {
         toParty();
       } else if (s.equals("Pokedex")) {
-        OptionsNavigationHelper.toPokedex();
+        mPlayPanel.getOptionsNavigationHelper().toPokedex();
       } else if (s.equals("Save")) {
-        OptionsNavigationHelper.toSave();
+        mPlayPanel.getOptionsNavigationHelper().toSave();
       } else if (s.equals(mPlayPanel.getPlayer().getName())) {
-        OptionsNavigationHelper.toPersonal();
+        mPlayPanel.getOptionsNavigationHelper().toPersonal();
       } else if (s.equals("Bag")) {
         AlertHelper.alert("Coming Soon");
       } else if (s.equals("Options")) {
@@ -183,9 +183,9 @@ public class OptionsPanel extends JPanel {
       if (s.equals("Back")) {
         if (!showPokemonSelectOptions) {
           if (!switchingPokemon) {
-            OptionsNavigationHelper.toNormal();
+            mPlayPanel.getOptionsNavigationHelper().toNormal();
           } else {
-            OptionsNavigationHelper.toBattle();
+            mPlayPanel.getOptionsNavigationHelper().toBattle();
           }
         } else {
           showPokemonSelectOptions = false;
@@ -228,7 +228,7 @@ public class OptionsPanel extends JPanel {
           switchingPokemon = true;
           showPokemonSelectOptions = false;
         } else if (s.equals("Summary")) {
-          OptionsNavigationHelper.toSummary(switchPokemonInd);
+          mPlayPanel.getOptionsNavigationHelper().toSummary(switchPokemonInd);
         } else if (s.equals("Back")) {
           showPokemonSelectOptions = false;
           toParty();
@@ -274,7 +274,7 @@ public class OptionsPanel extends JPanel {
           pokedexStartInd = Pokemon.getNumPokemon() - pokedexOptions.length + 4;
         }
       } else if (s.equals("Back")) {
-        OptionsNavigationHelper.toNormal();
+        mPlayPanel.getOptionsNavigationHelper().toNormal();
       } else //click on a pokemon tile
       {
 
@@ -282,17 +282,17 @@ public class OptionsPanel extends JPanel {
 
     } else if (curMenu == Menu.battle) {
       if (s.equals("Fight")) {
-        OptionsNavigationHelper.toAttacks();
+        mPlayPanel.getOptionsNavigationHelper().toAttacks();
       }
       if (s.equals("Bag")) {
-        OptionsNavigationHelper.toBag();
+        mPlayPanel.getOptionsNavigationHelper().toBag();
       }
       if (s.equals("Pokemon")) {
         toSwitchPokemon();
       }
       if (s.equals("Run")) {
         mPlayPanel.getGameScreen().resetOrderOfPokemonInParty();
-        OptionsNavigationHelper.toNormal();
+        mPlayPanel.getOptionsNavigationHelper().toNormal();
       }
     } else if (curMenu == Menu.attackSelection) {
       if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackOne())) {
@@ -308,11 +308,11 @@ public class OptionsPanel extends JPanel {
         GameScreen.isAttacking = true;
         GameScreen.myAttackName = mPlayPanel.getGameScreen().myPoke.getAttackFour();
       } else if (s.equals("Back")) {
-        OptionsNavigationHelper.toBattle();
+        mPlayPanel.getOptionsNavigationHelper().toBattle();
       }
     } else if (curMenu == Menu.bag) {
       if (s.equals("Back")) {
-        OptionsNavigationHelper.toBattle();
+        mPlayPanel.getOptionsNavigationHelper().toBattle();
       } else if (s.equals("Pokeball")) {
         if (p.isCaught()) {
           int index = 0;
@@ -339,10 +339,10 @@ public class OptionsPanel extends JPanel {
               .setHp(mPlayPanel.getGameScreen().enemy.getCurrentHP())
               .setMaxHp(mPlayPanel.getGameScreen().enemy.getMaxHP())
               .build();
-          OptionsNavigationHelper.toNormal();
+          mPlayPanel.getOptionsNavigationHelper().toNormal();
         } else {
           AlertHelper.alert("Awww, the pokemon broke out of the pokeball!");
-          OptionsNavigationHelper.toBlack();
+          mPlayPanel.getOptionsNavigationHelper().toBlack();
           GameScreen.isAttacking = false;
           GameScreen.enemyIsAttacking = true;
         }
@@ -351,11 +351,11 @@ public class OptionsPanel extends JPanel {
     } else if (curMenu == Menu.save) {
       if (s.equals("")) {
         mPlayPanel.save();
-        OptionsNavigationHelper.toNormal();
+        mPlayPanel.getOptionsNavigationHelper().toNormal();
       }
     } else if (curMenu == Menu.personal) {
       if (s.equals("")) {
-        OptionsNavigationHelper.toNormal();
+        mPlayPanel.getOptionsNavigationHelper().toNormal();
       }
     }
   }

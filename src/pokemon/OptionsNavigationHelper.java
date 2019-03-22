@@ -3,11 +3,16 @@ package pokemon;
 import pokemon.enums.Menu;
 
 class OptionsNavigationHelper {
+  private PlayPanel mPlayPanel;
 
-  static void toNormal() {
+  public OptionsNavigationHelper(PlayPanel playPanel) {
+    mPlayPanel = playPanel;
+  }
+
+  public void toNormal() {
     OptionsPanel.curMenu = Menu.main;
     GameScreen.inBattle = false;
-    GameScreen.canMove = true;
+    mPlayPanel.getMovementController().setCanMove(true);
     GameScreen.inSummary = false;
 
     OptionsPanel.switchingPokemon = false;
@@ -15,22 +20,22 @@ class OptionsNavigationHelper {
     OptionsPanel.switchPokemonInd = -1;
   }
 
-  static void toBag() {
+  public void toBag() {
     OptionsPanel.curMenu = Menu.bag;
-    GameScreen.canMove = false;
+    mPlayPanel.getMovementController().setCanMove(false);
     GameScreen.inBattle = true;
   }
 
-  static void toBattle() {
+  public void toBattle() {
     OptionsPanel.curMenu = Menu.battle;
     OptionsPanel.switchingPokemon = false;
   }
 
-  static void toBlack() {
+  public void toBlack() {
     OptionsPanel.curMenu = Menu.blackScreen;
   }
 
-  static void toSummary(int i) {
+  public void toSummary(int i) {
     //game.summaryIndex = i;
     GameScreen.inSummary = true;
     GameScreen.summaryPoke = PlayPanel.myPokemon[i];
@@ -38,26 +43,26 @@ class OptionsNavigationHelper {
     OptionsPanel.showPokemonSelectOptions = false;
   }
 
-  static void toPersonal() {
+  public void toPersonal() {
     OptionsPanel.curMenu = Menu.personal;
-    GameScreen.canMove = false;
+    mPlayPanel.getMovementController().setCanMove(false);
   }
 
-  static void toPokedex() {
+  public void toPokedex() {
     OptionsPanel.curMenu = Menu.pokedex;
     OptionsPanel.pokedexStartInd = 1; //not array
-    GameScreen.canMove = false;
+    mPlayPanel.getMovementController().setCanMove(false);
   }
 
-  static void toAttacks() {
+  public void toAttacks() {
     OptionsPanel.curMenu = Menu.attackSelection;
-    GameScreen.canMove = false;
+    mPlayPanel.getMovementController().setCanMove(false);
     GameScreen.inBattle = true;
   }
 
-  static void toSave() {
+  public void toSave() {
     OptionsPanel.curMenu = Menu.save;
     GameScreen.inSave = true;
-    GameScreen.canMove = false;
+    mPlayPanel.getMovementController().setCanMove(false);
   }
 }
