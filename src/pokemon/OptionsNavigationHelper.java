@@ -39,16 +39,12 @@ class OptionsNavigationHelper {
   static void toPersonal() {
     OptionsPanel.curPanel = OptionsPanel.personalPanel;
     GameScreen.canMove = false;
-
-    updatePokemonCount();
   }
 
   static void toPokedex() {
     OptionsPanel.curPanel = OptionsPanel.pokedexPanel;
     OptionsPanel.pokedexStartInd = 1; //not array
     GameScreen.canMove = false;
-
-    updatePokemonCount();
   }
 
   static void toAttacks() {
@@ -61,21 +57,5 @@ class OptionsNavigationHelper {
     OptionsPanel.curPanel = OptionsPanel.savePanel;
     GameScreen.inSave = true;
     GameScreen.canMove = false;
-    updatePokemonCount();
-  }
-
-  private static void updatePokemonCount() {
-    // todo: update counts on catch, not every time
-    OptionsPanel.numPokemonSeen = 0;
-    OptionsPanel.numPokemonOwned = 0;
-
-    for (int i = 0; i < PlayPanel.hasSeenPokemon.length; i++) {
-      if (PlayPanel.hasSeenPokemon[i]) {
-        OptionsPanel.numPokemonSeen++;
-      }
-      if (PlayPanel.hasPokemon[i]) {
-        OptionsPanel.numPokemonOwned++;
-      }
-    }
   }
 }

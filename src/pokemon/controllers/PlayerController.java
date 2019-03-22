@@ -1,10 +1,10 @@
 package pokemon.controllers;
 
-import static pokemon.entities.Pokemon.getIndex;
-
 import pokemon.entities.Pokemon;
 
 import java.util.ArrayList;
+
+import static pokemon.entities.Pokemon.getIndex;
 
 public class PlayerController {
   private String mName;
@@ -16,6 +16,30 @@ public class PlayerController {
   public PlayerController(String name, int money) {
     mName = name;
     mMoney = money;
+  }
+
+  public String getName() {
+    return mName;
+  }
+
+  public int getMoney() {
+    return mMoney;
+  }
+
+  public int getNumCaughtPokemon() {
+    return mCaughtPokemon.size();
+  }
+
+  public int getNumSeenPokemon() {
+    return mPokedex.mNumSeen;
+  }
+
+  public Pokemon getCaughtPokemon(int index) {
+    return mCaughtPokemon.get(index);
+  }
+
+  public void initCaughtPokemon(Pokemon pokemon) {
+    mCaughtPokemon.add(pokemon);
   }
 
   public void markSeenPokemon(String name) {
@@ -42,29 +66,12 @@ public class PlayerController {
     return mPokedex.mHasCaughtPokemon[index];
   }
 
-  public String getName() {
-    return mName;
-  }
-
-  public int getMoney() {
-    return mMoney;
-  }
-
-  public int getNumCaughtPokemon() {
-    return mCaughtPokemon.size();
-  }
-
-  public void initCaughtPokemon(Pokemon pokemon) {
-    mCaughtPokemon.add(pokemon);
-  }
-
-  public Pokemon getPokemon(int index) {
-    return mCaughtPokemon.get(index);
-  }
-
   private class Pokedex {
     private boolean[] mHasCaughtPokemon;
     private boolean[] mHasSeenPokemon;
+
+    private int mNumSeen;
+    private int mNumCaught;
 
     public Pokedex() {
       mHasCaughtPokemon = new boolean[Pokemon.getNumPokemon()];
@@ -73,10 +80,12 @@ public class PlayerController {
 
     public void markSeen(int index) {
       mHasSeenPokemon[index] = true;
+      mNumSeen++;
     }
 
     public void markCaught(int index) {
       mHasCaughtPokemon[index] = true;
+      mNumCaught++;
     }
   }
 }

@@ -330,12 +330,12 @@ public class GameScreen extends JPanel {
         //switch pokemon
         myPoke = controlPanel.myPokemon[0];//controlPanel.options.switchPokemonInd];
         switchingMove++;
-      } else if (switchingMove > 16 && switchingMove < 32) //putting pokemon in
+      } else if (switchingMove < 32) //putting pokemon in
       {
         attackX += 5;
         switchingMove++;
         myBuffer.drawString("Go get them " + myPoke.getName() + "!", 5, 170);
-      } else if (switchingMove >= 32) {
+      } else {
         swapPokemon = false;
         switchingMove = 1;
 
@@ -350,15 +350,14 @@ public class GameScreen extends JPanel {
         myMove++;
         myBuffer.drawString(myPoke.getName() + " used " + myAttackName, 5, 170);
 
-      } else if (myMove > 5 && myMove < 11) {//moves back
+      } else if (myMove < 11) {//moves back
         attackX = attackX - 3;
         //attackY=attackY+3;
         myMove++;
 
         myBuffer.drawString(myPoke.getName() + " used " + myAttackName, 5, 170);
 
-      } else if (myMove >= 11) {//gives the attack
-
+      } else {//gives the attack
         double accuracy = Math.random() * 100;
         if (accuracy > 5) {
           AttackLibrary.fill();
@@ -376,7 +375,7 @@ public class GameScreen extends JPanel {
         enemyIsAttacking = true;
       }
 
-      if (enemy.isFainted() == true) {
+      if (enemy.isFainted()) {
         myPoke.gainIsFast = true;
         myPoke.EXPgain();
         //put image somewhere outside of the screen
@@ -402,13 +401,13 @@ public class GameScreen extends JPanel {
         enemyMove++;
         myBuffer.drawString("Wild " + enemy.getName() + " used " + enemyAttackName, 5, 170);
 
-      } else if (enemyMove > 5 && enemyMove < 11) {
+      } else if (enemyMove < 11) {
         attackXEnemy = attackXEnemy + 3;
         attackYEnemy = attackYEnemy - 3;
         enemyMove++;
         myBuffer.drawString("Wild " + enemy.getName() + " used " + enemyAttackName, 5, 170);
 
-      } else if (enemyMove >= 11) {
+      } else {
 
         // pokemon.AttackLibrary.fill();
         // enemyAttackName = enemy.chooseAttackEnemy();
@@ -427,7 +426,7 @@ public class GameScreen extends JPanel {
 
         OptionsNavigationHelper.toBattle();
       }
-      if (myPoke.isFainted() == true) {
+      if (myPoke.isFainted()) {
         //put image somewhere outside of the screen
         myPoke.setCurrentHP(0);
 
@@ -492,7 +491,6 @@ public class GameScreen extends JPanel {
 
     myPoke = PlayPanel.myPokemon[0];
 
-
     enemy = new Pokemon.Builder()
         .setName("Raikou")
         .setType("Electric")
@@ -510,8 +508,7 @@ public class GameScreen extends JPanel {
     setRandomEnemy();
     enemyIcon = SpriteHelper.getPokemonFront(enemy.getName());
 
-    //pokedex:
-    controlPanel.hasSeenPokemon[Pokemon.getIndex(enemy.getName())] = true;
+    controlPanel.getPlayer().markSeenPokemon(enemy.getName());
 
     attackX = 5;
     attackY = 80;

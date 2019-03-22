@@ -1,6 +1,4 @@
-package pokemon;//David Zhao, 3/31/2011
-
-import static pokemon.AlertHelper.alert;
+package pokemon;
 
 import pokemon.controllers.MovementController;
 import pokemon.controllers.PlayerController;
@@ -11,6 +9,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
+import static pokemon.AlertHelper.alert;
+
 public class PlayPanel extends JPanel {
   private static final String SAVE_DELIMITER = " ";
 
@@ -18,9 +18,6 @@ public class PlayPanel extends JPanel {
   public static OptionsPanel options;
 
   static Pokemon[] myPokemon; //first six is party, empty slots are "null"
-  static boolean[] hasPokemon = new boolean[Pokemon.pokemons.length]; //tells the user if they
-  // have that pokemon at one time or not.
-  static boolean[] hasSeenPokemon = new boolean[hasPokemon.length];
 
   private PlayerController mPlayerController;
   private MovementController mMovementController;
@@ -175,12 +172,9 @@ public class PlayPanel extends JPanel {
       for (int i = 0; i < numPokemonInSaveFile; i++) {
         pokedexInfo = in.readLine().split(SAVE_DELIMITER);
         if (pokedexInfo[0].equals("true")) {
-          hasPokemon[i] = true;
-          hasSeenPokemon[i] = true;
           player.markCaughtPokemon(i);
           player.markSeenPokemon(i);
         } else if (pokedexInfo[1].equals("true")) {
-          hasSeenPokemon[i] = true;
           player.markSeenPokemon(i);
         }
       }
@@ -199,7 +193,7 @@ public class PlayPanel extends JPanel {
       int numCaughtPokemon = mPlayerController.getNumCaughtPokemon();
       out.println(numCaughtPokemon);
       for (int i = 0; i < numCaughtPokemon; i++) {
-        out.println(mPlayerController.getPokemon(i));
+        out.println(mPlayerController.getCaughtPokemon(i));
       }
 
       out.println(GameScreen.mapName);
