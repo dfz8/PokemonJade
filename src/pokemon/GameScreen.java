@@ -18,19 +18,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Scanner;
 
-public class GameScreen extends JPanel {
+public class GameScreen extends GamePanel {
   public static final int SPRITE_WIDTH = 23;
   public static final int SPRITE_HEIGHT = 26;
 
   private PlayPanel mPlayPanel;
-  private BufferedImage myImage;
-  private Graphics myBuffer;
   private Color bgColor;
-  private Timer t;
 
   static String mapName = "";
   private static Terrain[][] map;
@@ -75,11 +71,6 @@ public class GameScreen extends JPanel {
     mMovementController = playPanel.getMovementController();
     mMovementController.setCanMove(true);
 
-    myImage = new BufferedImage(GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
-    myBuffer = myImage.getGraphics();
-    myBuffer.setColor(bgColor);
-    myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
-
     curSprite = ImageLibrary.faceDown;
     mMovementController.setCoord(7, 8);
 
@@ -89,38 +80,34 @@ public class GameScreen extends JPanel {
       AlertHelper.fatal("map could not be loaded: " + mapName);
     }
 
-    t = new Timer(150, new RefreshListener());
-    t.start();
+    setAndStartActionListener(150, new RefreshListener());
   }
 
-  public void paintComponent(Graphics g) {
-    g.drawImage(myImage, 0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, null);
-  }
 
   public class RefreshListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
+      Graphics myBuffer = getImageBuffer();
       myBuffer.setColor(bgColor);
       myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
 
       if (inSummary) {
-        drawSummaryScreen();
+        drawSummaryScreen(myBuffer);
       } else if (mMovementController.canMove()) {
         //!inBattle)
         bgColor = Color.WHITE;
         handleMovementOfPlayer();
-        drawMap();
+        drawMap(myBuffer);
       } else if (inBattle) {
-        drawBattleScene();
+        drawBattleScene(myBuffer);
       } else {
         bgColor = Color.WHITE;
       }
 
       repaint();
     }
-
   }
 
-  private void drawMap() {
+  private void drawMap(Graphics myBuffer) {
     int curR = mMovementController.getRow();
     int curC = mMovementController.getCol();
     for (int r = curR - 5; r < map.length && r < curR + 5; r++) {
@@ -225,7 +212,7 @@ public class GameScreen extends JPanel {
     }
   }
 
-  private void drawSummaryScreen() {
+  private void drawSummaryScreen(Graphics myBuffer) {
     bgColor = Color.WHITE;
     ImageIcon pokemon = SpriteHelper.getPokemonFront(summaryPoke.getName());
     AlertHelper.debug("" + (pokemon.getImage() == null));
@@ -257,7 +244,7 @@ public class GameScreen extends JPanel {
         100);
   }
 
-  private void drawBattleScene() {
+  private void drawBattleScene(Graphics myBuffer) {
     bgColor = Color.WHITE;
 
     //sprite of pokemon:

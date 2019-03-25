@@ -11,11 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 
-public class OptionsPanel extends JPanel {
-  private Graphics myBuffer;
-  private BufferedImage myImage;
+public class OptionsPanel extends GamePanel {
   private Color background;
 
   public static boolean inBattle;
@@ -40,7 +37,6 @@ public class OptionsPanel extends JPanel {
   OptionBoard[] bagOptions;
   OptionBoard[] saveOptions;
   OptionBoard[] personalOptions;
-  Timer t;
 
   PokeBall p = new PokeBall();
 
@@ -68,12 +64,6 @@ public class OptionsPanel extends JPanel {
 
   public OptionsPanel(PlayPanel playPanel) {
     mPlayPanel = playPanel;
-
-    myImage = new BufferedImage(
-        GameDriver.SCREEN_WIDTH,
-        GameDriver.SCREEN_HEIGHT,
-        BufferedImage.TYPE_INT_RGB);
-    myBuffer = myImage.getGraphics();
     background = Color.BLACK;
     inBattle = usingItem = switchingPokemon = false;
 
@@ -90,8 +80,7 @@ public class OptionsPanel extends JPanel {
 
     curMenu = Menu.main;
 
-    t = new Timer(30, new RefreshListener());
-    t.start();
+    setAndStartActionListener(30, new RefreshListener());
   }
 
   public void updateHighlightsForOptions(int x, int y) {
@@ -360,12 +349,9 @@ public class OptionsPanel extends JPanel {
     }
   }
 
-  public void paintComponent(Graphics g) {
-    g.drawImage(myImage, 0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, null);
-  }
-
   public class RefreshListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
+      Graphics myBuffer = getImageBuffer();
       myBuffer.setColor(background);
       myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
       // todo: move set font code to the specific panels
@@ -377,36 +363,35 @@ public class OptionsPanel extends JPanel {
         repaint();
         return;
       } else if (curMenu == Menu.party) {
-        drawOptions();
-        drawPokemonPartyScreen();
+        drawOptions(myBuffer);
+        drawPokemonPartyScreen(myBuffer);
         if (showPokemonSelectOptions) {
-          drawOptions();
+          drawOptions(myBuffer);
         }
         repaint();
         return;
       }
 
-      drawOptions();
+      drawOptions(myBuffer);
 
       // draw special overlays
       if (curMenu == Menu.pokedex) {
-        drawPokedexScreen();
+        drawPokedexScreen(myBuffer);
       } else if (curMenu == Menu.save) {
-        drawSaveScreen();
+        drawSaveScreen(myBuffer);
       } else if (curMenu == Menu.personal) {
-        drawPersonalScreen();
+        drawPersonalScreen(myBuffer);
       } else if (curMenu == Menu.attackSelection) {
         // todo: move updateAttackOptions to wherever init code should go
         updateAttackOptions();
-        drawOptions();
+        drawOptions(myBuffer);
       }
 
       repaint();
     }
-
   }
 
-  private void drawPokemonPartyScreen() {
+  private void drawPokemonPartyScreen(Graphics myBuffer) {
     // text + info box:
     myBuffer.setColor(Color.WHITE);
     myBuffer.fillRect(
@@ -472,7 +457,7 @@ public class OptionsPanel extends JPanel {
     }
   }
 
-  private void drawPokedexScreen() {
+  private void drawPokedexScreen(Graphics myBuffer) {
     // has seen/ has owned info box :
     myBuffer.setColor(Color.WHITE);
     myBuffer.fillRect(GameDriver.SCREEN_WIDTH - 130, GameDriver.SCREEN_HEIGHT - 100, 110, 30);
@@ -535,7 +520,7 @@ public class OptionsPanel extends JPanel {
     }
   }
 
-  private void drawSaveScreen() {
+  private void drawSaveScreen(Graphics myBuffer) {
     ImageIcon me = SpriteHelper.getMisc("boy_walk_down_rest");
     myBuffer.drawImage(
         me.getImage(),
@@ -569,7 +554,7 @@ public class OptionsPanel extends JPanel {
         GameDriver.SCREEN_HEIGHT - 45);
   }
 
-  private void drawPersonalScreen() {
+  private void drawPersonalScreen(Graphics myBuffer) {
     ImageIcon me = SpriteHelper.getMisc("boy_walk_down_rest");
     myBuffer.drawImage(
         me.getImage(),
@@ -626,7 +611,7 @@ public class OptionsPanel extends JPanel {
     }
   }
 
-  private void drawOptions() {
+  private void drawOptions(Graphics myBuffer) {
     for (OptionBoard option : getOptionsForCurrentPanel()) {
       option.draw(myBuffer);
     }
