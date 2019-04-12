@@ -110,4 +110,8 @@ public class Trainer {
     return mAttackInAnimation != null;
   }
 
+  public Pokemon getActivePokemon() {
+    return mActivePokemon;
+  }
+
 }

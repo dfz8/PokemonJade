@@ -79,9 +79,12 @@ public class BattleController {
     AttackAnimationListener listener = new AttackAnimationListener() {
       @Override
       public void onAttackFinished() {
+        if (isPlayersTurn) {
+          attack.giveDamage(mSelf.getActivePokemon(), mEnemy.getActivePokemon());
+        } else {
+          attack.giveDamage(mEnemy.getActivePokemon(), mSelf.getActivePokemon());
+        }
         isPlayersTurn = !isPlayersTurn;
-
-        // apply attack here
       }
     };
     mSelf.startAttack(attack, listener);

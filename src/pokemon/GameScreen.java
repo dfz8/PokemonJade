@@ -93,11 +93,7 @@ public class GameScreen extends GamePanel {
       } else if (inBattle) {
         if (OptionsPanel.switchingPokemon) {
         } else if (isAttacking) {
-          mBattleController.startPlayerAttack(new Attack(
-              myAttackName,
-              AttackLibrary.getType(myAttackName),
-              10,
-              AttackLibrary.getAttackDamage(myAttackName)));
+          mBattleController.startPlayerAttack(AttackLibrary.getAttack(myAttackName));
         }
         mBattleController.drawScreen(myBuffer);
       } else {
@@ -285,13 +281,8 @@ public class GameScreen extends GamePanel {
       } else {//gives the attack
         double accuracy = Math.random() * 100;
         if (accuracy > 5) {
-          AttackLibrary.fill();
-          Attack a = new Attack(
-              myAttackName,
-              AttackLibrary.getType(myAttackName),
-              10,
-              AttackLibrary.getAttackDamage(myAttackName));
-          a.giveDamage(myPoke, enemy, a.getAttackDamage());
+          Attack a = AttackLibrary.getAttack(myAttackName);
+          a.giveDamage(myPoke, enemy);
         }
 
         myMove = 0;
@@ -314,7 +305,6 @@ public class GameScreen extends GamePanel {
       }
     } else if (enemyIsAttacking) {
       if (enemyMove == 1) {
-        AttackLibrary.fill();
         enemyAttackName = enemy.chooseAttackEnemy();
       }
       if (enemyMove <= 5) {
@@ -332,12 +322,8 @@ public class GameScreen extends GamePanel {
       } else {
         double accuracy = Math.random() * 100;
         if (accuracy > 5) {
-          Attack b = new Attack(
-              enemyAttackName,
-              AttackLibrary.getType(enemyAttackName),
-              10,
-              AttackLibrary.getAttackDamage(enemyAttackName));
-          b.giveDamage(enemy, myPoke, b.getAttackDamage()); //actually attack the enemy
+          Attack b = AttackLibrary.getAttack(enemyAttackName);
+          b.giveDamage(enemy, myPoke); //actually attack the enemy
         }
         //a.giveDamage(enemy,myPoke);
         enemyMove = 1;
