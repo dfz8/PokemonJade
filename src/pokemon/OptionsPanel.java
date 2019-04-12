@@ -374,7 +374,7 @@ public class OptionsPanel extends GamePanel {
 
       drawOptions(myBuffer);
 
-      // draw special overlays
+      // drawSprites special overlays
       if (curMenu == Menu.pokedex) {
         drawPokedexScreen(myBuffer);
       } else if (curMenu == Menu.save) {

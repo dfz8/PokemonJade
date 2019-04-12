@@ -68,6 +68,7 @@ public class Pokemon {
     mySpecialDefense = builder.specialDefense;
     mySpeed = builder.speed;
     myEXP = builder.exp;
+    myCurrentHP = builder.maxHp;
     myMaxHP = builder.maxHp;
 
     myNextLevelEXP = myEXP * 3;
@@ -179,15 +180,6 @@ public class Pokemon {
   }
 
   //setMethods
-
-  public void setName(String n) {
-    myName = n;
-  }
-
-  public void setType(String t) {
-    myType = t;
-  }
-
   public void setAttackOne(String a1) {
     attackOne = a1;
   }
@@ -204,28 +196,12 @@ public class Pokemon {
     attackFour = a4;
   }
 
-  public void setLevel(int l) {
-    myLevel = l;
-  }
-
   public void setAttackLevel(int aL) {
     myAttackLevel = aL;
   }
 
-  public void setSpecialAttack(int sA) {
-    mySpecialAttack = sA;
-  }
-
-  public void setSpeed(int s) {
-    mySpeed = s;
-  }
-
   public void setDefenseLevel(int dL) {
     myDefenseLevel = dL;
-  }
-
-  public void setSpecialDefense(int sD) {
-    mySpecialDefense = sD;
   }
 
   public void setCurrentHP(int hp) {
@@ -234,6 +210,34 @@ public class Pokemon {
 
   public void setMaxHP(int hp) {
     myMaxHP = hp;
+  }
+
+  public static Pokemon generateRandomEnemy(String info) {
+    String[] enemyInfo = info.split("\\.");
+
+    int minLevel = Integer.parseInt(enemyInfo[6]);
+    int maxLevel = Integer.parseInt(enemyInfo[7]);
+    int level = minLevel + (int) (Math.random() * (maxLevel - minLevel));
+
+    Builder builder =
+        new Builder().setName(enemyInfo[0])
+                     .setType(enemyInfo[1])
+                     .setLevel(level)
+                     .setFirstAttack(enemyInfo[2])
+                     .setSecondAttack(enemyInfo[3])
+                     .setThirdAttack(enemyInfo[4])
+                     .setFourthAttack(enemyInfo[5]);
+    initStatsBasedOnLevel(level, builder);
+
+    return builder.build();
+  }
+
+  private static void initStatsBasedOnLevel(int level, Builder builder) {
+    for (int i = 0; i < level; i++) {
+      builder.attack += (int) (Math.random() * 3 + 1);
+      builder.defense += (int) (Math.random() * 3 + 1);
+      builder.maxHp += (int) (Math.random() * 2 + 2);
+    }
   }
 
   @Override
@@ -252,10 +256,7 @@ public class Pokemon {
   }
 
   public boolean isFainted() {
-    if (myCurrentHP <= 0) {
-      return true;
-    }
-    return false;
+    return myCurrentHP <= 0;
   }
 
   public void EXPgain() {
@@ -312,7 +313,6 @@ public class Pokemon {
     private int exp;
     private int hp;
     private int maxHp;
-    private String allData;
 
     public Builder setName(String name) {
       this.name = name;

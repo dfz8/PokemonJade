@@ -1,14 +1,6 @@
-package pokemon;//David Zhao, 3/31/2011
-//top screen of a "DS"
-/*
-RC C C C ...
-R
-.
-.
-.
-matrix[r][c]
-*/
+package pokemon;
 
+import pokemon.controllers.BattleController;
 import pokemon.controllers.MovementController;
 import pokemon.entities.Pokemon;
 import pokemon.entities.Terrain;
@@ -18,8 +10,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class GameScreen extends GamePanel {
   public static final int SPRITE_WIDTH = 23;
@@ -60,16 +54,17 @@ public class GameScreen extends GamePanel {
   Pokemon enemy;
   static String myAttackName = "";
   static String enemyAttackName = "";
-  ImageIcon enemyIcon;
-  ImageIcon myPokeIcon;
 
   private MovementController mMovementController;
+  private BattleController mBattleController;
 
   public GameScreen(PlayPanel playPanel) {
     bgColor = Color.WHITE;
     mPlayPanel = playPanel;
     mMovementController = playPanel.getMovementController();
     mMovementController.setCanMove(true);
+
+    mBattleController = new BattleController();
 
     curSprite = ImageLibrary.faceDown;
     mMovementController.setCoord(7, 8);
@@ -83,7 +78,6 @@ public class GameScreen extends GamePanel {
     setAndStartActionListener(150, new RefreshListener());
   }
 
-
   public class RefreshListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       Graphics myBuffer = getImageBuffer();
@@ -93,12 +87,19 @@ public class GameScreen extends GamePanel {
       if (inSummary) {
         drawSummaryScreen(myBuffer);
       } else if (mMovementController.canMove()) {
-        //!inBattle)
         bgColor = Color.WHITE;
         handleMovementOfPlayer();
         drawMap(myBuffer);
       } else if (inBattle) {
-        drawBattleScene(myBuffer);
+        if (OptionsPanel.switchingPokemon) {
+        } else if (isAttacking) {
+          mBattleController.startPlayerAttack(new Attack(
+              myAttackName,
+              AttackLibrary.getType(myAttackName),
+              10,
+              AttackLibrary.getAttackDamage(myAttackName)));
+        }
+        mBattleController.drawScreen(myBuffer);
       } else {
         bgColor = Color.WHITE;
       }
@@ -120,7 +121,7 @@ public class GameScreen extends GamePanel {
         }
 
         if (map[r][c].getType() != Terrain.GROUND) {
-          // draw ground as a background for all sprites
+          // drawSprites ground as a background for all sprites
           myBuffer.drawImage(
               ImageLibrary.ground.getImage(),
               (c - curC + 6) * SPRITE_WIDTH - SPRITE_WIDTH / 2,
@@ -205,7 +206,8 @@ public class GameScreen extends GamePanel {
   }
 
   private void maybeInitPokemonBattle() {
-    if (map[mMovementController.getRow()][mMovementController.getCol()].getType() == Terrain.GRASS) {
+    if (map[mMovementController.getRow()][mMovementController.getCol()].getType()
+        == Terrain.GRASS) {
       if ((int) (Math.random() * 256) <= 32) {
         toBattle();
       }
@@ -246,72 +248,22 @@ public class GameScreen extends GamePanel {
 
   private void drawBattleScene(Graphics myBuffer) {
     bgColor = Color.WHITE;
-
-    //sprite of pokemon:
-    myPokeIcon = SpriteHelper.getPokemonBack(myPoke.getName());
-    myBuffer.drawImage(myPokeIcon.getImage(), attackX, attackY, null);
-    myBuffer.drawImage(enemyIcon.getImage(), attackXEnemy, attackYEnemy, null);
-    //draw display of hp and stuff:
-    int enemyX = 15;
-    int enemyY = 15;
-    int myX = 100;
-    int myY = 100;
-
-    myBuffer.setColor(Color.BLACK);
-    //bg box
-    myBuffer.drawRect(myX, myY, 140, 50);
-    myBuffer.drawRect(enemyX, enemyY, 140, 40);
-    //pokemon names
-    myBuffer.setFont(Styles.largeFont);
-    myBuffer.drawString("" + enemy.getName().toUpperCase(), enemyX + 10, enemyY + 20);
-    myBuffer.drawString("" + myPoke.getName().toUpperCase(), myX + 10, myY + 20);
-    //your hp
-    myBuffer.setFont(Styles.mediumFont);
-    myBuffer.drawString(myPoke.getCurrentHP() + "/" + myPoke.getMaxHP(), myX + 25, myY + 40);
-    //healthbar outline
-    myBuffer.drawRect(myX + 23 - 1, myY + 23 - 1, 101, 7 + 1);
-    myBuffer.drawRect(enemyX + 23 - 1, enemyY + 23 - 1, 101, 7 + 1);
-    //hp bar text
-    myBuffer.setFont(Styles.smallFont);
-    myBuffer.drawString("HP:", myX + 10, myY + 30);
-    myBuffer.drawString("HP:", enemyX + 10, enemyY + 30);
-    //pokemon levels
-    myBuffer.drawString("LV: " + enemy.getLevel(), enemyX + 90, enemyY + 20);
-    myBuffer.drawString("LV: " + myPoke.getLevel(), myX + 90, myY + 20);
-
-
-    DrawingHelper.drawFullSizeHPBar(myBuffer, myPoke, myX + 23, myY + 23);
-    DrawingHelper.drawFullSizeHPBar(myBuffer, enemy, enemyX + 23, enemyY + 23);
-    DrawingHelper.drawExpBar(myBuffer, myPoke, myX + 23, myY + 40);
-
-    //textbox:
-    myBuffer.setColor(Color.BLACK);
-    myBuffer.drawRect(
-        0,
-        myY + 60,
-        GameDriver.SCREEN_WIDTH - 1,
-        GameDriver.SCREEN_HEIGHT - 50 - myY);
-    myBuffer.setFont(Styles.normalFont);
-
     if (mPlayPanel.getOptionsPanel().switchingPokemon) {
       myBuffer.drawString("Which pokemon do you want to switch out?", 5, 170);
     }
-
     if (swapPokemon) {
       mPlayPanel.getOptionsPanel().switchingPokemon = false;
-      if (switchingMove < 16)//drawing pokemon out
-      {
+      if (switchingMove < 16) {
+        //drawing pokemon out
         attackX -= 5;
         switchingMove++;
         myBuffer.drawString("Come back " + myPoke.getName() + "!", 5, 170);
         mPlayPanel.getOptionsNavigationHelper().toBlack();
-      } else if (switchingMove == 16)//switch the two pokemon
-      {
+      } else if (switchingMove == 16) {//switch the two pokemon
         //switch pokemon
         myPoke = mPlayPanel.myPokemon[0];//mPlayPanel.getOptionsPanel().switchPokemonInd];
         switchingMove++;
-      } else if (switchingMove < 32) //putting pokemon in
-      {
+      } else if (switchingMove < 32) {//putting pokemon in
         attackX += 5;
         switchingMove++;
         myBuffer.drawString("Go get them " + myPoke.getName() + "!", 5, 170);
@@ -323,20 +275,13 @@ public class GameScreen extends GamePanel {
         enemyIsAttacking = true;
       }
     } else if (isAttacking) {
-      if (myMove <= 5) {//moves towards
+      if (myMove == 0) {
         mPlayPanel.getOptionsNavigationHelper().toBlack();
+      }
+      if (myMove <= 5) {
         attackX = attackX + 3;
-        //attackY=attackY-3;
-        myMove++;
-        myBuffer.drawString(myPoke.getName() + " used " + myAttackName, 5, 170);
-
-      } else if (myMove < 11) {//moves back
+      } else if (myMove < 11) {
         attackX = attackX - 3;
-        //attackY=attackY+3;
-        myMove++;
-
-        myBuffer.drawString(myPoke.getName() + " used " + myAttackName, 5, 170);
-
       } else {//gives the attack
         double accuracy = Math.random() * 100;
         if (accuracy > 5) {
@@ -346,14 +291,14 @@ public class GameScreen extends GamePanel {
               AttackLibrary.getType(myAttackName),
               10,
               AttackLibrary.getAttackDamage(myAttackName));
-          a.giveDamage(myPoke, enemy, a.getAttackDamage()); //actually attack the enemy
-          //a.giveDamage(myPoke,enemy); //actually attack the enemy
+          a.giveDamage(myPoke, enemy, a.getAttackDamage());
         }
 
+        myMove = 0;
         isAttacking = false;
-        myMove = 1;
         enemyIsAttacking = true;
       }
+      myMove++;
 
       if (enemy.isFainted()) {
         myPoke.gainIsFast = true;
@@ -371,10 +316,7 @@ public class GameScreen extends GamePanel {
       if (enemyMove == 1) {
         AttackLibrary.fill();
         enemyAttackName = enemy.chooseAttackEnemy();
-        //b = new pokemon.Attack(enemyAttackName,pokemon.AttackLibrary.getType(enemyAttackName),10,
-        // pokemon.AttackLibrary.getAttackDamage(enemyAttackName));
       }
-
       if (enemyMove <= 5) {
         attackXEnemy = attackXEnemy - 3;
         attackYEnemy = attackYEnemy + 3;
@@ -388,9 +330,6 @@ public class GameScreen extends GamePanel {
         myBuffer.drawString("Wild " + enemy.getName() + " used " + enemyAttackName, 5, 170);
 
       } else {
-
-        // pokemon.AttackLibrary.fill();
-        // enemyAttackName = enemy.chooseAttackEnemy();
         double accuracy = Math.random() * 100;
         if (accuracy > 5) {
           Attack b = new Attack(
@@ -434,7 +373,7 @@ public class GameScreen extends GamePanel {
     }
   }
 
-  public void saveParty() {
+  public void saveOrderOfPokemonInParty() {
     for (int i = 0; i < normalParty.length; i++) {
       normalParty[i] = PlayPanel.myPokemon[i];
     }
@@ -450,8 +389,22 @@ public class GameScreen extends GamePanel {
     mMovementController.setCanMove(false);
     inBattle = true;
 
-    saveParty();
-    //gets first usable pokemon
+    myPoke = getFirstUsablePokemonForBattle();
+    enemy = Pokemon.generateRandomEnemy(
+        wildPokemonArray[(int) (Math.random() * wildPokemonArray.length)]);
+
+    mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
+
+    attackX = 5;
+    attackY = 80;
+    attackXEnemy = 170;
+    attackYEnemy = 1;
+
+    mBattleController.initBattle(myPoke, enemy);
+  }
+
+  private Pokemon getFirstUsablePokemonForBattle() {
+    saveOrderOfPokemonInParty();
     int myPokeInd = -1;
     for (int i = 0; i < 6; i++) {
       if (PlayPanel.myPokemon[i] == null || PlayPanel.myPokemon[i].isFainted()) {
@@ -468,82 +421,7 @@ public class GameScreen extends GamePanel {
     Pokemon temp = PlayPanel.myPokemon[myPokeInd];
     PlayPanel.myPokemon[myPokeInd] = PlayPanel.myPokemon[0];
     PlayPanel.myPokemon[0] = temp;
-
-    myPoke = PlayPanel.myPokemon[0];
-
-    enemy = new Pokemon.Builder()
-        .setName("Raikou")
-        .setType("Electric")
-        .setFirstAttack("Tackle")
-        .setSecondAttack("Shock")
-        .setThirdAttack("Thunder")
-        .setFourthAttack("Headbutt")
-        .setLevel(50)
-        .setExp(0)
-        .setAttack(55)
-        .setDefense(30)
-        .setHp(150)
-        .setMaxHp(150)
-        .build();
-    setRandomEnemy();
-    enemyIcon = SpriteHelper.getPokemonFront(enemy.getName());
-
-    mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
-
-    attackX = 5;
-    attackY = 80;
-    attackXEnemy = 170;
-    attackYEnemy = 1;
-  }
-
-  public String[] loadEnemyArray() {
-    Scanner infile = null;
-    try {
-      infile = new Scanner(new File("./resources/enemies.txt"));
-    } catch (FileNotFoundException e) {
-      AlertHelper.fatal("Error: File not found.");
-    }
-
-    int count = Integer.parseInt(infile.nextLine());
-    String[] enemyArray = new String[count];
-
-    for (int enemyIndex = 0; enemyIndex < enemyArray.length; enemyIndex++) {
-      enemyArray[enemyIndex] = infile.nextLine();
-    }
-    return enemyArray;
-  }
-
-  public void setRandomEnemy() {
-    int enemyUsed = (int) (Math.random() * wildPokemonArray.length);
-    String[] enemyInfo = wildPokemonArray[enemyUsed].split("\\.");
-    //    String[] enemyArray = loadEnemyArray();
-
-    enemy.setName(enemyInfo[0]);
-    enemy.setType(enemyInfo[1]);
-    int level = (int) (
-        Math.random() * (Integer.parseInt(enemyInfo[7]) - Integer.parseInt(enemyInfo[6]) + 1)
-        + Integer.parseInt(enemyInfo[6]));
-    enemy.setLevel(level);
-
-    int atk = 5;
-    int def = 5;
-    int hp = 10;
-    for (int i = 0; i < level; i++) {
-      atk += (int) (Math.random() * 3 + 1);
-      def += (int) (Math.random() * 3 + 1);
-      hp += (int) (Math.random() * 2 + 2);
-    }
-
-    enemy.setAttackLevel(atk);// (int)(Math.random()*2*enemy.getLevel() + enemy.getLevel() ));
-    enemy.setDefenseLevel(def);// (int)(Math.random()*2*enemy.getLevel() + enemy.getLevel() ));
-
-    enemy.setMaxHP(hp);// (int)(Math.random()*enemy.getLevel()*2.5 + enemy.getLevel()));
-    enemy.setCurrentHP(hp);//enemy.getMaxHP());
-
-    enemy.setAttackOne(enemyInfo[2]);
-    enemy.setAttackTwo(enemyInfo[3]);
-    enemy.setAttackThree(enemyInfo[4]);
-    enemy.setAttackFour(enemyInfo[5]);
+    return PlayPanel.myPokemon[0];
   }
 
   public static void loadMap(String name) throws IOException {
