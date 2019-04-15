@@ -549,7 +549,7 @@ public class OptionsPanel extends GamePanel {
         GameDriver.SCREEN_WIDTH - 250,
         GameDriver.SCREEN_HEIGHT - 70);
     myBuffer.drawString(
-        "Location: " + GameScreen.mapName,
+        "Location: " + mPlayPanel.getMapController().getMapName(),
         GameDriver.SCREEN_WIDTH - 250,
         GameDriver.SCREEN_HEIGHT - 45);
   }

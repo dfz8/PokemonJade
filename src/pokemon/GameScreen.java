@@ -1,19 +1,15 @@
 package pokemon;
 
 import pokemon.controllers.BattleController;
+import pokemon.controllers.MapController;
 import pokemon.controllers.MovementController;
 import pokemon.entities.Pokemon;
-import pokemon.entities.Terrain;
 import pokemon.ui.Styles;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class GameScreen extends GamePanel {
   public static final int SPRITE_WIDTH = 23;
@@ -21,11 +17,6 @@ public class GameScreen extends GamePanel {
 
   private PlayPanel mPlayPanel;
   private Color bgColor;
-
-  static String mapName = "";
-  private static Terrain[][] map;
-  private static boolean[][] buildings;
-  private static boolean[][] items;
 
   //conditions:
   static boolean inBattle;
@@ -49,7 +40,6 @@ public class GameScreen extends GamePanel {
   private static int switchingMove = 1;
   private static Pokemon[] normalParty = new Pokemon[6]; // to save the order of your party
   // before the battle starts (so you can switch around all you want)
-  private static String[] wildPokemonArray;
   Pokemon myPoke;
   Pokemon enemy;
   static String myAttackName = "";
@@ -57,6 +47,7 @@ public class GameScreen extends GamePanel {
 
   private MovementController mMovementController;
   private BattleController mBattleController;
+  private MapController mMapController;
 
   public GameScreen(PlayPanel playPanel) {
     bgColor = Color.WHITE;
@@ -65,15 +56,10 @@ public class GameScreen extends GamePanel {
     mMovementController.setCanMove(true);
 
     mBattleController = new BattleController();
+    mMapController = mPlayPanel.getMapController();
 
     curSprite = ImageLibrary.faceDown;
     mMovementController.setCoord(7, 8);
-
-    try {
-      loadMap(mapName);
-    } catch (IOException e) {
-      AlertHelper.fatal("map could not be loaded: " + mapName);
-    }
 
     setAndStartActionListener(150, new RefreshListener());
   }
@@ -89,7 +75,7 @@ public class GameScreen extends GamePanel {
       } else if (mMovementController.canMove()) {
         bgColor = Color.WHITE;
         handleMovementOfPlayer();
-        drawMap(myBuffer);
+        mMapController.drawMap(myBuffer, curSprite);
       } else if (inBattle) {
         if (OptionsPanel.switchingPokemon) {
         } else if (isAttacking) {
@@ -104,61 +90,30 @@ public class GameScreen extends GamePanel {
     }
   }
 
-  private void drawMap(Graphics myBuffer) {
-    int curR = mMovementController.getRow();
-    int curC = mMovementController.getCol();
-    for (int r = curR - 5; r < map.length && r < curR + 5; r++) {
-      if (r < 0) {
-        continue;
-      }
-      for (int c = curC - 8; c < map[r].length && c < curC + 8; c++) {
-        if (c < 0) {
-          continue;
-        }
-
-        if (map[r][c].getType() != Terrain.GROUND) {
-          // drawSprites ground as a background for all sprites
-          myBuffer.drawImage(
-              ImageLibrary.ground.getImage(),
-              (c - curC + 6) * SPRITE_WIDTH - SPRITE_WIDTH / 2,
-              (r - curR + 4) * SPRITE_HEIGHT - SPRITE_HEIGHT / 2,
-              null);
-        }
-        map[r][c].draw(myBuffer, c - curC + 6, r - curR + 4);
-      }
-    }
-
-    myBuffer.drawImage(
-        curSprite.getImage(),
-        GameDriver.SCREEN_WIDTH / 2 - SPRITE_WIDTH / 2,
-        GameDriver.SCREEN_HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5,
-        null); // -5 for visual purposes
-  }
-
   private void handleMovementOfPlayer() {
     if (!mMovementController.canMove()) {
       return;
     }
 
-    maybeLoadNextMap();
+    mMapController.maybeLoadNextMap();
     int curR = mMovementController.getRow();
     int curC = mMovementController.getCol();
 
     boolean hasMoved = true; //for wild pokemon in grass/ocean
     if (mMovementController.isDownPressed()) {
-      if (map[curR + 1][curC].canMoveHere()) {
+      if (mMapController.canMoveHere(curR + 1, curC)) {
         mMovementController.setRow(curR + 1);
       }
     } else if (mMovementController.isLeftPressed()) {
-      if (map[curR][curC - 1].canMoveHere()) {
+      if (mMapController.canMoveHere(curR, curC - 1)) {
         mMovementController.setCol(curC - 1);
       }
     } else if (mMovementController.isUpPressed()) {
-      if (map[curR - 1][curC].canMoveHere()) {
+      if (mMapController.canMoveHere(curR - 1, curC)) {
         mMovementController.setRow(curR - 1);
       }
     } else if (mMovementController.isRightPressed()) {
-      if (map[curR][curC + 1].canMoveHere()) {
+      if (mMapController.canMoveHere(curR, curC + 1)) {
         mMovementController.setCol(curC + 1);
       }
     } else {
@@ -174,7 +129,7 @@ public class GameScreen extends GamePanel {
     }
 
     //healing:
-    if (map[curR][curC].getType() == Terrain.HEALING_TILE) {
+    if (mMapController.isOnHealingTile()) {
       for (int i = 0; i < 6; i++) {
         if (PlayPanel.myPokemon[i] != null) {
           PlayPanel.myPokemon[i].heal(
@@ -184,26 +139,8 @@ public class GameScreen extends GamePanel {
     }
   }
 
-  private void maybeLoadNextMap() {
-    int curR = mMovementController.getRow();
-    int curC = mMovementController.getCol();
-    if (map[curR][curC].isGate()) {
-      try {
-        int newR = map[curR][curC].getMapLinkRow();
-        int newC = map[curR][curC].getMapLinkCol();
-        loadMap(map[curR][curC].getMapLink());
-        mMovementController.setCoord(newR, newC);
-      } catch (IOException a) {
-        AlertHelper.fatal(
-            "Error: loadMap() has failed in pokemon.GameScreen @ RefreshListener: "
-            + map[curR][curC].getMapLink());
-      }
-    }
-  }
-
   private void maybeInitPokemonBattle() {
-    if (map[mMovementController.getRow()][mMovementController.getCol()].getType()
-        == Terrain.GRASS) {
+    if (mMapController.canTriggerWildPokemonEncounter()) {
       if ((int) (Math.random() * 256) <= 32) {
         toBattle();
       }
@@ -375,8 +312,7 @@ public class GameScreen extends GamePanel {
     inBattle = true;
 
     myPoke = getFirstUsablePokemonForBattle();
-    enemy = Pokemon.generateRandomEnemy(
-        wildPokemonArray[(int) (Math.random() * wildPokemonArray.length)]);
+    enemy = mMapController.getRandomWildPokemon();
 
     mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
 
@@ -407,73 +343,5 @@ public class GameScreen extends GamePanel {
     PlayPanel.myPokemon[myPokeInd] = PlayPanel.myPokemon[0];
     PlayPanel.myPokemon[0] = temp;
     return PlayPanel.myPokemon[0];
-  }
-
-  public static void loadMap(String name) throws IOException {
-    BufferedReader in = new BufferedReader(new FileReader(new File("./resources/maps/" + name)));
-    String[] mapDimens = in.readLine().split(" ");
-    int width = Integer.parseInt(mapDimens[0]);
-    int height = Integer.parseInt(mapDimens[1]);
-
-    String[][] mapSymbolForm = new String[height][width];
-    Terrain[][] terrainMap = new Terrain[height][width];
-    int gateCount = 0;
-    int buildingCount = 0;
-    for (int r = 0; r < height; r++) {
-      mapSymbolForm[r] = in.readLine().split(" ");
-      for (int c = 0; c < width; c++) {
-        terrainMap[r][c] = new Terrain(mapSymbolForm[r][c]);
-
-        if (terrainMap[r][c].isGate()) {
-          gateCount++;
-        } else if (terrainMap[r][c].isBuilding()) {
-          buildingCount++;
-        }
-      }
-    }
-
-    buildings = new boolean[height][width];
-    items = new boolean[height][width];
-    for (int r = 0; r < height; r++) {
-      for (int c = 0; c < width; c++) {
-        buildings[r][c] = false;
-        items[r][c] = false;
-      }
-    }
-
-    //setting up links between maps
-    for (int i = 0; i < gateCount; i++) {
-      String[] info = in.readLine().split(" ");
-      int c = Integer.parseInt(info[0]);
-      int r = Integer.parseInt(info[1]);
-      terrainMap[r][c].setMapLink(info[2]);
-      terrainMap[r][c].setMapLinkCoordinates(Integer.parseInt(info[4]), Integer.parseInt(info[3]));
-    }
-
-    String[] locationInfo;
-
-    //setting up buildings
-    for (int i = 0; i < buildingCount; i++) {
-      locationInfo = in.readLine().split(" ");
-      buildings[Integer.parseInt(locationInfo[1])][Integer.parseInt(locationInfo[0])] = true;
-    }
-
-    //setting up items (i.e pokeballs)
-    int itemCount = Integer.parseInt(in.readLine());
-    for (int i = 0; i < itemCount; i++) {
-      locationInfo = in.readLine().split(" ");
-      items[Integer.parseInt(locationInfo[1])][Integer.parseInt(locationInfo[0])] = true;
-    }
-
-    //setting up wild pokemons
-    wildPokemonArray = new String[Integer.parseInt(in.readLine())];
-    for (int i = 0; i < wildPokemonArray.length; i++) {
-      wildPokemonArray[i] = in.readLine();
-    }
-
-    in.close();
-
-    mapName = name;
-    map = terrainMap;
   }
 }

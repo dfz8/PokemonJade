@@ -1,5 +1,6 @@
 package pokemon;
 
+import pokemon.controllers.MapController;
 import pokemon.controllers.MovementController;
 import pokemon.controllers.PlayerController;
 import pokemon.entities.Pokemon;
@@ -22,9 +23,14 @@ public class PlayPanel extends JPanel {
 
   private PlayerController mPlayerController;
   private MovementController mMovementController;
+  private MapController mMapController;
+
+  private String mInitialMapToLoad;
 
   public PlayPanel() {
-    initGame();
+    initPreSetupControllers();
+    initGameSetup();
+    initPostSetupControllers();
 
     setLayout(new GridLayout(2, 1));
     mGameScreen = new GameScreen(this);
@@ -38,9 +44,13 @@ public class PlayPanel extends JPanel {
     setFocusable(true);
   }
 
-  private void initControllers() {
+  private void initPreSetupControllers() {
     mMovementController = new MovementController();
     mOptionsNavigationHelper = new OptionsNavigationHelper(this);
+  }
+
+  private void initPostSetupControllers() {
+    mMapController = new MapController(mInitialMapToLoad, mMovementController);
   }
 
   public PlayerController getPlayer() {
@@ -49,6 +59,10 @@ public class PlayPanel extends JPanel {
 
   public MovementController getMovementController() {
     return mMovementController;
+  }
+
+  public MapController getMapController() {
+    return mMapController;
   }
 
   public OptionsPanel getOptionsPanel() {
@@ -63,9 +77,7 @@ public class PlayPanel extends JPanel {
     return mOptionsNavigationHelper;
   }
 
-  private void initGame() {
-    initControllers();
-
+  private void initGameSetup() {
     //    alert("Welcome to pokemon.entities.Pokemon: Jade!");
     //    String choice = JOptionPane.showInputDialog("1. New game?\n2. Saved game?");
     String choice = "2";
@@ -77,7 +89,7 @@ public class PlayPanel extends JPanel {
       String playerName = runNux();
       mPlayerController = new PlayerController(playerName, 3000);
 
-      GameScreen.mapName = "hometown";
+      mInitialMapToLoad = "hometown";
       mMovementController.setCoord(7, 11);
 
       myPokemon = new Pokemon[Pokemon.getNumPokemon()];
@@ -168,7 +180,8 @@ public class PlayPanel extends JPanel {
 
   private PlayerController loadSaveFileFor(String name) {
     try {
-      BufferedReader in = new BufferedReader(new FileReader(new File("./savefiles/" + name + ".pksf")));
+      BufferedReader in = new BufferedReader(new FileReader(new File(
+          "./savefiles/" + name + ".pksf")));
       PlayerController player = new PlayerController(name, Integer.parseInt(in.readLine()));
 
       int numPokemonInSaveFile = Integer.parseInt(in.readLine());
@@ -184,8 +197,10 @@ public class PlayPanel extends JPanel {
         }
       }
 
-      GameScreen.mapName = in.readLine();
-      mMovementController.setCoord(Integer.parseInt(in.readLine()), Integer.parseInt(in.readLine()));
+      mInitialMapToLoad = in.readLine();
+      mMovementController.setCoord(
+          Integer.parseInt(in.readLine()),
+          Integer.parseInt(in.readLine()));
 
       String[] pokedexInfo;
       for (int i = 0; i < numPokemonInSaveFile; i++) {
@@ -206,7 +221,8 @@ public class PlayPanel extends JPanel {
 
   public void save() {
     try {
-      PrintStream out = new PrintStream(new FileOutputStream("./savefiles/" + mPlayerController.getName() + ".pksf"));
+      PrintStream out = new PrintStream(new FileOutputStream(
+          "./savefiles/" + mPlayerController.getName() + ".pksf"));
       out.println(mPlayerController.getMoney());
 
       int numCaughtPokemon = mPlayerController.getNumCaughtPokemon();
@@ -215,7 +231,7 @@ public class PlayPanel extends JPanel {
         out.println(mPlayerController.getCaughtPokemon(i));
       }
 
-      out.println(GameScreen.mapName);
+      out.println(mMapController.getMapName());
       out.println(mMovementController.getRow());
       out.println(mMovementController.getCol());
 
@@ -279,5 +295,9 @@ public class PlayPanel extends JPanel {
     public void mouseClicked(MouseEvent e) {
       mOptionsPanel.checkClick(e.getX(), e.getY());
     }
+  }
+
+  public String getInitialMapToLoad() {
+    return mInitialMapToLoad;
   }
 }
