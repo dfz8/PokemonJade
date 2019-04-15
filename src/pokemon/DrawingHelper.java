@@ -2,10 +2,24 @@ package pokemon;
 
 import pokemon.entities.Pokemon;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class DrawingHelper {
 
+  public static void drawImage(Graphics buffer, ImageIcon icon, int x, int y) {
+    buffer.drawImage(icon.getImage(), x, y, null /* observer */);
+  }
+
+  public static void drawImage(
+      Graphics buffer,
+      ImageIcon icon,
+      int x,
+      int y,
+      int width,
+      int height) {
+    buffer.drawImage(icon.getImage(), x, y, width, height, null /* observer */);
+  }
 
   public static void drawFullSizeHPBar(Graphics buffer, Pokemon pokemon, int x, int y) {
     double percentage = 1.0 * pokemon.getCurrentHP() / pokemon.getMaxHP();
@@ -33,7 +47,7 @@ public class DrawingHelper {
 
   public static void drawExpBar(Graphics buffer, Pokemon pokemon, int x, int y) {
     double percentage = (1.0 * pokemon.getMyEXP() - pokemon.getMyPastLevelEXP())
-        / (pokemon.getMyNextLevelEXP() - pokemon.getMyPastLevelEXP());
+                        / (pokemon.getMyNextLevelEXP() - pokemon.getMyPastLevelEXP());
     drawPercentageBar(
         buffer,
         x,

@@ -1,5 +1,6 @@
 package pokemon.entities;
 
+import pokemon.DrawingHelper;
 import pokemon.GameScreen;
 import pokemon.ImageLibrary;
 
@@ -209,9 +210,10 @@ public class Terrain {
   }
 
   public void draw(Graphics g, int x, int y) {
-    g.drawImage(myImage.getImage(),
-                x * GameScreen.SPRITE_WIDTH - GameScreen.SPRITE_WIDTH / 2,
-                y * GameScreen.SPRITE_HEIGHT - GameScreen.SPRITE_HEIGHT / 2,
-                null);
+    DrawingHelper.drawImage(
+        g,
+        myImage,
+        x * GameScreen.SPRITE_WIDTH - GameScreen.SPRITE_WIDTH / 2,
+        y * GameScreen.SPRITE_HEIGHT - GameScreen.SPRITE_HEIGHT / 2);
   }
 }

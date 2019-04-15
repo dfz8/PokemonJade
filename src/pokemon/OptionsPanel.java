@@ -446,13 +446,13 @@ public class OptionsPanel extends GamePanel {
             pokemonOptions[i].getY() + pokemonOptions[i].getHeight() - 3);
         //Image
         ImageIcon pokeImage = SpriteHelper.getPokemonFront(PlayPanel.myPokemon[i].getName());
-        myBuffer.drawImage(
-            pokeImage.getImage(),
+        DrawingHelper.drawImage(
+            myBuffer,
+            pokeImage,
             pokemonOptions[i].getX() + pokemonOptions[i].getWidth() - 40,
             pokemonOptions[i].getY(),
             40,
-            40,
-            null);
+            40);
       }
     }
   }
@@ -500,35 +500,35 @@ public class OptionsPanel extends GamePanel {
         if (pokedexOptions[i].isHighlighted()) {
           ImageIcon curImage = SpriteHelper.getPokemonFront(Pokemon.getPokemon(
               pokedexStartInd + i - 1));
-          myBuffer.drawImage(
-              curImage.getImage(),
+          DrawingHelper.drawImage(
+              myBuffer,
+              curImage,
               GameDriver.SCREEN_WIDTH - 130,
-              GameDriver.SCREEN_HEIGHT - 190,
-              null);
+              GameDriver.SCREEN_HEIGHT - 190);
         }
       }
       //pokeballs next to pokemon you have caught
       if (mPlayPanel.getPlayer().hasCaughtPokemon(pokedexStartInd + i - 1)) {
-        myBuffer.drawImage(
-            pokeball.getImage(),
+        DrawingHelper.drawImage(
+            myBuffer,
+            pokeball,
             pokedexOptions[i].getX() + pokedexOptions[i].getWidth() - 20,
             pokedexOptions[i].getY(),
             20,
-            20,
-            null);
+            20);
       }
     }
   }
 
   private void drawSaveScreen(Graphics myBuffer) {
     ImageIcon me = SpriteHelper.getMisc("boy_walk_down_rest");
-    myBuffer.drawImage(
-        me.getImage(),
+    DrawingHelper.drawImage(
+        myBuffer,
+        me,
         30,
         30,
         GameDriver.SCREEN_WIDTH - 240,
-        GameDriver.SCREEN_HEIGHT - 180,
-        null);
+        GameDriver.SCREEN_HEIGHT - 180);
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(Styles.extraLargeFont);
     myBuffer.drawString(
@@ -556,13 +556,13 @@ public class OptionsPanel extends GamePanel {
 
   private void drawPersonalScreen(Graphics myBuffer) {
     ImageIcon me = SpriteHelper.getMisc("boy_walk_down_rest");
-    myBuffer.drawImage(
-        me.getImage(),
+    DrawingHelper.drawImage(
+        myBuffer,
+        me,
         30,
         30,
         GameDriver.SCREEN_WIDTH - 240,
-        GameDriver.SCREEN_HEIGHT - 180,
-        null);
+        GameDriver.SCREEN_HEIGHT - 180);
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(Styles.extraLargeFont);
     myBuffer.drawString(

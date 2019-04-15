@@ -43,7 +43,7 @@ public class Trainer {
 
   public void drawSprites(Graphics buffer) {
     maybeUpdateForAttackAnimation();
-    buffer.drawImage(mIcon.getImage(), mDrawnX, mDrawnY, null);
+    DrawingHelper.drawImage(buffer, mIcon, mDrawnX, mDrawnY);
   }
 
   public void drawInfoBox(Graphics buffer) {

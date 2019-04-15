@@ -1,7 +1,9 @@
 package pokemon.ui;
 
-import java.awt.*;
+import pokemon.DrawingHelper;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class OptionBoard extends Bumper {
 
@@ -19,7 +21,7 @@ public class OptionBoard extends Bumper {
   private String myText;
   private boolean lookForClick;
   private boolean showHighlight;
-  private boolean hasPicAsImage ;
+  private boolean hasPicAsImage;
 
   public OptionBoard(int x, int y, int width, int height, Color c, String text) {
     super(x, y, width, height, c);
@@ -28,7 +30,14 @@ public class OptionBoard extends Bumper {
     myTextPlacement = TextPlacement.LOW;
   }
 
-  public OptionBoard(int x, int y, int width, int height, Color c, String text, TextPlacement textPlacement) {
+  public OptionBoard(
+      int x,
+      int y,
+      int width,
+      int height,
+      Color c,
+      String text,
+      TextPlacement textPlacement) {
     super(x, y, width, height, c);
     lookForClick = true;
     myText = text;
@@ -61,20 +70,23 @@ public class OptionBoard extends Bumper {
   public void draw(Graphics buffer) {
     buffer.setColor(Color.RED);
     if (showHighlight && lookForClick) //shows the highlight
+    {
       buffer.fillRect(
           getX() - HIGHLIGHT_SIZE,
           getY() - HIGHLIGHT_SIZE,
           getWidth() + 2 * HIGHLIGHT_SIZE,
           getHeight() + 2 * HIGHLIGHT_SIZE);
-    if (hasPicAsImage)
-      buffer.drawImage(myImage.getImage(), getX(), getY(), getWidth(), getHeight(), null);
-    else {
+    }
+    if (hasPicAsImage) {
+      DrawingHelper.drawImage(buffer, myImage, getX(), getY(), getWidth(), getHeight());
+    } else {
       super.draw(buffer);
     }
     buffer.setColor(Color.BLACK);
     int decrement = 0; // myTextPlacement * getHeight() / 2;
-    if (myTextPlacement == TextPlacement.HIGH)
+    if (myTextPlacement == TextPlacement.HIGH) {
       decrement -= (getHeight() / 4 + 3);
+    }
     buffer.drawString(myText, getX(), getY() + getHeight() - decrement - 1);
   }
 
