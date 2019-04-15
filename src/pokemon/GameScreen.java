@@ -213,7 +213,6 @@ public class GameScreen extends GamePanel {
   private void drawSummaryScreen(Graphics myBuffer) {
     bgColor = Color.WHITE;
     ImageIcon pokemon = SpriteHelper.getPokemonFront(summaryPoke.getName());
-    AlertHelper.debug("" + (pokemon.getImage() == null));
     myBuffer.drawImage(pokemon.getImage(), 150, 10, null);
 
     myBuffer.setColor(Color.BLACK);
