@@ -29,7 +29,13 @@ public class Trainer {
   private Attack mAttackInAnimation;
   private BattleController.AttackAnimationListener mAttackAnimationListener;
 
-  public Trainer(Pokemon pokemon, boolean isPlayer, int infoBoxX, int infoBoxY) {
+  public Trainer(
+      Pokemon pokemon,
+      boolean isPlayer,
+      int infoBoxX,
+      int infoBoxY,
+      int startX,
+      int startY) {
     mActivePokemon = pokemon;
     mIsPlayer = isPlayer;
 
@@ -39,6 +45,9 @@ public class Trainer {
 
     INFO_BOX_X = infoBoxX;
     INFO_BOX_Y = infoBoxY;
+
+    mDrawnX = startX;
+    mDrawnY = startY;
   }
 
   public void drawSprites(Graphics buffer) {

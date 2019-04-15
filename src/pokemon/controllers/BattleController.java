@@ -15,15 +15,28 @@ public class BattleController {
 
   private static final int HORIZONTAL_MARGIN = 5;
   private static final int VERTICAL_MARGIN = 5;
-  private static final int TEXT_BOX_WIDTH = GameDriver.SCREEN_WIDTH - 2;
+  private static final int BATTLE_SPRITE_DIMEN = 80;
+
+  private static final int TEXT_BOX_MARGIN = 1;
+  private static final int TEXT_BOX_WIDTH = GameDriver.SCREEN_WIDTH - 2 * TEXT_BOX_MARGIN;
   private static final int TEXT_BOX_HEIGHT = 55;
+  private static final int TEXT_BOX_X = TEXT_BOX_MARGIN;
+  private static final int TEXT_BOX_Y =
+      GameDriver.SCREEN_HEIGHT - TEXT_BOX_HEIGHT - VERTICAL_MARGIN;
 
   private static final int ENEMY_INFO_BOX_X = HORIZONTAL_MARGIN;
   private static final int ENEMY_INFO_BOX_Y = VERTICAL_MARGIN;
+
   private static final int PLAYER_INFO_BOX_X =
       GameDriver.SCREEN_WIDTH - INFO_BOX_WIDTH - HORIZONTAL_MARGIN;
-  private static final int PLAYER_INFO_BOX_Y =
-      GameDriver.SCREEN_HEIGHT - TEXT_BOX_HEIGHT - INFO_BOX_HEIGHT - 2 * VERTICAL_MARGIN;
+  private static final int PLAYER_INFO_BOX_Y = TEXT_BOX_Y - INFO_BOX_HEIGHT - VERTICAL_MARGIN;
+
+  private static final int ENEMY_START_X =
+      GameDriver.SCREEN_WIDTH - BATTLE_SPRITE_DIMEN - HORIZONTAL_MARGIN;
+  private static final int ENEMY_START_Y = VERTICAL_MARGIN;
+  private static final int PLAYER_START_X = HORIZONTAL_MARGIN;
+  private static final int PLAYER_START_Y = TEXT_BOX_Y - BATTLE_SPRITE_DIMEN;
+
 
   private Trainer mSelf;
   private Trainer mEnemy;
@@ -39,8 +52,20 @@ public class BattleController {
   }
 
   public void initBattle(Pokemon myPokemon, Pokemon enemyPokemon) {
-    mSelf = new Trainer(myPokemon, true, PLAYER_INFO_BOX_X, PLAYER_INFO_BOX_Y);
-    mEnemy = new Trainer(enemyPokemon, false, ENEMY_INFO_BOX_X, ENEMY_INFO_BOX_Y);
+    mSelf = new Trainer(
+        myPokemon,
+        true,
+        PLAYER_INFO_BOX_X,
+        PLAYER_INFO_BOX_Y,
+        PLAYER_START_X,
+        PLAYER_START_Y);
+    mEnemy = new Trainer(
+        enemyPokemon,
+        false,
+        ENEMY_INFO_BOX_X,
+        ENEMY_INFO_BOX_Y,
+        ENEMY_START_X,
+        ENEMY_START_Y);
   }
 
   public void drawScreen(Graphics buffer) {
@@ -61,13 +86,14 @@ public class BattleController {
 
   private void drawTextBox(Graphics myBuffer) {
     myBuffer.setColor(Color.BLACK);
-    myBuffer.drawRect(1, PLAYER_INFO_BOX_Y + 60, TEXT_BOX_WIDTH, TEXT_BOX_HEIGHT);
+    myBuffer.drawRect(TEXT_BOX_X, TEXT_BOX_Y, TEXT_BOX_WIDTH, TEXT_BOX_HEIGHT);
     myBuffer.setFont(Styles.normalFont);
 
+    int textMargin = 5;
     if (isPlayersTurn) {
-      myBuffer.drawString(mSelf.getTextString(), 5, 170);
+      myBuffer.drawString(mSelf.getTextString(), TEXT_BOX_X + textMargin, TEXT_BOX_Y + textMargin);
     } else {
-      myBuffer.drawString(mEnemy.getTextString(), 5, 170);
+      myBuffer.drawString(mEnemy.getTextString(), TEXT_BOX_X + textMargin, TEXT_BOX_Y + textMargin);
     }
   }
 

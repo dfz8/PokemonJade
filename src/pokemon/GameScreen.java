@@ -235,9 +235,7 @@ public class GameScreen extends GamePanel {
         attackYEnemy = 300;
         enemyIsAttacking = false;
         isAttacking = false;
-
-        resetOrderOfPokemonInParty();
-        mPlayPanel.getOptionsNavigationHelper().toNormal();
+        endBattle();
       }
     } else if (enemyIsAttacking) {
       if (enemyMove == 1) {
@@ -286,8 +284,7 @@ public class GameScreen extends GamePanel {
           }
         }
         if (pokeLeft == 0) {
-          resetOrderOfPokemonInParty();
-          mPlayPanel.getOptionsNavigationHelper().toNormal();
+          endBattle();
         } else {
           mPlayPanel.getOptionsPanel().toSwitchPokemon();
         }
@@ -315,13 +312,14 @@ public class GameScreen extends GamePanel {
     enemy = mMapController.getRandomWildPokemon();
 
     mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
-
-    attackX = 5;
-    attackY = 80;
-    attackXEnemy = 170;
-    attackYEnemy = 1;
-
     mBattleController.initBattle(myPoke, enemy);
+
+    mPlayPanel.getOptionsNavigationHelper().toBattle();
+  }
+
+  public void endBattle() {
+    resetOrderOfPokemonInParty();
+    mPlayPanel.getOptionsNavigationHelper().toNormal();
   }
 
   private Pokemon getFirstUsablePokemonForBattle() {

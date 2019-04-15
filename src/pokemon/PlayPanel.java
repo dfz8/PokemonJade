@@ -296,8 +296,4 @@ public class PlayPanel extends JPanel {
       mOptionsPanel.checkClick(e.getX(), e.getY());
     }
   }
-
-  public String getInitialMapToLoad() {
-    return mInitialMapToLoad;
-  }
 }

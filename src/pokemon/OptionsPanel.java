@@ -280,8 +280,7 @@ public class OptionsPanel extends GamePanel {
         toSwitchPokemon();
       }
       if (s.equals("Run")) {
-        mPlayPanel.getGameScreen().resetOrderOfPokemonInParty();
-        mPlayPanel.getOptionsNavigationHelper().toNormal();
+        mPlayPanel.getGameScreen().endBattle();
       }
     } else if (curMenu == Menu.attackSelection) {
       if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackOne())) {

@@ -42,11 +42,19 @@ public class AttackLibrary {
     return mAttacks;
   }
 
+  private static Attack safeGet(String name) {
+    if (getAttackMap().containsKey(name)) {
+      return getAttackMap().get(name);
+    }
+    AlertHelper.fatal("No attack found for : " + name);
+    return null;
+  }
+
   public static String getType(String name) {
-    return getAttackMap().get(name).getType();
+    return safeGet(name).getType();
   }
 
   public static Attack getAttack(String name) {
-    return getAttackMap().get(name);
+    return safeGet(name);
   }
 }
