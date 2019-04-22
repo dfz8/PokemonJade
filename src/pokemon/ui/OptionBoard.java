@@ -59,7 +59,7 @@ public class OptionBoard {
     }
 
     buffer.setColor(mBackgroundColor);
-    buffer.fillRect(mX, mY, mWidth, mHeight;
+    buffer.fillRect(mX, mY, mWidth, mHeight);
 
     buffer.setColor(Color.BLACK);
     int decrement = 0; // myTextPlacement * mHeight / 2;
@@ -76,4 +76,33 @@ public class OptionBoard {
   public void shouldShowHighlight(boolean shouldShowHighlight) {
     mShouldShowHighlight = shouldShowHighlight;
   }
+
+  public void setX(int x) {
+    mX = x;
+  }
+
+  public void setY(int y) {
+    mY = y;
+  }
+
+  public void setBackgroundColor(Color c) {
+    mBackgroundColor = c;
+  }
+
+  public int getX() {
+    return mX;
+  }
+
+  public int getY() {
+    return mY;
+  }
+
+  public int getWidth() {
+    return mWidth;
+  }
+
+  public int getHeight() {
+    return mHeight;
+  }
+
 }

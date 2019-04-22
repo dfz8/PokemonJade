@@ -443,13 +443,13 @@ public class OptionsPanel extends GamePanel {
         int y_inc = 15;
 
         if (PlayPanel.myPokemon[i].isFainted()) {
-          pokemonOptions[i].setColor(Color.ORANGE);
+          pokemonOptions[i].setBackgroundColor(Color.ORANGE);
           myBuffer.drawString(
               "FNT",
               pokemonOptions[i].getX() + 2,
               pokemonOptions[i].getY() + pokemonOptions[i].getHeight() - 3);
         } else {
-          pokemonOptions[i].setColor(Color.WHITE);
+          pokemonOptions[i].setBackgroundColor(Color.WHITE);
         }
 
         DrawingHelper.drawHalfSizeHPBar(
@@ -629,7 +629,7 @@ public class OptionsPanel extends GamePanel {
       } else if (type.equals("Normal")) {
         c = Color.GRAY.brighter();
       }
-      attackOptions[i].setColor(c);
+      attackOptions[i].setBackgroundColor(c);
 
       if (i == 0) {
         attackOptions[i].setText("" + mPlayPanel.getGameScreen().myPoke.getAttackOne());

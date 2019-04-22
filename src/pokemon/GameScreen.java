@@ -21,11 +21,11 @@ public class GameScreen extends GamePanel {
   //conditions:
   static boolean inBattle;
   static boolean swapPokemon;
-  static boolean inSummary;
-  static Pokemon summaryPoke;
-  static boolean inSave;
   static boolean isAttacking;
-  static boolean enemyIsAttacking;
+
+  private boolean inSummary;
+  private Pokemon summaryPoke;
+  private boolean enemyIsAttacking;
 
   //player sprite info
   private ImageIcon curSprite;
@@ -64,7 +64,6 @@ public class GameScreen extends GamePanel {
   public void handleStateChange(GameState currentState, GameState newState) {
     switch (newState) {
       case DEFAULT:
-        inSave = false;
         inSummary = false;
         mMovementController.setCanMove(true);
         if (currentState == GameState.BATTLE_DEFAULT) {
@@ -79,8 +78,6 @@ public class GameScreen extends GamePanel {
         isAttacking = false;
         enemyIsAttacking = true;
         break;
-      case SAVE:
-        inSave = true;
       case VIEW_SELF:
       case VIEW_POKEDEX:
         mMovementController.setCanMove(false);
