@@ -22,7 +22,6 @@ public class OptionsPanel extends GamePanel {
 
   static boolean switchingPokemon;
   private static boolean inBattle;
-  private static boolean usingItem;
   private static Menu curMenu;
 
   private static boolean showPokemonSelectOptions = false;
@@ -41,8 +40,6 @@ public class OptionsPanel extends GamePanel {
   OptionBoard[] saveOptions;
   OptionBoard[] personalOptions;
 
-  PokeBall p = new PokeBall();
-
   public void toSwitchPokemon() {
     curMenu = Menu.pokemonSelect;
     switchingPokemon = true;
@@ -51,7 +48,7 @@ public class OptionsPanel extends GamePanel {
     mPlayPanel.getMovementController().setCanMove(false);
   }
 
-  public void toParty() {
+  private void toParty() {
     for (int i = 0; i < 6; i++) {
       if (PlayPanel.myPokemon[i] == null) {
         pokemonOptions[i].shouldShowHighlight(false);
@@ -69,7 +66,7 @@ public class OptionsPanel extends GamePanel {
     mPlayPanel = playPanel;
     mClickListenerFactory = new ClickListenerFactory(playPanel);
     mBackgroundColor = Color.BLACK;
-    inBattle = usingItem = switchingPokemon = false;
+    inBattle = switchingPokemon = false;
 
     PlayerController player = mPlayPanel.getPlayer();
     defaultOptions = OptionsHelper.setUpFor(Menu.main, player);
@@ -100,6 +97,42 @@ public class OptionsPanel extends GamePanel {
     defaultOptions[3].setOnClickListener(mClickListenerFactory.comingSoonListener());
     defaultOptions[4].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.SAVE));
     defaultOptions[5].setOnClickListener(mClickListenerFactory.comingSoonListener());
+
+    battleOptions[0].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.VIEW_ITEMS));
+    battleOptions[1].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.BATTLE_CHOOSE_ATTACK));
+    battleOptions[2].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.DEFAULT));
+    battleOptions[3].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.BATTLE_VIEW_POKEMON));
+
+    int numPokedexSlots = pokedexOptions.length - 3;
+    pokedexOptions[7].setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick() {
+        pokedexStartInd = Math.max(pokedexStartInd - numPokedexSlots, 1);
+      }
+    });
+    pokedexOptions[8].setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick() {
+        pokedexStartInd = Math.min(
+            pokedexStartInd + pokedexOptions.length - 3,
+            Pokemon.getNumPokemon() - numPokedexSlots);
+      }
+    });
+    pokedexOptions[9].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.DEFAULT));
+
+    bagOptions[0].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.BATTLE_DEFAULT));
+    bagOptions[1].setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick() {
+        if (new PokeBall().isCaught()) {
+          addNewPokemonToParty();
+          mPlayPanel.setState(GameState.DEFAULT);
+        } else {
+          AlertHelper.alert("Awww, the pokemon broke out of the pokeball!");
+          mPlayPanel.setState(GameState.BATTLE_WAIT_ON_ENEMY);
+        }
+      }
+    });
 
     saveOptions[0].setOnClickListener(new OnClickListener() {
       @Override
@@ -196,39 +229,41 @@ public class OptionsPanel extends GamePanel {
             mPlayPanel.setState(GameState.BATTLE_DEFAULT);
           }
         } else {
+          // back button in selected pokemon
           showPokemonSelectOptions = false;
           toParty();
         }
       } else if (switchingPokemon) {
-        for (int i = 0; i < 6; i++) {
-          if (PlayPanel.myPokemon[i] != null) {
-            if (PlayPanel.myPokemon[i].getName().equals(s)) {
-              //switch
-              if (GameScreen.inBattle) {
-                if (i == 0) {
-                  partyText = "That pokemon is already out!";
-                } else {
-                  switchPokemonInd = i;
-                  mPlayPanel.getGameScreen().swapPokemon = true;
-                  Pokemon temp = PlayPanel.myPokemon[i];
-                  PlayPanel.myPokemon[i] = PlayPanel.myPokemon[0];
-                  PlayPanel.myPokemon[0] = temp;
-                }
-                // break;
-              } else//not in battle, "looking mode"
-              {
-                Pokemon temp = PlayPanel.myPokemon[i];
-                PlayPanel.myPokemon[i] = PlayPanel.myPokemon[switchPokemonInd];
-                PlayPanel.myPokemon[switchPokemonInd] = temp;
-
-
-                pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
-                pokemonOptions[switchPokemonInd].setText(PlayPanel.myPokemon[switchPokemonInd].getName());
-
-                switchingPokemon = false;
-                break; //once it finds the right tile, it exits the search to save time
+        if (inBattle) {
+          for (int i = 0; i < 6; i++) {
+            Pokemon p = PlayPanel.myPokemon[i];
+            if (p != null && p.getName().equals(s)) {
+              if (i == 0) {
+                partyText = "That pokemon is already out!";
+              } else {
+                switchPokemonInd = i;
+                mPlayPanel.getGameScreen().swapPokemon = true;
+                PlayPanel.myPokemon[i] = PlayPanel.myPokemon[0];
+                PlayPanel.myPokemon[0] = p;
               }
             }
+          }
+        } else {
+          // normal viewing mode
+          for (int i = 0; i < 6; i++) {
+            Pokemon p = PlayPanel.myPokemon[i];
+            if (p != null && p.getName().equals(s)) {
+              //not in battle, "looking mode"
+              PlayPanel.myPokemon[i] = PlayPanel.myPokemon[switchPokemonInd];
+              PlayPanel.myPokemon[switchPokemonInd] = p;
+
+              pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
+              pokemonOptions[switchPokemonInd].setText(PlayPanel.myPokemon[switchPokemonInd].getName());
+
+              switchingPokemon = false;
+              break; //once it finds the right tile, it exits the search to save time
+            }
+
           }
         }
       } else if (showPokemonSelectOptions) {
@@ -242,8 +277,8 @@ public class OptionsPanel extends GamePanel {
           showPokemonSelectOptions = false;
           toParty();
         }
-      } else //clicked on one of the pokemon tiles in the regular(?) party "looking" mode
-      {
+      } else {
+        //clicked on one of the pokemon tiles in the regular(?) party "looking" mode
         showPokemonSelectOptions = true;
         for (int i = 0; i < 6; i++) {
           if (PlayPanel.myPokemon[i] != null) {
@@ -252,50 +287,27 @@ public class OptionsPanel extends GamePanel {
               switchPokemonInd = i;
 
               pokemonSelectOptions[0].setX(
-                  pokemonOptions[i].getX() + pokemonOptions[i].getWidth() - pokemonSelectOptions[0]
-                      .getWidth());
+                  pokemonOptions[i].getX()
+                  + pokemonOptions[i].getWidth()
+                  - pokemonSelectOptions[0].getWidth());
               pokemonSelectOptions[0].setY(pokemonOptions[i].getY());
               pokemonSelectOptions[2].setX(
-                  pokemonOptions[i].getX() + pokemonOptions[i].getWidth() - pokemonSelectOptions[2]
-                      .getWidth());
+                  pokemonOptions[i].getX()
+                  + pokemonOptions[i].getWidth()
+                  - pokemonSelectOptions[2].getWidth());
               pokemonSelectOptions[2].setY(
                   pokemonSelectOptions[0].getY() + pokemonSelectOptions[0].getHeight() + 5);
               pokemonSelectOptions[3].setX(
-                  pokemonOptions[i].getX() + pokemonOptions[i].getWidth() - pokemonSelectOptions[3]
-                      .getWidth());
+                  pokemonOptions[i].getX()
+                  + pokemonOptions[i].getWidth()
+                  - pokemonSelectOptions[3].getWidth());
               pokemonSelectOptions[3].setY(
-                  pokemonSelectOptions[2].getY() + pokemonSelectOptions[2].getHeight() + 5);
+                  pokemonSelectOptions[2].getY()
+                  + pokemonSelectOptions[2].getHeight() + 5);
               break;
             }
           }
         }
-      }
-    } else if (curMenu == Menu.pokedex) {
-      if (s.equals("Up")) {
-        pokedexStartInd -= pokedexOptions.length - 3;
-        if (pokedexStartInd < 1) {
-          pokedexStartInd = 1;
-        }
-      } else if (s.equals("Down")) {
-        pokedexStartInd += pokedexOptions.length - 3;
-        if (pokedexStartInd + pokedexOptions.length - 3 > Pokemon.getNumPokemon()) {
-          pokedexStartInd = Pokemon.getNumPokemon() - pokedexOptions.length + 4;
-        }
-      } else if (s.equals("Back")) {
-        mPlayPanel.setState(GameState.DEFAULT);
-      }
-    } else if (curMenu == Menu.battle) {
-      if (s.equals("Fight")) {
-        mPlayPanel.setState(GameState.BATTLE_CHOOSE_ATTACK);
-      }
-      if (s.equals("Bag")) {
-        mPlayPanel.setState(GameState.VIEW_ITEMS);
-      }
-      if (s.equals("Pokemon")) {
-        toSwitchPokemon();
-      }
-      if (s.equals("Run")) {
-        mPlayPanel.setState(GameState.DEFAULT);
       }
     } else if (curMenu == Menu.attackSelection) {
       if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackOne())) {
@@ -313,19 +325,6 @@ public class OptionsPanel extends GamePanel {
       } else if (s.equals("Back")) {
         mPlayPanel.setState(GameState.BATTLE_DEFAULT);
       }
-    } else if (curMenu == Menu.bag) {
-      if (s.equals("Back")) {
-        mPlayPanel.setState(GameState.BATTLE_DEFAULT);
-      } else if (s.equals("Pokeball")) {
-        if (p.isCaught()) {
-          addNewPokemonToParty();
-          mPlayPanel.setState(GameState.DEFAULT);
-        } else {
-          AlertHelper.alert("Awww, the pokemon broke out of the pokeball!");
-          mPlayPanel.setState(GameState.BATTLE_WAIT_ON_ENEMY);
-        }
-      }
-
     }
   }
 
@@ -356,6 +355,11 @@ public class OptionsPanel extends GamePanel {
         break;
       case BATTLE_CHOOSE_ATTACK:
         curMenu = Menu.attackSelection;
+        break;
+      case BATTLE_VIEW_POKEMON:
+        curMenu = Menu.pokemonSelect;
+        switchingPokemon = true;
+        toParty();
         break;
       case BATTLE_WAIT_ON_ENEMY:
       case BATTLE_ATTACK_ANIMATION:
