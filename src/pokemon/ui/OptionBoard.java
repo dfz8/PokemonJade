@@ -17,6 +17,7 @@ public class OptionBoard {
   private String mText;
   private boolean mIsEnabled;
   private boolean mShouldShowHighlight;
+  private OnClickListener mOnClickListener;
 
   public OptionBoard(int x, int y, int width, int height, Color c, String text) {
     this(x, y, width, height, c, text, TextPlacement.LOW);
@@ -89,6 +90,14 @@ public class OptionBoard {
     mBackgroundColor = c;
   }
 
+  public void setOnClickListener(OnClickListener listener) {
+    mOnClickListener = listener;
+  }
+
+  public void onClick() {
+    mOnClickListener.onClick();
+  }
+
   public int getX() {
     return mX;
   }
@@ -105,4 +114,7 @@ public class OptionBoard {
     return mHeight;
   }
 
+  public boolean hasOnClickListener() {
+    return mOnClickListener != null;
+  }
 }

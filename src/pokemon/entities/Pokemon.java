@@ -297,6 +297,10 @@ public class Pokemon {
 
   }
 
+  public static Builder buildFrom(Pokemon pokemon) {
+    return new Builder().buildFrom(pokemon);
+  }
+
   public static class Builder {
     private String name;
     private String type;
@@ -395,6 +399,21 @@ public class Pokemon {
 
     public Pokemon build() {
       return new Pokemon(this);
+    }
+
+    public Builder buildFrom(Pokemon pokemon) {
+      return new Builder().setName(pokemon.getName())
+                          .setType(pokemon.getType())
+                          .setFirstAttack(pokemon.getAttackOne())
+                          .setSecondAttack(pokemon.getAttackTwo())
+                          .setThirdAttack(pokemon.getAttackThree())
+                          .setFourthAttack(pokemon.getAttackFour())
+                          .setLevel(pokemon.getLevel())
+                          .setExp(pokemon.getMyEXP())
+                          .setAttack(pokemon.getAttackLevel())
+                          .setDefense(pokemon.getDefenseLevel())
+                          .setHp(pokemon.getCurrentHP())
+                          .setMaxHp(pokemon.getMaxHP());
     }
   }
 }

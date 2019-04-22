@@ -4,6 +4,8 @@ import pokemon.controllers.PlayerController;
 import pokemon.entities.PokeBall;
 import pokemon.entities.Pokemon;
 import pokemon.enums.Menu;
+import pokemon.ui.ClickListenerFactory;
+import pokemon.ui.OnClickListener;
 import pokemon.ui.OptionBoard;
 import pokemon.ui.Styles;
 
@@ -13,22 +15,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class OptionsPanel extends GamePanel {
-  private Color background;
-
-  public static boolean inBattle;
-  public static boolean usingItem;
-  public static boolean switchingPokemon;
 
   private PlayPanel mPlayPanel;
-  static Menu curMenu;
+  private ClickListenerFactory mClickListenerFactory;
+  private Color mBackgroundColor;
 
-  static boolean showPokemonSelectOptions = false;
-  static int switchPokemonInd = -1;
-  static int pokedexStartInd;
-  static String partyText = "";
+  static boolean switchingPokemon;
+  private static boolean inBattle;
+  private static boolean usingItem;
+  private static Menu curMenu;
+
+  private static boolean showPokemonSelectOptions = false;
+  private static int switchPokemonInd = -1;
+  private static int pokedexStartInd;
+  private static String partyText = "";
 
   // todo refactor each into a controller
-  OptionBoard[] normalOptions;
+  OptionBoard[] defaultOptions;
   OptionBoard[] pokemonOptions;
   OptionBoard[] pokemonSelectOptions;
   OptionBoard[] pokedexOptions;
@@ -64,11 +67,12 @@ public class OptionsPanel extends GamePanel {
 
   public OptionsPanel(PlayPanel playPanel) {
     mPlayPanel = playPanel;
-    background = Color.BLACK;
+    mClickListenerFactory = new ClickListenerFactory(playPanel);
+    mBackgroundColor = Color.BLACK;
     inBattle = usingItem = switchingPokemon = false;
 
     PlayerController player = mPlayPanel.getPlayer();
-    normalOptions = OptionsHelper.setUpFor(Menu.main, player);
+    defaultOptions = OptionsHelper.setUpFor(Menu.main, player);
     pokemonOptions = OptionsHelper.setUpFor(Menu.party, player);
     pokedexOptions = OptionsHelper.setUpFor(Menu.pokedex, player);
     battleOptions = OptionsHelper.setUpFor(Menu.battle, player);
@@ -77,10 +81,35 @@ public class OptionsPanel extends GamePanel {
     pokemonSelectOptions = OptionsHelper.setUpFor(Menu.pokemonSelect, player);
     saveOptions = OptionsHelper.setUpFor(Menu.save, player);
     personalOptions = OptionsHelper.setUpFor(Menu.personal, player);
+    initOnClickListeners();
 
     curMenu = Menu.main;
 
     setAndStartActionListener(30, new RefreshListener());
+  }
+
+  private void initOnClickListeners() {
+    defaultOptions[0].setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick() {
+        toParty();
+      }
+    });
+    defaultOptions[1].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.VIEW_POKEDEX));
+    defaultOptions[2].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.VIEW_SELF));
+    defaultOptions[3].setOnClickListener(mClickListenerFactory.comingSoonListener());
+    defaultOptions[4].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.SAVE));
+    defaultOptions[5].setOnClickListener(mClickListenerFactory.comingSoonListener());
+
+    saveOptions[0].setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick() {
+        mPlayPanel.save();
+        mPlayPanel.setState(GameState.DEFAULT);
+      }
+    });
+
+    personalOptions[0].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.DEFAULT));
   }
 
   public void updateHighlightsForOptions(int x, int y) {
@@ -98,7 +127,7 @@ public class OptionsPanel extends GamePanel {
   private OptionBoard[] getOptionsForCurrentPanel() {
     switch (curMenu) {
       case main:
-        return normalOptions;
+        return defaultOptions;
       case party:
         return showPokemonSelectOptions ? pokemonSelectOptions : pokemonOptions;
       case battle:
@@ -147,28 +176,18 @@ public class OptionsPanel extends GamePanel {
     // click is valid if target is showing highlight aka enabled
     for (OptionBoard option : getOptionsForCurrentPanel()) {
       if (option.isHighlighted() && isMouseOver(x, y, option)) {
-        searchButton(option.getText());
+        if (option.hasOnClickListener()) {
+          option.onClick();
+        } else {
+          searchButton(option.getText());
+        }
       }
     }
   }
 
   //where the click code is run
   public void searchButton(String s) {
-    if (curMenu == Menu.main) {
-      if (s.equals("Pokemon")) {
-        toParty();
-      } else if (s.equals("Pokedex")) {
-        mPlayPanel.setState(GameState.VIEW_POKEDEX);
-      } else if (s.equals("Save")) {
-        mPlayPanel.setState(GameState.SAVE);
-      } else if (s.equals(mPlayPanel.getPlayer().getName())) {
-        mPlayPanel.setState(GameState.VIEW_SELF);
-      } else if (s.equals("Bag")) {
-        AlertHelper.alert("Coming Soon");
-      } else if (s.equals("Options")) {
-        AlertHelper.alert("Coming Soon");
-      }
-    } else if (curMenu == Menu.party) {
+    if (curMenu == Menu.party) {
       if (s.equals("Back")) {
         if (!showPokemonSelectOptions) {
           if (!switchingPokemon) {
@@ -299,30 +318,7 @@ public class OptionsPanel extends GamePanel {
         mPlayPanel.setState(GameState.BATTLE_DEFAULT);
       } else if (s.equals("Pokeball")) {
         if (p.isCaught()) {
-          int index = 0;
-          for (int occupy = 0; occupy < PlayPanel.myPokemon.length; occupy++) {
-            if (PlayPanel.myPokemon[occupy] == null) {
-              index = occupy;
-              break;
-            }
-          }
-          mPlayPanel.getPlayer().markCaughtPokemon(mPlayPanel.getGameScreen().enemy.getName());
-          mPlayPanel.getPlayer().markSeenPokemon(mPlayPanel.getGameScreen().enemy.getName());
-
-          PlayPanel.myPokemon[index] = new Pokemon.Builder()
-              .setName(mPlayPanel.getGameScreen().enemy.getName())
-              .setType(mPlayPanel.getGameScreen().enemy.getType())
-              .setFirstAttack(mPlayPanel.getGameScreen().enemy.getAttackOne())
-              .setSecondAttack(mPlayPanel.getGameScreen().enemy.getAttackTwo())
-              .setThirdAttack(mPlayPanel.getGameScreen().enemy.getAttackThree())
-              .setFourthAttack(mPlayPanel.getGameScreen().enemy.getAttackFour())
-              .setLevel(mPlayPanel.getGameScreen().enemy.getLevel())
-              .setExp(mPlayPanel.getGameScreen().enemy.getMyEXP())
-              .setAttack(mPlayPanel.getGameScreen().enemy.getAttackLevel())
-              .setDefense(mPlayPanel.getGameScreen().enemy.getDefenseLevel())
-              .setHp(mPlayPanel.getGameScreen().enemy.getCurrentHP())
-              .setMaxHp(mPlayPanel.getGameScreen().enemy.getMaxHP())
-              .build();
+          addNewPokemonToParty();
           mPlayPanel.setState(GameState.DEFAULT);
         } else {
           AlertHelper.alert("Awww, the pokemon broke out of the pokeball!");
@@ -330,16 +326,19 @@ public class OptionsPanel extends GamePanel {
         }
       }
 
-    } else if (curMenu == Menu.save) {
-      if (s.equals("")) {
-        mPlayPanel.save();
-        mPlayPanel.setState(GameState.DEFAULT);
-      }
-    } else if (curMenu == Menu.personal) {
-      if (s.equals("")) {
-        mPlayPanel.setState(GameState.DEFAULT);
-      }
     }
+  }
+
+  private void addNewPokemonToParty() {
+    int index = 0;
+    for (; index < PlayPanel.myPokemon.length && PlayPanel.myPokemon[index] != null; index++) {
+    }
+
+    Pokemon enemy = mPlayPanel.getGameScreen().enemy;
+    mPlayPanel.getPlayer().markCaughtPokemon(enemy.getName());
+    mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
+
+    PlayPanel.myPokemon[index] = Pokemon.buildFrom(enemy).build();
   }
 
   @Override
@@ -384,7 +383,7 @@ public class OptionsPanel extends GamePanel {
   public class RefreshListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       Graphics myBuffer = getImageBuffer();
-      myBuffer.setColor(background);
+      myBuffer.setColor(mBackgroundColor);
       myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
       // todo: move set font code to the specific panels
       myBuffer.setFont(Styles.normalFont);
