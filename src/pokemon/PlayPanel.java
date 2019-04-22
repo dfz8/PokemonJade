@@ -247,6 +247,11 @@ public class PlayPanel extends JPanel {
     }
   }
 
+  public void setState(GameState state) {
+    mGameScreen.toState(state);
+    mOptionsPanel.toState(state);
+  }
+
   public class Key extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_UP) {

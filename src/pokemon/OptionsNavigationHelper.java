@@ -26,11 +26,6 @@ class OptionsNavigationHelper {
     GameScreen.inBattle = true;
   }
 
-  public void toBattle() {
-    OptionsPanel.curMenu = Menu.battle;
-    OptionsPanel.switchingPokemon = false;
-  }
-
   public void toBlack() {
     OptionsPanel.curMenu = Menu.blackScreen;
   }

@@ -174,7 +174,7 @@ public class OptionsPanel extends GamePanel {
           if (!switchingPokemon) {
             mPlayPanel.getOptionsNavigationHelper().toNormal();
           } else {
-            mPlayPanel.getOptionsNavigationHelper().toBattle();
+            mPlayPanel.setState(GameState.BATTLE_DEFAULT);
           }
         } else {
           showPokemonSelectOptions = false;
@@ -296,11 +296,11 @@ public class OptionsPanel extends GamePanel {
         GameScreen.isAttacking = true;
         GameScreen.myAttackName = mPlayPanel.getGameScreen().myPoke.getAttackFour();
       } else if (s.equals("Back")) {
-        mPlayPanel.getOptionsNavigationHelper().toBattle();
+        mPlayPanel.setState(GameState.BATTLE_DEFAULT);
       }
     } else if (curMenu == Menu.bag) {
       if (s.equals("Back")) {
-        mPlayPanel.getOptionsNavigationHelper().toBattle();
+        mPlayPanel.setState(GameState.BATTLE_DEFAULT);
       } else if (s.equals("Pokeball")) {
         if (p.isCaught()) {
           int index = 0;
@@ -345,6 +345,16 @@ public class OptionsPanel extends GamePanel {
       if (s.equals("")) {
         mPlayPanel.getOptionsNavigationHelper().toNormal();
       }
+    }
+  }
+
+  @Override
+  public void handleStateChange(GameState newState) {
+    switch (newState) {
+      case BATTLE_DEFAULT:
+        curMenu = Menu.battle;
+        switchingPokemon = false;
+        break;
     }
   }
 

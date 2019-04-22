@@ -31,10 +31,6 @@ public class GameScreen extends GamePanel {
   private ImageIcon curSprite;
 
   //battle info
-  private static int attackX = 5;
-  private static int attackY = 50;
-  private static int attackXEnemy = 170;
-  private static int attackYEnemy = 1;
   private static int myMove = 1;
   private static int enemyMove = 1;
   private static int switchingMove = 1;
@@ -62,6 +58,15 @@ public class GameScreen extends GamePanel {
     mMovementController.setCoord(7, 8);
 
     setAndStartActionListener(150, new RefreshListener());
+  }
+
+  @Override
+  public void handleStateChange(GameState newState) {
+    switch (newState) {
+      case BATTLE_DEFAULT:
+        toBattle();
+        break;
+    }
   }
 
   public class RefreshListener implements ActionListener {
@@ -142,7 +147,7 @@ public class GameScreen extends GamePanel {
   private void maybeInitPokemonBattle() {
     if (mMapController.canTriggerWildPokemonEncounter()) {
       if ((int) (Math.random() * 256) <= 32) {
-        toBattle();
+        mPlayPanel.setState(GameState.BATTLE_DEFAULT);
       }
     }
   }
@@ -179,6 +184,9 @@ public class GameScreen extends GamePanel {
   }
 
   private void drawBattleScene(Graphics myBuffer) {
+    int attackX = 5;
+    int attackXEnemy = 300;
+    int attackYEnemy = 300;
     bgColor = Color.WHITE;
     if (mPlayPanel.getOptionsPanel().switchingPokemon) {
       myBuffer.drawString("Which pokemon do you want to switch out?", 5, 170);
@@ -263,7 +271,7 @@ public class GameScreen extends GamePanel {
         enemyMove = 1;
         enemyIsAttacking = false;
 
-        mPlayPanel.getOptionsNavigationHelper().toBattle();
+        mPlayPanel.setState(GameState.BATTLE_DEFAULT);
       }
       if (myPoke.isFainted()) {
         //put image somewhere outside of the screen
@@ -313,8 +321,6 @@ public class GameScreen extends GamePanel {
 
     mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
     mBattleController.initBattle(myPoke, enemy);
-
-    mPlayPanel.getOptionsNavigationHelper().toBattle();
   }
 
   public void endBattle() {

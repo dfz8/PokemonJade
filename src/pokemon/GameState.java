@@ -1,0 +1,13 @@
+package pokemon;
+
+public enum GameState {
+  DEFAULT,
+  BATTLE_DEFAULT,
+  BATTLE_WAIT,
+  BATTLE_CHOOSE_ATTACK,
+  SAVE,
+  VIEW_POKEDEX,
+  VIEW_PARTY,
+  VIEW_ITEMS,
+  VIEW_SELF,
+}
