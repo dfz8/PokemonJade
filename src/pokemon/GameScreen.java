@@ -86,6 +86,10 @@ public class GameScreen extends GamePanel {
         inSummary = true;
         summaryPoke = mPlayPanel.getPokemonForSummary();
         break;
+      case VIEW_PARTY:
+      case BATTLE_VIEW_POKEMON:
+        mMovementController.setCanMove(false);
+        break;
     }
   }
 
@@ -307,9 +311,10 @@ public class GameScreen extends GamePanel {
           }
         }
         if (pokeLeft == 0) {
+          // lose the battle
           mPlayPanel.setState(GameState.DEFAULT);
         } else {
-          mPlayPanel.getOptionsPanel().toSwitchPokemon();
+          mPlayPanel.setState(GameState.BATTLE_VIEW_POKEMON);
         }
       }
     }

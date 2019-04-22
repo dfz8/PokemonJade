@@ -154,7 +154,6 @@ public class OptionsHelper {
       case pokemonSelect:
         return new OptionBoard[]{
             new OptionBoard(0, 0, 50, 20, GREEN, "Move"),
-            new OptionBoard(-10, -10, 0, 0, Color.BLACK, "dud"),
             new OptionBoard(0, 0, 50, 20, GREEN, "Summary"),
             new OptionBoard(0, 0, 50, 20, GREEN, "Back")
         };
