@@ -51,7 +51,7 @@ public class OptionsPanel extends GamePanel {
   public void toParty() {
     for (int i = 0; i < 6; i++) {
       if (PlayPanel.myPokemon[i] == null) {
-        pokemonOptions[i].showHighlight(false);
+        pokemonOptions[i].shouldShowHighlight(false);
       } else {
         pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
       }
@@ -87,7 +87,7 @@ public class OptionsPanel extends GamePanel {
     if (curMenu == Menu.party && !showPokemonSelectOptions) {
       // can come here when viewing pokemon, in battle and switching out pokemon
       for (int i = 0; i < pokemonOptions.length; i++) {
-        pokemonOptions[i].showHighlight(
+        pokemonOptions[i].shouldShowHighlight(
             isMouseOver(x, y, pokemonOptions[i]) && shouldShowHighlightForPokemon(i));
       }
     } else {
@@ -132,7 +132,7 @@ public class OptionsPanel extends GamePanel {
 
   private void updateHighlights(int x, int y, OptionBoard[] boards) {
     for (OptionBoard board : boards) {
-      board.showHighlight(isMouseOver(x, y, board));
+      board.shouldShowHighlight(isMouseOver(x, y, board));
     }
   }
 

@@ -3,7 +3,7 @@ package pokemon;
 import pokemon.controllers.PlayerController;
 import pokemon.enums.Menu;
 import pokemon.ui.OptionBoard;
-import pokemon.ui.OptionBoard.TextPlacement;
+import pokemon.ui.TextPlacement;
 
 import java.awt.*;
 

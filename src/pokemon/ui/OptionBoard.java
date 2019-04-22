@@ -1,33 +1,25 @@
 package pokemon.ui;
 
-import pokemon.DrawingHelper;
-
-import javax.swing.*;
 import java.awt.*;
 
-public class OptionBoard extends Bumper {
+public class OptionBoard {
 
-  public enum TextPlacement {
-    HIGH,
-    MIDDLE,
-    LOW
-  }
-
+  private static final Color HIGHLIGHT_COLOR = Color.RED;
   private static final int HIGHLIGHT_SIZE = 1;
 
-  private TextPlacement myTextPlacement;
+  private int mX;
+  private int mY;
+  private int mWidth;
+  private int mHeight;
+  private Color mBackgroundColor;
 
-  private ImageIcon myImage;
-  private String myText;
-  private boolean lookForClick;
-  private boolean showHighlight;
-  private boolean hasPicAsImage;
+  private TextPlacement mTextPlacement;
+  private String mText;
+  private boolean mIsEnabled;
+  private boolean mShouldShowHighlight;
 
   public OptionBoard(int x, int y, int width, int height, Color c, String text) {
-    super(x, y, width, height, c);
-    lookForClick = true;
-    myText = text;
-    myTextPlacement = TextPlacement.LOW;
+    this(x, y, width, height, c, text, TextPlacement.LOW);
   }
 
   public OptionBoard(
@@ -38,63 +30,50 @@ public class OptionBoard extends Bumper {
       Color c,
       String text,
       TextPlacement textPlacement) {
-    super(x, y, width, height, c);
-    lookForClick = true;
-    myText = text;
-    myTextPlacement = textPlacement;
-  }
-
-  public OptionBoard(int x, int y, int width, int height, String picName, boolean click) {
-    super(x, y, width, height, Color.WHITE);
-    myImage = new ImageIcon(picName);
-    lookForClick = click;
-    hasPicAsImage = true;
-  }
-
-  public boolean isClickable() {
-    return lookForClick;
+    mX = x;
+    mY = y;
+    mWidth = width;
+    mHeight = height;
+    mBackgroundColor = c;
+    mIsEnabled = true;
+    mText = text;
+    mTextPlacement = textPlacement;
   }
 
   public boolean isHighlighted() {
-    return showHighlight;
+    return mShouldShowHighlight;
   }
 
   public String getText() {
-    return myText;
-  }
-
-  public void setClickable(boolean b) {
-    lookForClick = b;
+    return mText;
   }
 
   public void draw(Graphics buffer) {
-    buffer.setColor(Color.RED);
-    if (showHighlight && lookForClick) //shows the highlight
-    {
+    buffer.setColor(HIGHLIGHT_COLOR);
+    if (mShouldShowHighlight && mIsEnabled) {
       buffer.fillRect(
-          getX() - HIGHLIGHT_SIZE,
-          getY() - HIGHLIGHT_SIZE,
-          getWidth() + 2 * HIGHLIGHT_SIZE,
-          getHeight() + 2 * HIGHLIGHT_SIZE);
+          mX - HIGHLIGHT_SIZE,
+          mY - HIGHLIGHT_SIZE,
+          mWidth + 2 * HIGHLIGHT_SIZE,
+          mHeight + 2 * HIGHLIGHT_SIZE);
     }
-    if (hasPicAsImage) {
-      DrawingHelper.drawImage(buffer, myImage, getX(), getY(), getWidth(), getHeight());
-    } else {
-      super.draw(buffer);
-    }
+
+    buffer.setColor(mBackgroundColor);
+    buffer.fillRect(mX, mY, mWidth, mHeight;
+
     buffer.setColor(Color.BLACK);
-    int decrement = 0; // myTextPlacement * getHeight() / 2;
-    if (myTextPlacement == TextPlacement.HIGH) {
-      decrement -= (getHeight() / 4 + 3);
+    int decrement = 0; // myTextPlacement * mHeight / 2;
+    if (mTextPlacement == TextPlacement.HIGH) {
+      decrement -= (mHeight / 4 + 3);
     }
-    buffer.drawString(myText, getX(), getY() + getHeight() - decrement - 1);
+    buffer.drawString(mText, mX, mY + mHeight - decrement - 1);
   }
 
   public void setText(String t) {
-    myText = t;
+    mText = t;
   }
 
-  public void showHighlight(boolean yesno) {
-    showHighlight = yesno;
+  public void shouldShowHighlight(boolean shouldShowHighlight) {
+    mShouldShowHighlight = shouldShowHighlight;
   }
 }
