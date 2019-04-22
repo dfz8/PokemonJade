@@ -34,8 +34,8 @@ public abstract class GamePanel extends JPanel {
 
   public void toState(GameState state) {
     if (state != mGameState) {
+      handleStateChange(mGameState, state);
       mGameState = state;
-      handleStateChange(state);
     } else {
       AlertHelper.debug("Going to same state: " + state);
     }
@@ -45,5 +45,5 @@ public abstract class GamePanel extends JPanel {
     return mGameState;
   }
 
-  public abstract void handleStateChange(GameState newState);
+  public abstract void handleStateChange(GameState currentState, GameState newState);
 }

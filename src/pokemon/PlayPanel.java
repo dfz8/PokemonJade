@@ -17,9 +17,9 @@ public class PlayPanel extends JPanel {
 
   private static GameScreen mGameScreen;
   private static OptionsPanel mOptionsPanel;
-  private static OptionsNavigationHelper mOptionsNavigationHelper;
 
   static Pokemon[] myPokemon; //first six is party, empty slots are "null"
+  private static int mSummaryIndex;
 
   private PlayerController mPlayerController;
   private MovementController mMovementController;
@@ -46,7 +46,6 @@ public class PlayPanel extends JPanel {
 
   private void initPreSetupControllers() {
     mMovementController = new MovementController();
-    mOptionsNavigationHelper = new OptionsNavigationHelper(this);
   }
 
   private void initPostSetupControllers() {
@@ -73,8 +72,12 @@ public class PlayPanel extends JPanel {
     return mGameScreen;
   }
 
-  public OptionsNavigationHelper getOptionsNavigationHelper() {
-    return mOptionsNavigationHelper;
+  public void setSummaryIndex(int index) {
+    mSummaryIndex = index;
+  }
+
+  public Pokemon getPokemonForSummary() {
+    return myPokemon[mSummaryIndex];
   }
 
   private void initGameSetup() {

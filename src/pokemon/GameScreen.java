@@ -61,10 +61,33 @@ public class GameScreen extends GamePanel {
   }
 
   @Override
-  public void handleStateChange(GameState newState) {
+  public void handleStateChange(GameState currentState, GameState newState) {
     switch (newState) {
+      case DEFAULT:
+        inSave = false;
+        inSummary = false;
+        mMovementController.setCanMove(true);
+        if (currentState == GameState.BATTLE_DEFAULT) {
+          resetOrderOfPokemonInParty();
+          inBattle = false;
+        }
+        break;
       case BATTLE_DEFAULT:
-        toBattle();
+        initBattle();
+        break;
+      case BATTLE_WAIT_ON_ENEMY:
+        isAttacking = false;
+        enemyIsAttacking = true;
+        break;
+      case SAVE:
+        inSave = true;
+      case VIEW_SELF:
+      case VIEW_POKEDEX:
+        mMovementController.setCanMove(false);
+        break;
+      case VIEW_POKEMON:
+        inSummary = true;
+        summaryPoke = mPlayPanel.getPokemonForSummary();
         break;
     }
   }
@@ -77,10 +100,6 @@ public class GameScreen extends GamePanel {
 
       if (inSummary) {
         drawSummaryScreen(myBuffer);
-      } else if (mMovementController.canMove()) {
-        bgColor = Color.WHITE;
-        handleMovementOfPlayer();
-        mMapController.drawMap(myBuffer, curSprite);
       } else if (inBattle) {
         if (OptionsPanel.switchingPokemon) {
         } else if (isAttacking) {
@@ -89,6 +108,10 @@ public class GameScreen extends GamePanel {
         mBattleController.drawScreen(myBuffer);
       } else {
         bgColor = Color.WHITE;
+        if (mMovementController.canMove()) {
+          handleMovementOfPlayer();
+        }
+        mMapController.drawMap(myBuffer, curSprite);
       }
 
       repaint();
@@ -198,7 +221,7 @@ public class GameScreen extends GamePanel {
         attackX -= 5;
         switchingMove++;
         myBuffer.drawString("Come back " + myPoke.getName() + "!", 5, 170);
-        mPlayPanel.getOptionsNavigationHelper().toBlack();
+        mPlayPanel.setState(GameState.BATTLE_SWITCH_ANIMATION);
       } else if (switchingMove == 16) {//switch the two pokemon
         //switch pokemon
         myPoke = mPlayPanel.myPokemon[0];//mPlayPanel.getOptionsPanel().switchPokemonInd];
@@ -216,7 +239,7 @@ public class GameScreen extends GamePanel {
       }
     } else if (isAttacking) {
       if (myMove == 0) {
-        mPlayPanel.getOptionsNavigationHelper().toBlack();
+        mPlayPanel.setState(GameState.BATTLE_ATTACK_ANIMATION);
       }
       if (myMove <= 5) {
         attackX = attackX + 3;
@@ -241,9 +264,7 @@ public class GameScreen extends GamePanel {
         //put image somewhere outside of the screen
         attackXEnemy = 300;
         attackYEnemy = 300;
-        enemyIsAttacking = false;
-        isAttacking = false;
-        endBattle();
+        mPlayPanel.setState(GameState.DEFAULT);
       }
     } else if (enemyIsAttacking) {
       if (enemyMove == 1) {
@@ -276,9 +297,6 @@ public class GameScreen extends GamePanel {
       if (myPoke.isFainted()) {
         //put image somewhere outside of the screen
         myPoke.setCurrentHP(0);
-
-        // attackX = 300;
-        // attackY = 300;
         isAttacking = false;
         enemyIsAttacking = false;
 
@@ -292,7 +310,7 @@ public class GameScreen extends GamePanel {
           }
         }
         if (pokeLeft == 0) {
-          endBattle();
+          mPlayPanel.setState(GameState.DEFAULT);
         } else {
           mPlayPanel.getOptionsPanel().toSwitchPokemon();
         }
@@ -300,19 +318,19 @@ public class GameScreen extends GamePanel {
     }
   }
 
-  public void saveOrderOfPokemonInParty() {
+  private void saveOrderOfPokemonInParty() {
     for (int i = 0; i < normalParty.length; i++) {
       normalParty[i] = PlayPanel.myPokemon[i];
     }
   }
 
-  public void resetOrderOfPokemonInParty() {
+  private void resetOrderOfPokemonInParty() {
     for (int i = 0; i < normalParty.length; i++) {
       PlayPanel.myPokemon[i] = normalParty[i];
     }
   }
 
-  public void toBattle() {
+  private void initBattle() {
     mMovementController.setCanMove(false);
     inBattle = true;
 
@@ -321,11 +339,6 @@ public class GameScreen extends GamePanel {
 
     mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
     mBattleController.initBattle(myPoke, enemy);
-  }
-
-  public void endBattle() {
-    resetOrderOfPokemonInParty();
-    mPlayPanel.getOptionsNavigationHelper().toNormal();
   }
 
   private Pokemon getFirstUsablePokemonForBattle() {

@@ -158,11 +158,11 @@ public class OptionsPanel extends GamePanel {
       if (s.equals("Pokemon")) {
         toParty();
       } else if (s.equals("Pokedex")) {
-        mPlayPanel.getOptionsNavigationHelper().toPokedex();
+        mPlayPanel.setState(GameState.VIEW_POKEDEX);
       } else if (s.equals("Save")) {
-        mPlayPanel.getOptionsNavigationHelper().toSave();
+        mPlayPanel.setState(GameState.SAVE);
       } else if (s.equals(mPlayPanel.getPlayer().getName())) {
-        mPlayPanel.getOptionsNavigationHelper().toPersonal();
+        mPlayPanel.setState(GameState.VIEW_SELF);
       } else if (s.equals("Bag")) {
         AlertHelper.alert("Coming Soon");
       } else if (s.equals("Options")) {
@@ -172,7 +172,7 @@ public class OptionsPanel extends GamePanel {
       if (s.equals("Back")) {
         if (!showPokemonSelectOptions) {
           if (!switchingPokemon) {
-            mPlayPanel.getOptionsNavigationHelper().toNormal();
+            mPlayPanel.setState(GameState.DEFAULT);
           } else {
             mPlayPanel.setState(GameState.BATTLE_DEFAULT);
           }
@@ -217,7 +217,8 @@ public class OptionsPanel extends GamePanel {
           switchingPokemon = true;
           showPokemonSelectOptions = false;
         } else if (s.equals("Summary")) {
-          mPlayPanel.getOptionsNavigationHelper().toSummary(switchPokemonInd);
+          mPlayPanel.setSummaryIndex(switchPokemonInd);
+          mPlayPanel.setState(GameState.VIEW_POKEMON);
         } else if (s.equals("Back")) {
           showPokemonSelectOptions = false;
           toParty();
@@ -245,7 +246,6 @@ public class OptionsPanel extends GamePanel {
                       .getWidth());
               pokemonSelectOptions[3].setY(
                   pokemonSelectOptions[2].getY() + pokemonSelectOptions[2].getHeight() + 5);
-
               break;
             }
           }
@@ -263,24 +263,20 @@ public class OptionsPanel extends GamePanel {
           pokedexStartInd = Pokemon.getNumPokemon() - pokedexOptions.length + 4;
         }
       } else if (s.equals("Back")) {
-        mPlayPanel.getOptionsNavigationHelper().toNormal();
-      } else //click on a pokemon tile
-      {
-
+        mPlayPanel.setState(GameState.DEFAULT);
       }
-
     } else if (curMenu == Menu.battle) {
       if (s.equals("Fight")) {
-        mPlayPanel.getOptionsNavigationHelper().toAttacks();
+        mPlayPanel.setState(GameState.BATTLE_CHOOSE_ATTACK);
       }
       if (s.equals("Bag")) {
-        mPlayPanel.getOptionsNavigationHelper().toBag();
+        mPlayPanel.setState(GameState.VIEW_ITEMS);
       }
       if (s.equals("Pokemon")) {
         toSwitchPokemon();
       }
       if (s.equals("Run")) {
-        mPlayPanel.getGameScreen().endBattle();
+        mPlayPanel.setState(GameState.DEFAULT);
       }
     } else if (curMenu == Menu.attackSelection) {
       if (s.equals(mPlayPanel.getGameScreen().myPoke.getAttackOne())) {
@@ -327,33 +323,60 @@ public class OptionsPanel extends GamePanel {
               .setHp(mPlayPanel.getGameScreen().enemy.getCurrentHP())
               .setMaxHp(mPlayPanel.getGameScreen().enemy.getMaxHP())
               .build();
-          mPlayPanel.getOptionsNavigationHelper().toNormal();
+          mPlayPanel.setState(GameState.DEFAULT);
         } else {
           AlertHelper.alert("Awww, the pokemon broke out of the pokeball!");
-          mPlayPanel.getOptionsNavigationHelper().toBlack();
-          GameScreen.isAttacking = false;
-          GameScreen.enemyIsAttacking = true;
+          mPlayPanel.setState(GameState.BATTLE_WAIT_ON_ENEMY);
         }
       }
 
     } else if (curMenu == Menu.save) {
       if (s.equals("")) {
         mPlayPanel.save();
-        mPlayPanel.getOptionsNavigationHelper().toNormal();
+        mPlayPanel.setState(GameState.DEFAULT);
       }
     } else if (curMenu == Menu.personal) {
       if (s.equals("")) {
-        mPlayPanel.getOptionsNavigationHelper().toNormal();
+        mPlayPanel.setState(GameState.DEFAULT);
       }
     }
   }
 
   @Override
-  public void handleStateChange(GameState newState) {
+  public void handleStateChange(GameState currentState, GameState newState) {
     switch (newState) {
+      case DEFAULT:
+        curMenu = Menu.main;
+        switchingPokemon = false;
+        showPokemonSelectOptions = false;
+        switchPokemonInd = -1;
+        break;
       case BATTLE_DEFAULT:
         curMenu = Menu.battle;
         switchingPokemon = false;
+        break;
+      case BATTLE_CHOOSE_ATTACK:
+        curMenu = Menu.attackSelection;
+        break;
+      case BATTLE_WAIT_ON_ENEMY:
+      case BATTLE_ATTACK_ANIMATION:
+      case BATTLE_SWITCH_ANIMATION:
+        curMenu = Menu.blackScreen;
+        break;
+      case VIEW_ITEMS:
+        curMenu = Menu.bag;
+      case VIEW_SELF:
+        curMenu = Menu.personal;
+        break;
+      case VIEW_POKEDEX:
+        curMenu = Menu.pokedex;
+        pokedexStartInd = 1;
+        break;
+      case VIEW_POKEMON:
+        showPokemonSelectOptions = false;
+        break;
+      case SAVE:
+        curMenu = Menu.save;
         break;
     }
   }
