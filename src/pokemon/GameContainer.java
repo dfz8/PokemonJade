@@ -13,11 +13,14 @@ import java.io.*;
 
 import static pokemon.AlertHelper.alert;
 
-public class PlayPanel extends JPanel {
+/**
+ * Contains and draws the two DS screens that are used to render the game and handles UI
+ */
+public class GameContainer extends JPanel {
   private static final String SAVE_DELIMITER = " ";
 
-  private static GameScreen mGameScreen;
-  private static OptionsPanel mOptionsPanel;
+  private static GameplayScreen mGameplayScreen;
+  private static GuiScreen mGuiScreen;
 
   static Pokemon[] myPokemon; //first six is party, empty slots are "null"
   private static int mSummaryIndex;
@@ -29,16 +32,16 @@ public class PlayPanel extends JPanel {
 
   private String mInitialMapToLoad;
 
-  public PlayPanel() {
+  public GameContainer() {
     initPreSetupControllers();
     initGameSetup();
     initPostSetupControllers();
 
     setLayout(new GridLayout(2, 1));
-    mGameScreen = new GameScreen(this);
-    add(mGameScreen);
-    mOptionsPanel = new OptionsPanel(this);
-    add(mOptionsPanel);
+    mGameplayScreen = new GameplayScreen(this);
+    add(mGameplayScreen);
+    mGuiScreen = new GuiScreen(this);
+    add(mGuiScreen);
 
     addKeyListener(new Key());
     addMouseMotionListener(new Mouse());
@@ -71,12 +74,12 @@ public class PlayPanel extends JPanel {
     return mBattleController;
   }
 
-  public OptionsPanel getOptionsPanel() {
-    return mOptionsPanel;
+  public GuiScreen getOptionsPanel() {
+    return mGuiScreen;
   }
 
-  public GameScreen getGameScreen() {
-    return mGameScreen;
+  public GameplayScreen getGameScreen() {
+    return mGameplayScreen;
   }
 
   public void setSummaryIndex(int index) {
@@ -258,8 +261,8 @@ public class PlayPanel extends JPanel {
   }
 
   public void setState(GameState state) {
-    mGameScreen.toState(state);
-    mOptionsPanel.toState(state);
+    mGameplayScreen.toState(state);
+    mGuiScreen.toState(state);
   }
 
   public class Key extends KeyAdapter {
@@ -302,13 +305,13 @@ public class PlayPanel extends JPanel {
 
   public class Mouse extends MouseMotionAdapter {
     public void mouseMoved(MouseEvent e) {
-      mOptionsPanel.updateHighlightsForOptions(e.getX(), e.getY());
+      mGuiScreen.updateHighlightsForOptions(e.getX(), e.getY());
     }
   }
 
   public class MouseClicks extends MouseAdapter {
     public void mouseClicked(MouseEvent e) {
-      mOptionsPanel.checkClick(e.getX(), e.getY());
+      mGuiScreen.checkClick(e.getX(), e.getY());
     }
   }
 }

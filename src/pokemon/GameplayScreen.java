@@ -11,11 +11,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GameScreen extends GamePanel {
+/**
+ * Controls what is drawn in the top half of the screen
+ */
+public class GameplayScreen extends DrawableScreen {
   public static final int SPRITE_WIDTH = 23;
   public static final int SPRITE_HEIGHT = 26;
 
-  private PlayPanel mPlayPanel;
+  private GameContainer mGameContainer;
   private Color bgColor;
 
   //conditions:
@@ -43,13 +46,13 @@ public class GameScreen extends GamePanel {
   private BattleController mBattleController;
   private MapController mMapController;
 
-  public GameScreen(PlayPanel playPanel) {
+  public GameplayScreen(GameContainer gameContainer) {
     bgColor = Color.WHITE;
-    mPlayPanel = playPanel;
-    mMovementController = playPanel.getMovementController();
+    mGameContainer = gameContainer;
+    mMovementController = gameContainer.getMovementController();
     mMovementController.setCanMove(true);
-    mBattleController = mPlayPanel.getBattleController();
-    mMapController = mPlayPanel.getMapController();
+    mBattleController = mGameContainer.getBattleController();
+    mMapController = mGameContainer.getMapController();
 
     curSprite = ImageLibrary.faceDown;
     mMovementController.setCoord(7, 8);
@@ -81,7 +84,7 @@ public class GameScreen extends GamePanel {
         break;
       case VIEW_POKEMON:
         inSummary = true;
-        summaryPoke = mPlayPanel.getPokemonForSummary();
+        summaryPoke = mGameContainer.getPokemonForSummary();
         break;
       case VIEW_PARTY:
       case BATTLE_VIEW_POKEMON:
@@ -157,9 +160,9 @@ public class GameScreen extends GamePanel {
     //healing:
     if (mMapController.isOnHealingTile()) {
       for (int i = 0; i < 6; i++) {
-        if (PlayPanel.myPokemon[i] != null) {
-          PlayPanel.myPokemon[i].heal(
-              PlayPanel.myPokemon[i].getMaxHP() - PlayPanel.myPokemon[i].getCurrentHP());
+        if (GameContainer.myPokemon[i] != null) {
+          GameContainer.myPokemon[i].heal(
+              GameContainer.myPokemon[i].getMaxHP() - GameContainer.myPokemon[i].getCurrentHP());
         }
       }
     }
@@ -168,7 +171,7 @@ public class GameScreen extends GamePanel {
   private void maybeInitPokemonBattle() {
     if (mMapController.canTriggerWildPokemonEncounter()) {
       if ((int) (Math.random() * 256) <= 32) {
-        mPlayPanel.setState(GameState.BATTLE_DEFAULT);
+        mGameContainer.setState(GameState.BATTLE_DEFAULT);
       }
     }
   }
@@ -209,20 +212,20 @@ public class GameScreen extends GamePanel {
     int attackXEnemy = 300;
     int attackYEnemy = 300;
     bgColor = Color.WHITE;
-    if (mPlayPanel.getBattleController().isSwappingPokemon()) {
+    if (mGameContainer.getBattleController().isSwappingPokemon()) {
       myBuffer.drawString("Which pokemon do you want to switch out?", 5, 170);
     }
     if (mBattleController.isSwappingPokemon()) {
-      mPlayPanel.getBattleController().setIsSwappingPokemon(false);
+      mGameContainer.getBattleController().setIsSwappingPokemon(false);
       if (switchingMove < 16) {
         //drawing pokemon out
         attackX -= 5;
         switchingMove++;
         myBuffer.drawString("Come back " + myPoke.getName() + "!", 5, 170);
-        mPlayPanel.setState(GameState.BATTLE_SWITCH_ANIMATION);
+        mGameContainer.setState(GameState.BATTLE_SWITCH_ANIMATION);
       } else if (switchingMove == 16) {//switch the two pokemon
         //switch pokemon
-        myPoke = mPlayPanel.myPokemon[0];//mPlayPanel.getOptionsPanel().switchPokemonInd];
+        myPoke = mGameContainer.myPokemon[0];//mGameContainer.getOptionsPanel().switchPokemonInd];
         switchingMove++;
       } else if (switchingMove < 32) {//putting pokemon in
         attackX += 5;
@@ -237,7 +240,7 @@ public class GameScreen extends GamePanel {
       }
     } else if (isAttacking) {
       if (myMove == 0) {
-        mPlayPanel.setState(GameState.BATTLE_ATTACK_ANIMATION);
+        mGameContainer.setState(GameState.BATTLE_ATTACK_ANIMATION);
       }
       if (myMove <= 5) {
         attackX = attackX + 3;
@@ -262,7 +265,7 @@ public class GameScreen extends GamePanel {
         //put image somewhere outside of the screen
         attackXEnemy = 300;
         attackYEnemy = 300;
-        mPlayPanel.setState(GameState.DEFAULT);
+        mGameContainer.setState(GameState.DEFAULT);
       }
     } else if (enemyIsAttacking) {
       if (enemyMove == 1) {
@@ -290,7 +293,7 @@ public class GameScreen extends GamePanel {
         enemyMove = 1;
         enemyIsAttacking = false;
 
-        mPlayPanel.setState(GameState.BATTLE_DEFAULT);
+        mGameContainer.setState(GameState.BATTLE_DEFAULT);
       }
       if (myPoke.isFainted()) {
         //put image somewhere outside of the screen
@@ -300,18 +303,18 @@ public class GameScreen extends GamePanel {
 
         int pokeLeft = 0;
         for (int i = 0; i < 6; i++) {
-          if (PlayPanel.myPokemon[i] == null) {
+          if (GameContainer.myPokemon[i] == null) {
             break;
           }
-          if (!PlayPanel.myPokemon[i].isFainted()) {
+          if (!GameContainer.myPokemon[i].isFainted()) {
             pokeLeft++;
           }
         }
         if (pokeLeft == 0) {
           // lose the battle
-          mPlayPanel.setState(GameState.DEFAULT);
+          mGameContainer.setState(GameState.DEFAULT);
         } else {
-          mPlayPanel.setState(GameState.BATTLE_VIEW_POKEMON);
+          mGameContainer.setState(GameState.BATTLE_VIEW_POKEMON);
         }
       }
     }
@@ -319,13 +322,13 @@ public class GameScreen extends GamePanel {
 
   private void saveOrderOfPokemonInParty() {
     for (int i = 0; i < normalParty.length; i++) {
-      normalParty[i] = PlayPanel.myPokemon[i];
+      normalParty[i] = GameContainer.myPokemon[i];
     }
   }
 
   private void resetOrderOfPokemonInParty() {
     for (int i = 0; i < normalParty.length; i++) {
-      PlayPanel.myPokemon[i] = normalParty[i];
+      GameContainer.myPokemon[i] = normalParty[i];
     }
   }
 
@@ -336,7 +339,7 @@ public class GameScreen extends GamePanel {
     myPoke = getFirstUsablePokemonForBattle();
     enemy = mMapController.getRandomWildPokemon();
 
-    mPlayPanel.getPlayer().markSeenPokemon(enemy.getName());
+    mGameContainer.getPlayer().markSeenPokemon(enemy.getName());
     mBattleController.initBattle(myPoke, enemy);
   }
 
@@ -344,7 +347,7 @@ public class GameScreen extends GamePanel {
     saveOrderOfPokemonInParty();
     int myPokeInd = -1;
     for (int i = 0; i < 6; i++) {
-      if (PlayPanel.myPokemon[i] == null || PlayPanel.myPokemon[i].isFainted()) {
+      if (GameContainer.myPokemon[i] == null || GameContainer.myPokemon[i].isFainted()) {
         continue;
       }
       myPokeInd = i;
@@ -355,9 +358,9 @@ public class GameScreen extends GamePanel {
           "How in the world were you allowed into the wild with no " +
           "usable pokemon???\nNow go rant the game makers.");
     }
-    Pokemon temp = PlayPanel.myPokemon[myPokeInd];
-    PlayPanel.myPokemon[myPokeInd] = PlayPanel.myPokemon[0];
-    PlayPanel.myPokemon[0] = temp;
-    return PlayPanel.myPokemon[0];
+    Pokemon temp = GameContainer.myPokemon[myPokeInd];
+    GameContainer.myPokemon[myPokeInd] = GameContainer.myPokemon[0];
+    GameContainer.myPokemon[0] = temp;
+    return GameContainer.myPokemon[0];
   }
 }

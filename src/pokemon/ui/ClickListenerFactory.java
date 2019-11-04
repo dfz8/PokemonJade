@@ -1,13 +1,13 @@
 package pokemon.ui;
 
 import pokemon.AlertHelper;
+import pokemon.GameContainer;
 import pokemon.GameState;
-import pokemon.PlayPanel;
 
 public class ClickListenerFactory {
-  private PlayPanel mPanel;
+  private GameContainer mPanel;
 
-  public ClickListenerFactory(PlayPanel panel) {
+  public ClickListenerFactory(GameContainer panel) {
     mPanel = panel;
   }
 

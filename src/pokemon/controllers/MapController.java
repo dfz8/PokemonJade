@@ -14,8 +14,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static pokemon.GameScreen.SPRITE_HEIGHT;
-import static pokemon.GameScreen.SPRITE_WIDTH;
+import static pokemon.GameplayScreen.SPRITE_HEIGHT;
+import static pokemon.GameplayScreen.SPRITE_WIDTH;
 
 public class MapController {
 

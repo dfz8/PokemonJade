@@ -5,13 +5,16 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
-public abstract class GamePanel extends JPanel {
+/**
+ * Classes extending this will have render-able content to be drawn
+ */
+public abstract class DrawableScreen extends JPanel {
   private Graphics mBuffer;
   private BufferedImage mImage;
   private Timer mTimer;
   private GameState mGameState;
 
-  public GamePanel() {
+  public DrawableScreen() {
     mImage = new BufferedImage(
         GameDriver.SCREEN_WIDTH,
         GameDriver.SCREEN_HEIGHT,
