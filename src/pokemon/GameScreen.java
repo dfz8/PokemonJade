@@ -19,8 +19,6 @@ public class GameScreen extends GamePanel {
   private Color bgColor;
 
   //conditions:
-  static boolean inBattle;
-  static boolean swapPokemon;
   static boolean isAttacking;
 
   private boolean inSummary;
@@ -50,8 +48,7 @@ public class GameScreen extends GamePanel {
     mPlayPanel = playPanel;
     mMovementController = playPanel.getMovementController();
     mMovementController.setCanMove(true);
-
-    mBattleController = new BattleController();
+    mBattleController = mPlayPanel.getBattleController();
     mMapController = mPlayPanel.getMapController();
 
     curSprite = ImageLibrary.faceDown;
@@ -68,7 +65,7 @@ public class GameScreen extends GamePanel {
         mMovementController.setCanMove(true);
         if (currentState == GameState.BATTLE_DEFAULT) {
           resetOrderOfPokemonInParty();
-          inBattle = false;
+          mBattleController.setIsInBattle(false);
         }
         break;
       case BATTLE_DEFAULT:
@@ -101,8 +98,8 @@ public class GameScreen extends GamePanel {
 
       if (inSummary) {
         drawSummaryScreen(myBuffer);
-      } else if (inBattle) {
-        if (OptionsPanel.switchingPokemon) {
+      } else if (mBattleController.isInBattle()) {
+        if (mBattleController.isSwappingPokemon()) {
         } else if (isAttacking) {
           mBattleController.startPlayerAttack(AttackLibrary.getAttack(myAttackName));
         }
@@ -212,11 +209,11 @@ public class GameScreen extends GamePanel {
     int attackXEnemy = 300;
     int attackYEnemy = 300;
     bgColor = Color.WHITE;
-    if (mPlayPanel.getOptionsPanel().switchingPokemon) {
+    if (mPlayPanel.getBattleController().isSwappingPokemon()) {
       myBuffer.drawString("Which pokemon do you want to switch out?", 5, 170);
     }
-    if (swapPokemon) {
-      mPlayPanel.getOptionsPanel().switchingPokemon = false;
+    if (mBattleController.isSwappingPokemon()) {
+      mPlayPanel.getBattleController().setIsSwappingPokemon(false);
       if (switchingMove < 16) {
         //drawing pokemon out
         attackX -= 5;
@@ -232,7 +229,7 @@ public class GameScreen extends GamePanel {
         switchingMove++;
         myBuffer.drawString("Go get them " + myPoke.getName() + "!", 5, 170);
       } else {
-        swapPokemon = false;
+        mBattleController.setIsSwappingPokemon(false);
         switchingMove = 1;
 
         isAttacking = false;
@@ -334,7 +331,7 @@ public class GameScreen extends GamePanel {
 
   private void initBattle() {
     mMovementController.setCanMove(false);
-    inBattle = true;
+    mBattleController.setIsInBattle(true);
 
     myPoke = getFirstUsablePokemonForBattle();
     enemy = mMapController.getRandomWildPokemon();

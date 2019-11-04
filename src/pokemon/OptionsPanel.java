@@ -20,8 +20,6 @@ public class OptionsPanel extends GamePanel {
   private ClickListenerFactory mClickListenerFactory;
   private Color mBackgroundColor;
 
-  static boolean switchingPokemon;
-  private boolean inBattle;
   private Menu curMenu;
 
   private boolean showPokemonSelectOptions = false;
@@ -44,7 +42,6 @@ public class OptionsPanel extends GamePanel {
     mPlayPanel = playPanel;
     mClickListenerFactory = new ClickListenerFactory(playPanel);
     mBackgroundColor = Color.BLACK;
-    inBattle = switchingPokemon = false;
 
     PlayerController player = mPlayPanel.getPlayer();
     defaultOptions = OptionsHelper.setUpFor(Menu.main, player);
@@ -96,7 +93,7 @@ public class OptionsPanel extends GamePanel {
     pokemonSelectOptions[0].setOnClickListener(new OnClickListener() {
       @Override
       public void onClick() {
-        switchingPokemon = true;
+        mPlayPanel.getBattleController().setIsSwappingPokemon(true);
         showPokemonSelectOptions = false;
       }
     });
@@ -184,7 +181,8 @@ public class OptionsPanel extends GamePanel {
     // If we're in battle then only highlight if pokemon hasn't fainted.
     return index == pokemonOptions.length - 1
            || (PlayPanel.myPokemon[index] != null
-               && (!GameScreen.inBattle || !PlayPanel.myPokemon[index].isFainted()));
+               && (!mPlayPanel.getBattleController().isInBattle()
+                   || !PlayPanel.myPokemon[index].isFainted()));
   }
 
   private void updateHighlights(int x, int y, OptionBoard[] boards) {
@@ -216,12 +214,12 @@ public class OptionsPanel extends GamePanel {
   //where the click code is run
   public void searchButton(String s) {
     if (curMenu == Menu.party) {
-      if (switchingPokemon) {
+      if (mPlayPanel.getBattleController().isSwappingPokemon()) {
         if (s.equals("Back")) {
           mPlayPanel.setState(GameState.BATTLE_DEFAULT);
           return;
         }
-        if (inBattle) {
+        if (mPlayPanel.getBattleController().isInBattle()) {
           for (int i = 0; i < 6; i++) {
             Pokemon p = PlayPanel.myPokemon[i];
             if (p != null && p.getName().equals(s)) {
@@ -229,7 +227,7 @@ public class OptionsPanel extends GamePanel {
                 partyText = "That pokemon is already out!";
               } else {
                 switchPokemonInd = i;
-                GameScreen.swapPokemon = true;
+                mPlayPanel.getBattleController().setIsSwappingPokemon(true);
                 PlayPanel.myPokemon[i] = PlayPanel.myPokemon[0];
                 PlayPanel.myPokemon[0] = p;
               }
@@ -247,7 +245,7 @@ public class OptionsPanel extends GamePanel {
               pokemonOptions[i].setText(PlayPanel.myPokemon[i].getName());
               pokemonOptions[switchPokemonInd].setText(PlayPanel.myPokemon[switchPokemonInd].getName());
 
-              switchingPokemon = false;
+              mPlayPanel.getBattleController().setIsSwappingPokemon(false);
               break;
             }
 
@@ -338,19 +336,19 @@ public class OptionsPanel extends GamePanel {
     switch (newState) {
       case DEFAULT:
         curMenu = Menu.main;
-        switchingPokemon = false;
+        mPlayPanel.getBattleController().setIsSwappingPokemon(false);
         showPokemonSelectOptions = false;
         switchPokemonInd = -1;
         break;
       case BATTLE_DEFAULT:
         curMenu = Menu.battle;
-        switchingPokemon = false;
+        mPlayPanel.getBattleController().setIsSwappingPokemon(false);
         break;
       case BATTLE_CHOOSE_ATTACK:
         curMenu = Menu.attackSelection;
         break;
       case BATTLE_VIEW_POKEMON:
-        switchingPokemon = true;
+        mPlayPanel.getBattleController().setIsSwappingPokemon(true);
         setupForPartyViewing();
         curMenu = Menu.party;
         partyText = "Select a Pokemon.";

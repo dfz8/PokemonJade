@@ -1,5 +1,6 @@
 package pokemon;
 
+import pokemon.controllers.BattleController;
 import pokemon.controllers.MapController;
 import pokemon.controllers.MovementController;
 import pokemon.controllers.PlayerController;
@@ -24,6 +25,7 @@ public class PlayPanel extends JPanel {
   private PlayerController mPlayerController;
   private MovementController mMovementController;
   private MapController mMapController;
+  private BattleController mBattleController;
 
   private String mInitialMapToLoad;
 
@@ -50,6 +52,7 @@ public class PlayPanel extends JPanel {
 
   private void initPostSetupControllers() {
     mMapController = new MapController(mInitialMapToLoad, mMovementController);
+    mBattleController = new BattleController();
   }
 
   public PlayerController getPlayer() {
@@ -62,6 +65,10 @@ public class PlayPanel extends JPanel {
 
   public MapController getMapController() {
     return mMapController;
+  }
+
+  public BattleController getBattleController() {
+    return mBattleController;
   }
 
   public OptionsPanel getOptionsPanel() {

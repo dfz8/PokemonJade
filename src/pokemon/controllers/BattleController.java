@@ -42,6 +42,8 @@ public class BattleController {
   private Trainer mEnemy;
 
   private boolean isPlayersTurn;
+  private boolean isInBattle;
+  private boolean isSwappingPokemon;
 
   public interface AttackAnimationListener {
     void onAttackFinished();
@@ -114,5 +116,21 @@ public class BattleController {
       }
     };
     mSelf.startAttack(attack, listener);
+  }
+
+  public boolean isInBattle() {
+    return isInBattle;
+  }
+
+  public void setIsInBattle(boolean inBattle) {
+    isInBattle = inBattle;
+  }
+
+  public boolean isSwappingPokemon() {
+    return isSwappingPokemon;
+  }
+
+  public void setIsSwappingPokemon(boolean isSwappingPokemon) {
+    this.isSwappingPokemon = isSwappingPokemon;
   }
 }
