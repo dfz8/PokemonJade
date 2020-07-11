@@ -1,11 +1,11 @@
 package pokemon.controllers;
 
 import pokemon.AlertHelper;
-import pokemon.DrawingHelper;
 import pokemon.GameDriver;
 import pokemon.ImageLibrary;
 import pokemon.entities.Pokemon;
 import pokemon.entities.Terrain;
+import pokemon.util.DrawingHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -153,8 +153,8 @@ public class MapController {
     DrawingHelper.drawImage(
         myBuffer,
         playerSprite,
-        GameDriver.SCREEN_WIDTH / 2 - SPRITE_WIDTH / 2,
-        GameDriver.SCREEN_HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5); // -5 for visual purposes
+        DrawingHelper.SCREEN_WIDTH / 2 - SPRITE_WIDTH / 2,
+        DrawingHelper.SCREEN_HEIGHT / 2 - SPRITE_HEIGHT / 2 - 5); // -5 for visual purposes
   }
 
   public boolean canMoveHere(int r, int c) {

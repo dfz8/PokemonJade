@@ -8,6 +8,9 @@ import pokemon.ui.ClickListenerFactory;
 import pokemon.ui.OnClickListener;
 import pokemon.ui.OptionBoard;
 import pokemon.ui.Styles;
+import pokemon.util.DrawingHelper;
+import pokemon.util.OptionsHelper;
+import pokemon.util.SpriteHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -198,8 +201,8 @@ public class GuiScreen extends DrawableScreen {
   private boolean isMouseOver(int x, int y, OptionBoard board) {
     // HEIGHT displacement since two screens are stacked on top of each other
     return (board.getX() <= x && x <= board.getX() + board.getWidth())
-           && (board.getY() + GameDriver.SCREEN_HEIGHT <= y
-               && y <= board.getY() + board.getHeight() + GameDriver.SCREEN_HEIGHT);
+           && (board.getY() + DrawingHelper.SCREEN_HEIGHT <= y
+               && y <= board.getY() + board.getHeight() + DrawingHelper.SCREEN_HEIGHT);
   }
 
   public void checkClick(int x, int y) {
@@ -390,13 +393,13 @@ public class GuiScreen extends DrawableScreen {
     public void actionPerformed(ActionEvent e) {
       Graphics myBuffer = getImageBuffer();
       myBuffer.setColor(mBackgroundColor);
-      myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
+      myBuffer.fillRect(0, 0, DrawingHelper.SCREEN_WIDTH, DrawingHelper.SCREEN_HEIGHT);
       // todo: move set font code to the specific panels
       myBuffer.setFont(Styles.normalFont);
 
       if (curMenu == Menu.blackScreen) {
         myBuffer.setColor(Color.BLACK);
-        myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
+        myBuffer.fillRect(0, 0, DrawingHelper.SCREEN_WIDTH, DrawingHelper.SCREEN_HEIGHT);
         repaint();
         return;
       } else if (curMenu == Menu.party) {
@@ -433,11 +436,11 @@ public class GuiScreen extends DrawableScreen {
     myBuffer.setColor(Color.WHITE);
     myBuffer.fillRect(
         10,
-        GameDriver.SCREEN_HEIGHT - 40,
-        GameDriver.SCREEN_WIDTH - 60 - 10 - 10,
+        DrawingHelper.SCREEN_HEIGHT - 40,
+        DrawingHelper.SCREEN_WIDTH - 60 - 10 - 10,
         35);
     myBuffer.setColor(Color.BLACK);
-    myBuffer.drawString(partyText, 10 + 5, GameDriver.SCREEN_HEIGHT - 40 + 10);
+    myBuffer.drawString(partyText, 10 + 5, DrawingHelper.SCREEN_HEIGHT - 40 + 10);
     //tiles w/ pokemon:
     for (int i = 0; i < pokemonOptions.length; i++) {
       pokemonOptions[i].draw(myBuffer);
@@ -497,18 +500,18 @@ public class GuiScreen extends DrawableScreen {
   private void drawPokedexScreen(Graphics myBuffer) {
     // has seen/ has owned info box :
     myBuffer.setColor(Color.WHITE);
-    myBuffer.fillRect(GameDriver.SCREEN_WIDTH - 130, GameDriver.SCREEN_HEIGHT - 100, 110, 30);
+    myBuffer.fillRect(DrawingHelper.SCREEN_WIDTH - 130, DrawingHelper.SCREEN_HEIGHT - 100, 110, 30);
     myBuffer.setFont(Styles.normalFont);
     myBuffer.setColor(Color.BLACK);
     myBuffer.drawString(
         "Seen: " + mGameContainer.getPlayer().getNumSeenPokemon(),
-        GameDriver.SCREEN_WIDTH - 125,
-        GameDriver.SCREEN_HEIGHT
+        DrawingHelper.SCREEN_WIDTH - 125,
+        DrawingHelper.SCREEN_HEIGHT
         - 80);
     myBuffer.drawString(
         "Caught: " + mGameContainer.getPlayer().getNumCaughtPokemon(),
-        GameDriver.SCREEN_WIDTH - 70,
-        GameDriver.SCREEN_HEIGHT
+        DrawingHelper.SCREEN_WIDTH - 70,
+        DrawingHelper.SCREEN_HEIGHT
         - 80);
 
     ImageIcon pokeball = SpriteHelper.getMisc("pokeball");
@@ -540,8 +543,8 @@ public class GuiScreen extends DrawableScreen {
           DrawingHelper.drawImage(
               myBuffer,
               curImage,
-              GameDriver.SCREEN_WIDTH - 130,
-              GameDriver.SCREEN_HEIGHT - 190);
+              DrawingHelper.SCREEN_WIDTH - 130,
+              DrawingHelper.SCREEN_HEIGHT - 190);
         }
       }
       //pokeballs next to pokemon you have caught
@@ -564,31 +567,31 @@ public class GuiScreen extends DrawableScreen {
         me,
         30,
         30,
-        GameDriver.SCREEN_WIDTH - 240,
-        GameDriver.SCREEN_HEIGHT - 180);
+        DrawingHelper.SCREEN_WIDTH - 240,
+        DrawingHelper.SCREEN_HEIGHT - 180);
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(Styles.extraLargeFont);
     myBuffer.drawString(
         "Name: " + mGameContainer.getPlayer().getName(),
-        GameDriver.SCREEN_WIDTH - 180,
-        GameDriver.SCREEN_HEIGHT - 160);
+        DrawingHelper.SCREEN_WIDTH - 180,
+        DrawingHelper.SCREEN_HEIGHT - 160);
     myBuffer.setFont(Styles.largerLargeFont);
     myBuffer.drawString(
         "Money: " + mGameContainer.getPlayer().getMoney(),
-        GameDriver.SCREEN_WIDTH - 250,
-        GameDriver.SCREEN_HEIGHT - 120);
+        DrawingHelper.SCREEN_WIDTH - 250,
+        DrawingHelper.SCREEN_HEIGHT - 120);
     myBuffer.drawString(
         "Number of Pokemon Seen: " + mGameContainer.getPlayer().getNumSeenPokemon(),
-        GameDriver.SCREEN_WIDTH - 250,
-        GameDriver.SCREEN_HEIGHT - 95);
+        DrawingHelper.SCREEN_WIDTH - 250,
+        DrawingHelper.SCREEN_HEIGHT - 95);
     myBuffer.drawString(
         "Number of pokemon Caught: " + mGameContainer.getPlayer().getNumCaughtPokemon(),
-        GameDriver.SCREEN_WIDTH - 250,
-        GameDriver.SCREEN_HEIGHT - 70);
+        DrawingHelper.SCREEN_WIDTH - 250,
+        DrawingHelper.SCREEN_HEIGHT - 70);
     myBuffer.drawString(
         "Location: " + mGameContainer.getMapController().getMapName(),
-        GameDriver.SCREEN_WIDTH - 250,
-        GameDriver.SCREEN_HEIGHT - 45);
+        DrawingHelper.SCREEN_WIDTH - 250,
+        DrawingHelper.SCREEN_HEIGHT - 45);
   }
 
   private void drawPersonalScreen(Graphics myBuffer) {
@@ -598,27 +601,27 @@ public class GuiScreen extends DrawableScreen {
         me,
         30,
         30,
-        GameDriver.SCREEN_WIDTH - 240,
-        GameDriver.SCREEN_HEIGHT - 180);
+        DrawingHelper.SCREEN_WIDTH - 240,
+        DrawingHelper.SCREEN_HEIGHT - 180);
     myBuffer.setColor(Color.BLACK);
     myBuffer.setFont(Styles.extraLargeFont);
     myBuffer.drawString(
         "Name: " + mGameContainer.getPlayer().getName(),
-        GameDriver.SCREEN_WIDTH - 180,
-        GameDriver.SCREEN_HEIGHT - 160);
+        DrawingHelper.SCREEN_WIDTH - 180,
+        DrawingHelper.SCREEN_HEIGHT - 160);
     myBuffer.setFont(Styles.largerLargeFont);
     myBuffer.drawString(
         "Money: " + mGameContainer.getPlayer().getMoney(),
-        GameDriver.SCREEN_WIDTH - 250,
-        GameDriver.SCREEN_HEIGHT - 120);
+        DrawingHelper.SCREEN_WIDTH - 250,
+        DrawingHelper.SCREEN_HEIGHT - 120);
     myBuffer.drawString(
         "Number of Pokemon Seen: " + mGameContainer.getPlayer().getNumSeenPokemon(),
-        GameDriver.SCREEN_WIDTH - 250,
-        GameDriver.SCREEN_HEIGHT - 95);
+        DrawingHelper.SCREEN_WIDTH - 250,
+        DrawingHelper.SCREEN_HEIGHT - 95);
     myBuffer.drawString(
         "Number of Pokemon Caught: " + mGameContainer.getPlayer().getNumCaughtPokemon(),
-        GameDriver.SCREEN_WIDTH - 250,
-        GameDriver.SCREEN_HEIGHT - 70);
+        DrawingHelper.SCREEN_WIDTH - 250,
+        DrawingHelper.SCREEN_HEIGHT - 70);
   }
 
   private void updateAttackOptions() {

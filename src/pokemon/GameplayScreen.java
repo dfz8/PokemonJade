@@ -5,6 +5,8 @@ import pokemon.controllers.MapController;
 import pokemon.controllers.MovementController;
 import pokemon.entities.Pokemon;
 import pokemon.ui.Styles;
+import pokemon.util.DrawingHelper;
+import pokemon.util.SpriteHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,7 +99,7 @@ public class GameplayScreen extends DrawableScreen {
     public void actionPerformed(ActionEvent e) {
       Graphics myBuffer = getImageBuffer();
       myBuffer.setColor(bgColor);
-      myBuffer.fillRect(0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT);
+      myBuffer.fillRect(0, 0, DrawingHelper.SCREEN_WIDTH, DrawingHelper.SCREEN_HEIGHT);
 
       if (inSummary) {
         drawSummaryScreen(myBuffer);

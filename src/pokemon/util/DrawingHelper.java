@@ -1,4 +1,4 @@
-package pokemon;
+package pokemon.util;
 
 import pokemon.entities.Pokemon;
 
@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DrawingHelper {
+  public static final int SCREEN_WIDTH = 275;
+  public static final int SCREEN_HEIGHT = 215;
 
   public static void drawImage(Graphics buffer, ImageIcon icon, int x, int y) {
     buffer.drawImage(icon.getImage(), x, y, null /* observer */);

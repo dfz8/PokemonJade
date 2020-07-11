@@ -1,10 +1,9 @@
-package pokemon;
+package pokemon.util;
 
 import pokemon.controllers.PlayerController;
 import pokemon.enums.Menu;
 import pokemon.ui.OptionBoard;
 import pokemon.ui.TextPlacement;
-import pokemon.util.DrawingHelper;
 
 import java.awt.*;
 

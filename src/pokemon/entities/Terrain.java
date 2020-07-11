@@ -1,8 +1,8 @@
 package pokemon.entities;
 
-import pokemon.DrawingHelper;
 import pokemon.GameplayScreen;
 import pokemon.ImageLibrary;
+import pokemon.util.DrawingHelper;
 
 import javax.swing.*;
 import java.awt.*;

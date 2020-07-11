@@ -1,10 +1,10 @@
 package pokemon.entities;
 
 import pokemon.Attack;
-import pokemon.DrawingHelper;
-import pokemon.SpriteHelper;
 import pokemon.controllers.BattleController;
 import pokemon.ui.Styles;
+import pokemon.util.DrawingHelper;
+import pokemon.util.SpriteHelper;
 
 import javax.swing.*;
 import java.awt.*;

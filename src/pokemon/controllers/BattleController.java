@@ -5,6 +5,7 @@ import pokemon.GameDriver;
 import pokemon.entities.Pokemon;
 import pokemon.entities.Trainer;
 import pokemon.ui.Styles;
+import pokemon.util.DrawingHelper;
 
 import java.awt.*;
 
@@ -18,21 +19,21 @@ public class BattleController {
   private static final int BATTLE_SPRITE_DIMEN = 80;
 
   private static final int TEXT_BOX_MARGIN = 1;
-  private static final int TEXT_BOX_WIDTH = GameDriver.SCREEN_WIDTH - 2 * TEXT_BOX_MARGIN;
+  private static final int TEXT_BOX_WIDTH = DrawingHelper.SCREEN_WIDTH - 2 * TEXT_BOX_MARGIN;
   private static final int TEXT_BOX_HEIGHT = 55;
   private static final int TEXT_BOX_X = TEXT_BOX_MARGIN;
   private static final int TEXT_BOX_Y =
-      GameDriver.SCREEN_HEIGHT - TEXT_BOX_HEIGHT - VERTICAL_MARGIN;
+      DrawingHelper.SCREEN_HEIGHT - TEXT_BOX_HEIGHT - VERTICAL_MARGIN;
 
   private static final int ENEMY_INFO_BOX_X = HORIZONTAL_MARGIN;
   private static final int ENEMY_INFO_BOX_Y = VERTICAL_MARGIN;
 
   private static final int PLAYER_INFO_BOX_X =
-      GameDriver.SCREEN_WIDTH - INFO_BOX_WIDTH - HORIZONTAL_MARGIN;
+      DrawingHelper.SCREEN_WIDTH - INFO_BOX_WIDTH - HORIZONTAL_MARGIN;
   private static final int PLAYER_INFO_BOX_Y = TEXT_BOX_Y - INFO_BOX_HEIGHT - VERTICAL_MARGIN;
 
   private static final int ENEMY_START_X =
-      GameDriver.SCREEN_WIDTH - BATTLE_SPRITE_DIMEN - HORIZONTAL_MARGIN;
+      DrawingHelper.SCREEN_WIDTH - BATTLE_SPRITE_DIMEN - HORIZONTAL_MARGIN;
   private static final int ENEMY_START_Y = VERTICAL_MARGIN;
   private static final int PLAYER_START_X = HORIZONTAL_MARGIN;
   private static final int PLAYER_START_Y = TEXT_BOX_Y - BATTLE_SPRITE_DIMEN;

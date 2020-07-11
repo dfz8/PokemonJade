@@ -1,5 +1,7 @@
 package pokemon;
 
+import pokemon.util.DrawingHelper;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -16,8 +18,8 @@ public abstract class DrawableScreen extends JPanel {
 
   public DrawableScreen() {
     mImage = new BufferedImage(
-        GameDriver.SCREEN_WIDTH,
-        GameDriver.SCREEN_HEIGHT,
+        DrawingHelper.SCREEN_WIDTH,
+        DrawingHelper.SCREEN_HEIGHT,
         BufferedImage.TYPE_INT_RGB);
     mBuffer = mImage.getGraphics();
   }
@@ -28,7 +30,7 @@ public abstract class DrawableScreen extends JPanel {
   }
 
   public void paintComponent(Graphics g) {
-    g.drawImage(mImage, 0, 0, GameDriver.SCREEN_WIDTH, GameDriver.SCREEN_HEIGHT, null);
+    g.drawImage(mImage, 0, 0, DrawingHelper.SCREEN_WIDTH, DrawingHelper.SCREEN_HEIGHT, null);
   }
 
   public Graphics getImageBuffer() {

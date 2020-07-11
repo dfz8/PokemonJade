@@ -1,4 +1,4 @@
-package pokemon;
+package pokemon.util;
 
 import javax.swing.*;
 import java.util.HashMap;
