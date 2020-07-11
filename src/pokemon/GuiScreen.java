@@ -9,7 +9,6 @@ import pokemon.ui.OnClickListener;
 import pokemon.ui.OptionBoard;
 import pokemon.ui.Styles;
 import pokemon.util.DrawingHelper;
-import pokemon.util.OptionsHelper;
 import pokemon.util.SpriteHelper;
 
 import javax.swing.*;
