@@ -158,26 +158,6 @@ public class OptionsHelper {
             new OptionBoard(0, 0, 50, 20, GREEN, "Summary"),
             new OptionBoard(0, 0, 50, 20, GREEN, "Back")
         };
-      case save:
-        return new OptionBoard[]{
-            new OptionBoard(
-                20,
-                20,
-                DrawingHelper.SCREEN_WIDTH - 50,
-                DrawingHelper.SCREEN_HEIGHT - 50,
-                Color.lightGray,
-                "")
-        };
-      case personal:
-        return new OptionBoard[]{
-            new OptionBoard(
-                20,
-                20,
-                DrawingHelper.SCREEN_WIDTH - 50,
-                DrawingHelper.SCREEN_HEIGHT - 50,
-                Color.ORANGE,
-                "")
-        };
     }
     return null;
   }

@@ -12,35 +12,34 @@ import pokemon.util.SpriteHelper;
 import java.awt.*;
 import javax.swing.*;
 
-public class SaveScreenGui implements GuiOption {
+public class PersonalScreenGui implements GuiOption {
 
 	private PlayerController mPlayer;
-	private OptionBoard[] mSaveOptions;
+	private OptionBoard[] mPersonalOptions;
 
-	public SaveScreenGui(GameContainer gameContainer) {
+	public PersonalScreenGui(GameContainer gameContainer) {
 		mPlayer = gameContainer.getPlayer();
-		mSaveOptions =  
-				new OptionBoard[]{
-			      new OptionBoard(
-			          20,
-			          20,
-			          DrawingHelper.SCREEN_WIDTH - 50,
-			          DrawingHelper.SCREEN_HEIGHT - 50,
-			          Color.lightGray,
-			          "")};
-
-	    mSaveOptions[0].setOnClickListener(
-		    	new OnClickListener() {
-		      		@Override
-				      public void onClick() {
-				        gameContainer.save();
-				        gameContainer.setState(GameState.DEFAULT);
-				      }
-			    });
+    mPersonalOptions = 
+    		new OptionBoard[]{
+            new OptionBoard(
+                20,
+                20,
+                DrawingHelper.SCREEN_WIDTH - 50,
+                DrawingHelper.SCREEN_HEIGHT - 50,
+                Color.ORANGE,
+                "")};
+            
+    mPersonalOptions[0].setOnClickListener(
+	    	new OnClickListener() {
+	      		@Override
+			      public void onClick() {
+			        gameContainer.setState(GameState.DEFAULT);
+			      }
+		    });
 	}
 
 	public OptionBoard[] getOptions() {
-		return mSaveOptions;
+		return mPersonalOptions;
 	}
 
 	public void drawScreen(Graphics buffer) {

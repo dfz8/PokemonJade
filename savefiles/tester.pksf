@@ -1,9 +1,9 @@
 3000
 1
 Bulbasaur, Grass, Tackle, Vine Whip, Absorb, Headbutt, 5, 14, 16, 7, 26, 26
-route1
-8
-15
+hometown
+12
+26
 true true
 false false
 false false
@@ -19,7 +19,7 @@ false false
 false false
 false false
 false false
-false true
+false false
 false false
 false false
 false false

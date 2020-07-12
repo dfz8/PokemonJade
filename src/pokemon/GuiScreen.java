@@ -4,6 +4,9 @@ import pokemon.controllers.PlayerController;
 import pokemon.entities.PokeBall;
 import pokemon.entities.Pokemon;
 import pokemon.enums.Menu;
+import pokemon.guioptions.GuiOption;
+import pokemon.guioptions.PersonalScreenGui;
+import pokemon.guioptions.SaveScreenGui;
 import pokemon.ui.ClickListenerFactory;
 import pokemon.ui.OnClickListener;
 import pokemon.ui.OptionBoard;
@@ -41,8 +44,9 @@ public class GuiScreen extends DrawableScreen {
   private OptionBoard[] battleOptions;
   private OptionBoard[] attackOptions;
   private OptionBoard[] bagOptions;
-  private OptionBoard[] saveOptions;
-  private OptionBoard[] personalOptions;
+
+  private GuiOption mPersonalOption_USE_THE_ACCESSOR;
+  private GuiOption mSaveOption_USE_THE_ACCESSOR;
 
   public GuiScreen(GameContainer gameContainer) {
     mGameContainer = gameContainer;
@@ -57,8 +61,6 @@ public class GuiScreen extends DrawableScreen {
     attackOptions = OptionsHelper.setUpFor(Menu.attackSelection, player);
     bagOptions = OptionsHelper.setUpFor(Menu.bag, player);
     pokemonSelectOptions = OptionsHelper.setUpFor(Menu.pokemonSelect, player);
-    saveOptions = OptionsHelper.setUpFor(Menu.save, player);
-    personalOptions = OptionsHelper.setUpFor(Menu.personal, player);
     initOnClickListeners();
 
     curMenu = Menu.main;
@@ -132,15 +134,6 @@ public class GuiScreen extends DrawableScreen {
       }
     });
 
-    saveOptions[0].setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick() {
-        mGameContainer.save();
-        mGameContainer.setState(GameState.DEFAULT);
-      }
-    });
-
-    personalOptions[0].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.DEFAULT));
   }
 
   public void updateHighlightsForOptions(int x, int y) {
@@ -170,9 +163,9 @@ public class GuiScreen extends DrawableScreen {
       case bag:
         return bagOptions;
       case save:
-        return saveOptions;
+        return getSaveScreen().getOptions();
       case personal:
-        return personalOptions;
+        return getPersonalScreen().getOptions();
       case blackScreen:
         return null;
       default:
@@ -417,9 +410,9 @@ public class GuiScreen extends DrawableScreen {
       if (curMenu == Menu.pokedex) {
         drawPokedexScreen(myBuffer);
       } else if (curMenu == Menu.save) {
-        drawSaveScreen(myBuffer);
+        getSaveScreen().drawScreen(myBuffer);
       } else if (curMenu == Menu.personal) {
-        drawPersonalScreen(myBuffer);
+        getPersonalScreen().drawScreen(myBuffer);
       } else if (curMenu == Menu.attackSelection) {
         // todo: move updateAttackOptions to wherever init code should go
         updateAttackOptions();
@@ -559,68 +552,18 @@ public class GuiScreen extends DrawableScreen {
     }
   }
 
-  private void drawSaveScreen(Graphics myBuffer) {
-    ImageIcon me = SpriteHelper.getMisc("boy_walk_down_rest");
-    DrawingHelper.drawImage(
-        myBuffer,
-        me,
-        30,
-        30,
-        DrawingHelper.SCREEN_WIDTH - 240,
-        DrawingHelper.SCREEN_HEIGHT - 180);
-    myBuffer.setColor(Color.BLACK);
-    myBuffer.setFont(Styles.extraLargeFont);
-    myBuffer.drawString(
-        "Name: " + mGameContainer.getPlayer().getName(),
-        DrawingHelper.SCREEN_WIDTH - 180,
-        DrawingHelper.SCREEN_HEIGHT - 160);
-    myBuffer.setFont(Styles.largerLargeFont);
-    myBuffer.drawString(
-        "Money: " + mGameContainer.getPlayer().getMoney(),
-        DrawingHelper.SCREEN_WIDTH - 250,
-        DrawingHelper.SCREEN_HEIGHT - 120);
-    myBuffer.drawString(
-        "Number of Pokemon Seen: " + mGameContainer.getPlayer().getNumSeenPokemon(),
-        DrawingHelper.SCREEN_WIDTH - 250,
-        DrawingHelper.SCREEN_HEIGHT - 95);
-    myBuffer.drawString(
-        "Number of pokemon Caught: " + mGameContainer.getPlayer().getNumCaughtPokemon(),
-        DrawingHelper.SCREEN_WIDTH - 250,
-        DrawingHelper.SCREEN_HEIGHT - 70);
-    myBuffer.drawString(
-        "Location: " + mGameContainer.getMapController().getMapName(),
-        DrawingHelper.SCREEN_WIDTH - 250,
-        DrawingHelper.SCREEN_HEIGHT - 45);
+  private GuiOption getSaveScreen() {
+    if (mSaveOption_USE_THE_ACCESSOR == null) {
+      mSaveOption_USE_THE_ACCESSOR = new SaveScreenGui(mGameContainer);
+    }
+    return mSaveOption_USE_THE_ACCESSOR;
   }
 
-  private void drawPersonalScreen(Graphics myBuffer) {
-    ImageIcon me = SpriteHelper.getMisc("boy_walk_down_rest");
-    DrawingHelper.drawImage(
-        myBuffer,
-        me,
-        30,
-        30,
-        DrawingHelper.SCREEN_WIDTH - 240,
-        DrawingHelper.SCREEN_HEIGHT - 180);
-    myBuffer.setColor(Color.BLACK);
-    myBuffer.setFont(Styles.extraLargeFont);
-    myBuffer.drawString(
-        "Name: " + mGameContainer.getPlayer().getName(),
-        DrawingHelper.SCREEN_WIDTH - 180,
-        DrawingHelper.SCREEN_HEIGHT - 160);
-    myBuffer.setFont(Styles.largerLargeFont);
-    myBuffer.drawString(
-        "Money: " + mGameContainer.getPlayer().getMoney(),
-        DrawingHelper.SCREEN_WIDTH - 250,
-        DrawingHelper.SCREEN_HEIGHT - 120);
-    myBuffer.drawString(
-        "Number of Pokemon Seen: " + mGameContainer.getPlayer().getNumSeenPokemon(),
-        DrawingHelper.SCREEN_WIDTH - 250,
-        DrawingHelper.SCREEN_HEIGHT - 95);
-    myBuffer.drawString(
-        "Number of Pokemon Caught: " + mGameContainer.getPlayer().getNumCaughtPokemon(),
-        DrawingHelper.SCREEN_WIDTH - 250,
-        DrawingHelper.SCREEN_HEIGHT - 70);
+  private GuiOption getPersonalScreen() {
+    if (mPersonalOption_USE_THE_ACCESSOR == null) {
+      mPersonalOption_USE_THE_ACCESSOR = new PersonalScreenGui(mGameContainer);
+    }
+    return mPersonalOption_USE_THE_ACCESSOR;
   }
 
   private void updateAttackOptions() {
