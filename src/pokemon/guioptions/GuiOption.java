@@ -9,5 +9,7 @@ public interface GuiOption {
 	public OptionBoard[] getOptions();
 
 	public void drawScreen(Graphics buffer);
+
+	public void onShow();
 	
 }

@@ -9,4 +9,7 @@ public class Styles {
   public static Font largeFont = new Font("Agency FB", Font.BOLD, 15);
   public static Font mediumFont = new Font("Agency FB", Font.BOLD, 12);
   public static Font smallFont = new Font("Agency FB", Font.BOLD, 10);
+
+  public final static Color GREEN = Color.GREEN;
+  public final static Color PLAIN = Color.WHITE;
 }

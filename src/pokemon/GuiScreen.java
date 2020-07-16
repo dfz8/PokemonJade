@@ -6,6 +6,7 @@ import pokemon.entities.Pokemon;
 import pokemon.enums.Menu;
 import pokemon.guioptions.GuiOption;
 import pokemon.guioptions.PersonalScreenGui;
+import pokemon.guioptions.PokedexScreenGui;
 import pokemon.guioptions.SaveScreenGui;
 import pokemon.ui.ClickListenerFactory;
 import pokemon.ui.OnClickListener;
@@ -33,19 +34,18 @@ public class GuiScreen extends DrawableScreen {
 
   private boolean showPokemonSelectOptions = false;
   private int switchPokemonInd = -1;
-  private int pokedexStartInd;
   private String partyText = "";
 
   // todo refactor each into a controller
   private OptionBoard[] defaultOptions;
   private OptionBoard[] pokemonOptions;
   private OptionBoard[] pokemonSelectOptions;
-  private OptionBoard[] pokedexOptions;
   private OptionBoard[] battleOptions;
   private OptionBoard[] attackOptions;
   private OptionBoard[] bagOptions;
 
   private GuiOption mPersonalOption_USE_THE_ACCESSOR;
+  private GuiOption mPokedexOption_USE_THE_ACCESSOR;
   private GuiOption mSaveOption_USE_THE_ACCESSOR;
 
   public GuiScreen(GameContainer gameContainer) {
@@ -56,7 +56,6 @@ public class GuiScreen extends DrawableScreen {
     PlayerController player = mGameContainer.getPlayer();
     defaultOptions = OptionsHelper.setUpFor(Menu.main, player);
     pokemonOptions = OptionsHelper.setUpFor(Menu.party, player);
-    pokedexOptions = OptionsHelper.setUpFor(Menu.pokedex, player);
     battleOptions = OptionsHelper.setUpFor(Menu.battle, player);
     attackOptions = OptionsHelper.setUpFor(Menu.attackSelection, player);
     bagOptions = OptionsHelper.setUpFor(Menu.bag, player);
@@ -81,22 +80,6 @@ public class GuiScreen extends DrawableScreen {
     battleOptions[2].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.DEFAULT));
     battleOptions[3].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.BATTLE_VIEW_POKEMON));
 
-    final int numPokedexSlots = pokedexOptions.length - 3;
-    pokedexOptions[7].setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick() {
-        pokedexStartInd = Math.max(pokedexStartInd - numPokedexSlots, 1);
-      }
-    });
-    pokedexOptions[8].setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick() {
-        pokedexStartInd = Math.min(
-            pokedexStartInd + pokedexOptions.length - 3,
-            Pokemon.getNumPokemon() - numPokedexSlots);
-      }
-    });
-    pokedexOptions[9].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.DEFAULT));
 
     pokemonSelectOptions[0].setOnClickListener(new OnClickListener() {
       @Override
@@ -157,7 +140,7 @@ public class GuiScreen extends DrawableScreen {
       case battle:
         return battleOptions;
       case pokedex:
-        return pokedexOptions;
+        return getPokedexScreen().getOptions();
       case attackSelection:
         return attackOptions;
       case bag:
@@ -370,7 +353,7 @@ public class GuiScreen extends DrawableScreen {
         break;
       case VIEW_POKEDEX:
         curMenu = Menu.pokedex;
-        pokedexStartInd = 1;
+        getPokedexScreen().onShow();
         break;
       case VIEW_POKEMON:
         showPokemonSelectOptions = false;
@@ -408,7 +391,7 @@ public class GuiScreen extends DrawableScreen {
 
       // drawSprites special overlays
       if (curMenu == Menu.pokedex) {
-        drawPokedexScreen(myBuffer);
+        getPokedexScreen().drawScreen(myBuffer);
       } else if (curMenu == Menu.save) {
         getSaveScreen().drawScreen(myBuffer);
       } else if (curMenu == Menu.personal) {
@@ -489,67 +472,11 @@ public class GuiScreen extends DrawableScreen {
     }
   }
 
-  private void drawPokedexScreen(Graphics myBuffer) {
-    // has seen/ has owned info box :
-    myBuffer.setColor(Color.WHITE);
-    myBuffer.fillRect(DrawingHelper.SCREEN_WIDTH - 130, DrawingHelper.SCREEN_HEIGHT - 100, 110, 30);
-    myBuffer.setFont(Styles.normalFont);
-    myBuffer.setColor(Color.BLACK);
-    myBuffer.drawString(
-        "Seen: " + mGameContainer.getPlayer().getNumSeenPokemon(),
-        DrawingHelper.SCREEN_WIDTH - 125,
-        DrawingHelper.SCREEN_HEIGHT
-        - 80);
-    myBuffer.drawString(
-        "Caught: " + mGameContainer.getPlayer().getNumCaughtPokemon(),
-        DrawingHelper.SCREEN_WIDTH - 70,
-        DrawingHelper.SCREEN_HEIGHT
-        - 80);
-
-    ImageIcon pokeball = SpriteHelper.getMisc("pokeball");
-
-    for (int i = 0; i < pokedexOptions.length - 3; i++) {
-      //-3 to leave out up, down, and back options
-      // todo: switch to numberformat
-      String numText = "";
-      if (pokedexStartInd + i + 1 < 100) {
-        numText += "0";
-      }
-      if (pokedexStartInd + i + 1 < 10) {
-        numText += "0";
-      }
-      //text
-      if (mGameContainer.getPlayer().hasSeenPokemon(pokedexStartInd + i - 1)) {
-        pokedexOptions[i].setText(
-            numText + (pokedexStartInd + i) + ". \t" + Pokemon.getPokemon(
-                pokedexStartInd + i - 1));
-      } else {
-        pokedexOptions[i].setText(numText + (pokedexStartInd + i) + ". \t?????");
-      }
-
-      //image of pokemon you're hovering over
-      if (mGameContainer.getPlayer().hasSeenPokemon(pokedexStartInd + i - 1)) {
-        if (pokedexOptions[i].isHighlighted()) {
-          ImageIcon curImage = SpriteHelper.getPokemonFront(Pokemon.getPokemon(
-              pokedexStartInd + i - 1));
-          DrawingHelper.drawImage(
-              myBuffer,
-              curImage,
-              DrawingHelper.SCREEN_WIDTH - 130,
-              DrawingHelper.SCREEN_HEIGHT - 190);
-        }
-      }
-      //pokeballs next to pokemon you have caught
-      if (mGameContainer.getPlayer().hasCaughtPokemon(pokedexStartInd + i - 1)) {
-        DrawingHelper.drawImage(
-            myBuffer,
-            pokeball,
-            pokedexOptions[i].getX() + pokedexOptions[i].getWidth() - 20,
-            pokedexOptions[i].getY(),
-            20,
-            20);
-      }
+  private GuiOption getPokedexScreen() {
+    if (mPokedexOption_USE_THE_ACCESSOR == null) {
+      mPokedexOption_USE_THE_ACCESSOR = new PokedexScreenGui(mGameContainer);
     }
+    return mPokedexOption_USE_THE_ACCESSOR;
   }
 
   private GuiOption getSaveScreen() {

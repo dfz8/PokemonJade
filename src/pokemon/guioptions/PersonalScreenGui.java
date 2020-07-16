@@ -19,28 +19,30 @@ public class PersonalScreenGui implements GuiOption {
 
 	public PersonalScreenGui(GameContainer gameContainer) {
 		mPlayer = gameContainer.getPlayer();
-    mPersonalOptions = 
-    		new OptionBoard[]{
-            new OptionBoard(
-                20,
-                20,
-                DrawingHelper.SCREEN_WIDTH - 50,
-                DrawingHelper.SCREEN_HEIGHT - 50,
-                Color.ORANGE,
-                "")};
-            
-    mPersonalOptions[0].setOnClickListener(
-	    	new OnClickListener() {
-	      		@Override
-			      public void onClick() {
-			        gameContainer.setState(GameState.DEFAULT);
-			      }
-		    });
+        mPersonalOptions = 
+        		new OptionBoard[]{
+                new OptionBoard(
+                    20,
+                    20,
+                    DrawingHelper.SCREEN_WIDTH - 50,
+                    DrawingHelper.SCREEN_HEIGHT - 50,
+                    Color.ORANGE,
+                    "")};
+                
+        mPersonalOptions[0].setOnClickListener(
+    	    	new OnClickListener() {
+    	      		@Override
+    			      public void onClick() {
+    			        gameContainer.setState(GameState.DEFAULT);
+    			      }
+    		    });
 	}
 
 	public OptionBoard[] getOptions() {
 		return mPersonalOptions;
 	}
+
+    public void onShow() {}
 
 	public void drawScreen(Graphics buffer) {
     ImageIcon playerSprite = SpriteHelper.getMisc("boy_walk_down_rest");

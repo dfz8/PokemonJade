@@ -43,6 +43,8 @@ public class SaveScreenGui implements GuiOption {
 		return mSaveOptions;
 	}
 
+	public void onShow() {}
+
 	public void drawScreen(Graphics buffer) {
     ImageIcon playerSprite = SpriteHelper.getMisc("boy_walk_down_rest");
     DrawingHelper.drawImage(
