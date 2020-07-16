@@ -22,7 +22,7 @@ public class GameContainer extends JPanel {
   private static GameplayScreen mGameplayScreen;
   private static GuiScreen mGuiScreen;
 
-  static Pokemon[] myPokemon; //first six is party, empty slots are "null"
+  public static Pokemon[] myPokemon; //first six is party, empty slots are "null"
   private static int mSummaryIndex;
 
   private PlayerController mPlayerController;

@@ -38,36 +38,6 @@ public class OptionsHelper {
                 35,
                 Color.BLUE,
                 "Back")};
-      case pokedex:
-        return new OptionBoard[]{
-            new OptionBoard(10, 10, 120, 20, PLAIN, ""),
-            new OptionBoard(10, 40, 120, 20, PLAIN, ""),
-            new OptionBoard(10, 70, 120, 20, PLAIN, ""),
-            new OptionBoard(10, 100, 120, 20, PLAIN, ""),
-            new OptionBoard(10, 130, 120, 20, PLAIN, ""),
-            new OptionBoard(10, 160, 120, 20, PLAIN, ""),
-            new OptionBoard(10, 190, 120, 20, PLAIN, ""),
-            new OptionBoard(
-                DrawingHelper.SCREEN_WIDTH - 130,
-                DrawingHelper.SCREEN_HEIGHT - 60,
-                50,
-                20,
-                PLAIN,
-                "Up"),
-            new OptionBoard(
-                DrawingHelper.SCREEN_WIDTH - 130,
-                DrawingHelper.SCREEN_HEIGHT - 30,
-                50,
-                20,
-                PLAIN,
-                "Down"),
-            new OptionBoard(
-                DrawingHelper.SCREEN_WIDTH - 70,
-                DrawingHelper.SCREEN_HEIGHT - 60,
-                50,
-                50,
-                PLAIN,
-                "Back")};
       case battle:
         return new OptionBoard[]{
             new OptionBoard(
@@ -135,23 +105,6 @@ public class OptionsHelper {
                 35,
                 PLAIN,
                 "Back")};
-      case bag:
-        return new OptionBoard[]{
-            new OptionBoard(
-                DrawingHelper.SCREEN_WIDTH - 60,
-                DrawingHelper.SCREEN_HEIGHT - 45,
-                50,
-                35,
-                PLAIN,
-                "Back"),
-            new OptionBoard(
-                DrawingHelper.SCREEN_WIDTH - 245,
-                DrawingHelper.SCREEN_HEIGHT - 195,
-                70,
-                35,
-                PLAIN,
-                "Pokeball")
-        };
       case pokemonSelect:
         return new OptionBoard[]{
             new OptionBoard(0, 0, 50, 20, GREEN, "Move"),

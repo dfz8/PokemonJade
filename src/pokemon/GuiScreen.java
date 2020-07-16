@@ -5,6 +5,7 @@ import pokemon.entities.PokeBall;
 import pokemon.entities.Pokemon;
 import pokemon.enums.Menu;
 import pokemon.guioptions.GuiOption;
+import pokemon.guioptions.BagScreenGui;
 import pokemon.guioptions.PersonalScreenGui;
 import pokemon.guioptions.PokedexScreenGui;
 import pokemon.guioptions.SaveScreenGui;
@@ -42,8 +43,8 @@ public class GuiScreen extends DrawableScreen {
   private OptionBoard[] pokemonSelectOptions;
   private OptionBoard[] battleOptions;
   private OptionBoard[] attackOptions;
-  private OptionBoard[] bagOptions;
 
+  private GuiOption mBagOption_USE_THE_ACCESSOR;
   private GuiOption mPersonalOption_USE_THE_ACCESSOR;
   private GuiOption mPokedexOption_USE_THE_ACCESSOR;
   private GuiOption mSaveOption_USE_THE_ACCESSOR;
@@ -58,7 +59,6 @@ public class GuiScreen extends DrawableScreen {
     pokemonOptions = OptionsHelper.setUpFor(Menu.party, player);
     battleOptions = OptionsHelper.setUpFor(Menu.battle, player);
     attackOptions = OptionsHelper.setUpFor(Menu.attackSelection, player);
-    bagOptions = OptionsHelper.setUpFor(Menu.bag, player);
     pokemonSelectOptions = OptionsHelper.setUpFor(Menu.pokemonSelect, player);
     initOnClickListeners();
 
@@ -102,21 +102,6 @@ public class GuiScreen extends DrawableScreen {
         showPokemonSelectOptions = false;
       }
     });
-
-    bagOptions[0].setOnClickListener(mClickListenerFactory.toStateClickListener(GameState.BATTLE_DEFAULT));
-    bagOptions[1].setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick() {
-        if (new PokeBall().isCaught()) {
-          addNewPokemonToParty();
-          mGameContainer.setState(GameState.DEFAULT);
-        } else {
-          AlertHelper.alert("Awww, the pokemon broke out of the pokeball!");
-          mGameContainer.setState(GameState.BATTLE_WAIT_ON_ENEMY);
-        }
-      }
-    });
-
   }
 
   public void updateHighlightsForOptions(int x, int y) {
@@ -144,7 +129,7 @@ public class GuiScreen extends DrawableScreen {
       case attackSelection:
         return attackOptions;
       case bag:
-        return bagOptions;
+        return getBagScreen().getOptions();
       case save:
         return getSaveScreen().getOptions();
       case personal:
@@ -168,6 +153,9 @@ public class GuiScreen extends DrawableScreen {
   }
 
   private void updateHighlights(int x, int y, OptionBoard[] boards) {
+    if (boards == null) {
+      return;
+    }
     for (OptionBoard board : boards) {
       board.shouldShowHighlight(isMouseOver(x, y, board));
     }
@@ -291,19 +279,6 @@ public class GuiScreen extends DrawableScreen {
         + pokemonSelectOptions[1].getHeight() + 5);
   }
 
-  private void addNewPokemonToParty() {
-    int index = 0;
-    for (; index < GameContainer.myPokemon.length && GameContainer.myPokemon[index] != null;
-         index++) {
-    }
-
-    Pokemon enemy = mGameContainer.getGameScreen().enemy;
-    mGameContainer.getPlayer().markCaughtPokemon(enemy.getName());
-    mGameContainer.getPlayer().markSeenPokemon(enemy.getName());
-
-    GameContainer.myPokemon[index] = Pokemon.buildFrom(enemy).build();
-  }
-
   private void setupForPartyViewing() {
     for (int i = 0; i < 6; i++) {
       if (GameContainer.myPokemon[i] == null) {
@@ -343,6 +318,7 @@ public class GuiScreen extends DrawableScreen {
         break;
       case VIEW_ITEMS:
         curMenu = Menu.bag;
+        break;
       case VIEW_SELF:
         curMenu = Menu.personal;
         break;
@@ -470,6 +446,13 @@ public class GuiScreen extends DrawableScreen {
             40);
       }
     }
+  }
+
+  private GuiOption getBagScreen() {
+    if (mBagOption_USE_THE_ACCESSOR == null) {
+      mBagOption_USE_THE_ACCESSOR = new BagScreenGui(mGameContainer);
+    }
+    return mBagOption_USE_THE_ACCESSOR;
   }
 
   private GuiOption getPokedexScreen() {

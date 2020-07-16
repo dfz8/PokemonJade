@@ -39,8 +39,8 @@ public class GameplayScreen extends DrawableScreen {
   private static int switchingMove = 1;
   private static Pokemon[] normalParty = new Pokemon[6]; // to save the order of your party
   // before the battle starts (so you can switch around all you want)
-  Pokemon myPoke;
-  Pokemon enemy;
+  public Pokemon myPoke;
+  public Pokemon enemy;
   static String myAttackName = "";
   static String enemyAttackName = "";
 
